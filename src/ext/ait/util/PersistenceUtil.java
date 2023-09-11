@@ -21,11 +21,13 @@ import wt.fc.PersistenceHelper;
 import wt.fc.QueryResult;
 import wt.fc.ReferenceFactory;
 import wt.fc.WTObject;
+import wt.fc.collections.WTArrayList;
 import wt.folder.Folder;
 import wt.httpgw.URLFactory;
 import wt.lifecycle.LifeCycleManaged;
 import wt.lifecycle.State;
 import wt.org.WTPrincipal;
+import wt.org.WTPrincipalReference;
 import wt.part.WTPart;
 import wt.part.WTPartMaster;
 import wt.part.WTPartMasterIdentity;
@@ -34,10 +36,12 @@ import wt.query.QueryException;
 import wt.query.QuerySpec;
 import wt.query.SearchCondition;
 import wt.session.SessionHelper;
+import wt.session.SessionServerHelper;
 import wt.type.TypeDefinitionReference;
 import wt.util.WTException;
 import wt.util.WTPropertyVetoException;
 import wt.vc.Mastered;
+import wt.vc.VersionControlHelper;
 import wt.vc.VersionIdentifier;
 import wt.vc.Versioned;
 import wt.vc.baseline.ManagedBaseline;
@@ -454,5 +458,118 @@ public class PersistenceUtil {
 			e.printStackTrace();
 		}
 		return persistable;
+	}
+
+	/**
+	 * 判断一个列表中是否存在某个持久对象
+	 * 
+	 * @param WTArrayList
+	 * @param Persistable
+	 * @return boolean
+	 * @throws WTException
+	 */
+	public static boolean containsPersistable(WTArrayList list, Persistable destination) throws WTException {
+		boolean flag = false;
+		if (list != null && list.size() > 0) {
+			if (list.contains(destination)) {
+				flag = true;
+			} else {
+				int size = list.size();
+				for (int i = 0; i < size; ++i) {
+					flag = PersistenceHelper.isEquivalent(list.getPersistable(i), destination);
+				}
+			}
+		} else {
+			flag = false;
+		}
+		return flag;
+	}
+
+	/**
+	 * 合并两个WTArrayList
+	 * 
+	 * @param WTArrayList
+	 * @param WTArrayList
+	 * @return WTArrayList
+	 */
+	public static WTArrayList mergeList(WTArrayList wtList1, WTArrayList wtList2) {
+		if (wtList1 == null && wtList2 == null) {
+			return new WTArrayList();
+		} else if (wtList1 != null && wtList2 == null) {
+			return wtList1;
+		} else if (wtList1 == null && wtList2 != null) {
+			return wtList2;
+		} else {
+			int size = wtList2.size();
+
+			for (int i = 0; i < size; ++i) {
+				try {
+					Persistable persistable = wtList2.getPersistable(i);
+					boolean flag = containsPersistable(wtList1, persistable);
+					if (!flag) {
+						wtList1.add(persistable);
+					}
+				} catch (WTException e) {
+					e.printStackTrace();
+				}
+			}
+
+			return wtList1;
+		}
+	}
+
+	/**
+	 * 给有版本的对象设置创作者
+	 * 
+	 * @param Versioned
+	 * @param WTPrincipalReference
+	 * @throws WTException
+	 */
+	public static void setCreator(Versioned newVer, WTPrincipalReference principalRef) throws WTException {
+		boolean flag = SessionServerHelper.manager.setAccessEnforced(false);
+
+		try {
+			VersionControlHelper.assignIterationCreator(newVer, principalRef);
+		} catch (WTPropertyVetoException e) {
+			throw new WTException(e);
+		} finally {
+			SessionServerHelper.manager.setAccessEnforced(flag);
+		}
+	}
+
+	/**
+	 * 给有版本的对象设置修改者
+	 * 
+	 * @param Versioned
+	 * @param WTPrincipalReference
+	 * @throws WTException
+	 */
+	public static void setModifier(Versioned newVer, WTPrincipalReference principalRef) throws WTException {
+		boolean flag = SessionServerHelper.manager.setAccessEnforced(false);
+
+		try {
+			VersionControlHelper.setIterationModifier(newVer, principalRef);
+		} catch (WTPropertyVetoException var8) {
+			throw new WTException(var8);
+		} finally {
+			SessionServerHelper.manager.setAccessEnforced(flag);
+		}
+	}
+
+	/**
+	 * 获取现在的用户姓名
+	 * 
+	 * @return String
+	 */
+	public static String getCurrentPrincipalName() {
+		try {
+			WTPrincipal principal = SessionHelper.getPrincipal();
+			if (principal != null) {
+				return principal.getName();
+			}
+		} catch (WTException e) {
+			e.printStackTrace();
+		}
+		return "";
 	}
 }

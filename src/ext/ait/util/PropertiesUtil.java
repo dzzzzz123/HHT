@@ -14,9 +14,9 @@ public class PropertiesUtil {
 	private Properties properties;
 	private static Logger LOGGER = LogR.getLogger(CommonUtil.class.getName());
 
-	private PropertiesUtil(Class<?> callingClass) {
+	private PropertiesUtil(Class<?> callingClass, String configFileName) {
 		try {
-			String propertiefile = callingClass.getResource("config.properties").getFile();
+			String propertiefile = callingClass.getResource(configFileName).getFile();
 			properties = new Properties();
 			properties.load(new InputStreamReader(new FileInputStream(propertiefile), "UTF-8"));
 		} catch (Exception e) {
@@ -24,9 +24,9 @@ public class PropertiesUtil {
 		}
 	}
 
-	public static PropertiesUtil getInstance(Class<?> callingClass) {
+	public static PropertiesUtil getInstance(Class<?> callingClass, String configFileName) {
 		if (instance == null) {
-			instance = new PropertiesUtil(callingClass);
+			instance = new PropertiesUtil(callingClass, configFileName);
 		}
 		return instance;
 	}

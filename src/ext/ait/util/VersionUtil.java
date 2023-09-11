@@ -91,6 +91,22 @@ public class VersionUtil {
 	}
 
 	/**
+	 * 获取最新版本的对象
+	 * 
+	 * @param Mastered
+	 * @return RevisionControlled
+	 * @throws WTException
+	 */
+	public static RevisionControlled getLatestObjectByMaster(Mastered master) throws WTException {
+		if (master == null) {
+			return null;
+		} else {
+			QueryResult queryResult = VersionControlHelper.service.allVersionsOf(master);
+			return queryResult.hasMoreElements() ? (RevisionControlled) queryResult.nextElement() : null;
+		}
+	}
+
+	/**
 	 * 获取上一个大版本的最新小版本，如果没有上一个大版本，则返回当前版本的最新小版本
 	 * 
 	 * @param RevisionControlled

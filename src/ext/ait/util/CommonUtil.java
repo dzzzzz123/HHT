@@ -1,13 +1,19 @@
 package ext.ait.util;
 
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 
+import com.ptc.core.lwc.common.view.EnumerationDefinitionReadView;
+import com.ptc.core.lwc.common.view.EnumerationEntryReadView;
 import com.ptc.core.lwc.server.LWCLocalizablePropertyValue;
 import com.ptc.core.lwc.server.LWCTypeDefinition;
+import com.ptc.core.lwc.server.TypeDefinitionServiceHelper;
 import com.ptc.core.meta.common.IdentifierFactory;
 import com.ptc.core.meta.common.TypeIdentifier;
 import com.ptc.core.meta.type.mgmt.server.impl.WTTypeDefinition;
@@ -385,6 +391,35 @@ public class CommonUtil {
 			ChangeSession.goPreviousSession();
 		}
 		return null;
+	}
+
+	/**
+	 * 根据全局枚举的内部名称获取其中所有的子枚举的内部名称与外部名称
+	 * 
+	 * @param String
+	 * @return Map<String, String>
+	 */
+	public static Map<String, String> getEnumTypeByInternalName(String internalName) {
+		Map<String, String> map = new HashMap<>();
+		try {
+			EnumerationDefinitionReadView edr = TypeDefinitionServiceHelper.service.getEnumDefView(internalName);
+			if (edr != null) {
+				Map<String, EnumerationEntryReadView> views = edr.getAllEnumerationEntries();
+				Set<String> keysOfView = views.keySet();
+				for (String key : keysOfView) {
+					EnumerationEntryReadView view = views.get(key);
+					String enumKey = view.getName();
+					String enumName = view.getPropertyValueByName("displayName").getValue().toString();
+					// 此方法判断枚举值是否在可用列表
+					if (view.getPropertyValueByName("selectable").getValue().equals(true)) {
+						map.put(enumKey, enumName);
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return map;
 	}
 
 }
