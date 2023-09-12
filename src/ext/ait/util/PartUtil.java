@@ -9,12 +9,13 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.ptc.core.lwc.server.LWCLocalizablePropertyValue;
 import com.ptc.core.lwc.server.LWCPropertyDefinition;
 import com.ptc.core.lwc.server.LWCStructEnumAttTemplate;
 import com.ptc.netmarkets.model.NmOid;
+import com.ptc.windchill.cadx.common.WTPartUtilities;
 import com.ptc.windchill.enterprise.workflow.WorkflowCommands;
 
 import wt.configuration.TraceCode;
@@ -47,9 +48,11 @@ import wt.part.QuantityUnit;
 import wt.part.Source;
 import wt.part.WTPart;
 import wt.part.WTPartAlternateLink;
+import wt.part.WTPartConfigSpec;
 import wt.part.WTPartHelper;
 import wt.part.WTPartMaster;
 import wt.part.WTPartMasterIdentity;
+import wt.part.WTPartStandardConfigSpec;
 import wt.part.WTPartSubstituteLink;
 import wt.part.WTPartUsageLink;
 import wt.pds.StatementSpec;
@@ -67,6 +70,9 @@ import wt.util.WTPropertyVetoException;
 import wt.vc.VersionControlHelper;
 import wt.vc.config.LatestConfigSpec;
 import wt.vc.struct.StructHelper;
+import wt.vc.views.View;
+import wt.vc.views.ViewException;
+import wt.vc.views.ViewHelper;
 import wt.vc.wip.WorkInProgressHelper;
 import wt.vc.wip.Workable;
 import wt.workflow.engine.WfProcess;
@@ -351,27 +357,31 @@ public class PartUtil {
 	 * @throws WTException
 	 */
 	@SuppressWarnings({ "unchecked", "deprecation" })
-	public static String getPartUsesOccurrence(WTPartUsageLink useagelink) throws WTException {
+	public static String getPartUsesOccurrence(WTPartUsageLink useagelink) {
+		String occurrenceStr = "";
 		List listWTPart2 = new ArrayList();
 		long linkid = PersistenceHelper.getObjectIdentifier(useagelink).getId();
-		QuerySpec qs = new QuerySpec(PartUsesOccurrence.class);
-		qs.appendWhere(
-				new SearchCondition(PartUsesOccurrence.class, "linkReference.key.id", SearchCondition.EQUAL, linkid));
-		QueryResult qr = PersistenceHelper.manager.find(qs);
-		String occurrenceStr = "";
-		while (qr.hasMoreElements()) {
-			PartUsesOccurrence occurrence = (PartUsesOccurrence) qr.nextElement();
-			listWTPart2.add(occurrence.getName());
-		}
-		for (int i = 0; i < listWTPart2.size(); i++) {
-			if (listWTPart2.get(i) != null) {
-				String ocName = listWTPart2.get(i).toString();
-				if (i == 0) {
-					occurrenceStr = ocName;
-				} else {
-					occurrenceStr = occurrenceStr + "," + ocName;
+		try {
+			QuerySpec qs = new QuerySpec(PartUsesOccurrence.class);
+			qs.appendWhere(new SearchCondition(PartUsesOccurrence.class, "linkReference.key.id", SearchCondition.EQUAL,
+					linkid));
+			QueryResult qr = PersistenceHelper.manager.find(qs);
+			while (qr.hasMoreElements()) {
+				PartUsesOccurrence occurrence = (PartUsesOccurrence) qr.nextElement();
+				listWTPart2.add(occurrence.getName());
+			}
+			for (int i = 0; i < listWTPart2.size(); i++) {
+				if (listWTPart2.get(i) != null) {
+					String ocName = listWTPart2.get(i).toString();
+					if (i == 0) {
+						occurrenceStr = ocName;
+					} else {
+						occurrenceStr = occurrenceStr + "," + ocName;
+					}
 				}
 			}
+		} catch (WTException e) {
+			e.printStackTrace();
 		}
 		return sortPlaceNumber(occurrenceStr);
 	}
@@ -463,26 +473,54 @@ public class PartUtil {
 	}
 
 	/**
-	 * 根据部件获取替代料的关联关系
+	 * 根据部件获取全局替代料的关联关系
 	 * 
 	 * @param WTPart
 	 * @return List<WTPartAlternateLink>
-	 * @throws WTException
 	 */
-	public static List<WTPartAlternateLink> getWTPartAlternateLinks(WTPart wtpart) throws WTException {
+	public static List<WTPartAlternateLink> getWTPartAlternateLinks(WTPart wtpart) {
 		if (wtpart == null) {
 			return null;
 		}
 		List<WTPartAlternateLink> list = new ArrayList<WTPartAlternateLink>();
 		long masterId = PersistenceHelper.getObjectIdentifier(wtpart.getMaster()).getId();
 		int[] index = { 0 };
-		QuerySpec qs = new QuerySpec(WTPartAlternateLink.class);
-		qs.appendWhere(new SearchCondition(WTPartAlternateLink.class, "roleAObjectRef.key.id", SearchCondition.EQUAL,
-				masterId), index);
-		QueryResult qr = PersistenceHelper.manager.find((StatementSpec) qs);
-		while (qr.hasMoreElements()) {
-			WTPartAlternateLink sLink = (WTPartAlternateLink) qr.nextElement();
-			list.add(sLink);
+		try {
+			QuerySpec qs = new QuerySpec(WTPartAlternateLink.class);
+			qs.appendWhere(new SearchCondition(WTPartAlternateLink.class, "roleAObjectRef.key.id",
+					SearchCondition.EQUAL, masterId), index);
+			QueryResult qr = PersistenceHelper.manager.find((StatementSpec) qs);
+			while (qr.hasMoreElements()) {
+				WTPartAlternateLink sLink = (WTPartAlternateLink) qr.nextElement();
+				list.add(sLink);
+			}
+		} catch (QueryException e) {
+			e.printStackTrace();
+		} catch (WTException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	/**
+	 * 根据部件获取局部替代料的关联关系
+	 * 
+	 * @param WTPart part
+	 * @return List<WTPartSubstituteLink>
+	 */
+	public static List<WTPartSubstituteLink> getWTPartSubstituteLinks(WTPart part) {
+		if (part == null) {
+			return null;
+		}
+		List<WTPartSubstituteLink> list = new ArrayList<WTPartSubstituteLink>();
+		List<WTPartUsageLink> usageLinklist = PartUtil.getLinksByPart(part);
+		for (WTPartUsageLink wtPartUsageLink : usageLinklist) {
+			try {
+				QueryResult qr = WTPartHelper.service.getSubstitutesWTPartMasters(wtPartUsageLink);
+				list.add((WTPartSubstituteLink) qr.nextElement());
+			} catch (WTException e) {
+				e.printStackTrace();
+			}
 		}
 		return list;
 	}
@@ -883,21 +921,6 @@ public class PartUtil {
 	}
 
 	/**
-	 * 获取部件的完整版本号
-	 * 
-	 * @param WTPart
-	 * @return String
-	 */
-	public static String getVersion(WTPart part) {
-		if (part == null) {
-			return "";
-		}
-		String version = part.getVersionInfo().getIdentifier().getValue();
-		String value = part.getIterationInfo().getIdentifier().getValue();
-		return new StringBuffer().append(version).append(".").append(value).toString();
-	}
-
-	/**
 	 * 校验部件是否正在其他工作流中运行（直接抛出异常？太奇怪了）
 	 * 
 	 * @param List<WTPart>
@@ -944,37 +967,12 @@ public class PartUtil {
 	 * @return String
 	 * @throws WTException
 	 */
-	public static String getUnit(WTPart part) throws WTException {
-
+	public static String getUnit(WTPart part) {
 		if (part == null) {
 			return "";
 		}
-		String defaultUnit = part.getDefaultUnit().toString().toUpperCase();// 默认单位
-		IBAUtil ibautil = new IBAUtil(part);
-		String jldw = ibautil.getIBAValue("net.haige.jldw");// 计量单位
-		String P_UNIT = ibautil.getIBAValue("net.haige.P_UNIT");// 结构件单位
-		String typeName = PersistenceUtil.getTypeName(part);
-		if (StringUtils.equalsIgnoreCase(typeName, "com.ptc.ElectricalPart")) {// 电子元器件
-			if (StringUtils.isNotBlank(jldw)) {
-				return jldw.toUpperCase();
-			} else {
-				return defaultUnit;
-			}
-		} else if (StringUtils.equalsIgnoreCase(typeName, "Part")
-				|| StringUtils.equalsIgnoreCase(typeName, "wt.part.WTPart")) {
-			if (StringUtils.isNotBlank(P_UNIT)) {
-				return P_UNIT.toUpperCase();
-			} else {
-				return defaultUnit;
-			}
-		}
-		if (StringUtils.isNotBlank(jldw)) {
-			return jldw.toUpperCase();
-		} else if (StringUtils.isNotBlank(P_UNIT)) {
-			return P_UNIT.toUpperCase();
-		} else {
-			return defaultUnit;
-		}
+		String defaultUnit = part.getDefaultUnit().toString().toUpperCase();
+		return defaultUnit;
 	}
 
 	/**
@@ -1031,5 +1029,32 @@ public class PartUtil {
 			System.out.println("系统未找到url指定的部件");
 			return null;
 		}
+	}
+
+	/**
+	 * 根据给定的视图和编号获取指定视图的部件
+	 * 
+	 * @param String number
+	 * @param String param Design/Manufacturing/
+	 * @return WTPart
+	 * @throws QueryException
+	 * @throws WTException
+	 */
+	public static WTPart getWTPartByNumberAndView(String number, String param) {
+		View view;
+		try {
+			view = ViewHelper.service.getView(param);
+			WTPartConfigSpec designConfigSpec = WTPartConfigSpec
+					.newWTPartConfigSpec(WTPartStandardConfigSpec.newWTPartStandardConfigSpec(view, (State) null));
+			WTPart viewPart = WTPartUtilities.getWTPart(number, designConfigSpec);
+			if (viewPart != null && StringUtils.equalsIgnoreCase(param, viewPart.getViewName())) {
+				return viewPart;
+			}
+		} catch (ViewException e) {
+			e.printStackTrace();
+		} catch (WTException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
