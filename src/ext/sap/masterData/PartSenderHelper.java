@@ -1,6 +1,12 @@
 package ext.sap.masterData;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gson.Gson;
+
 import ext.ait.util.PersistenceUtil;
+import ext.sap.masterData.entity.SendSAPResult;
 import ext.sap.masterData.service.SendSAPService;
 import wt.change2.ChangeHelper2;
 import wt.change2.WTChangeOrder2;
@@ -32,7 +38,6 @@ public class PartSenderHelper extends StandardManager {
 	/**
 	 * 工作流中发送part到SAP
 	 * 
-	 * throws Exception
 	 * 
 	 * @throws Exception
 	 */
@@ -43,6 +48,8 @@ public class PartSenderHelper extends StandardManager {
 	}
 
 	private static void sendPartsSAPMethodItem(WTObject pbo) throws Exception {
+		List<SendSAPResult> list = new ArrayList();
+		Gson gson = new Gson();
 		if (pbo instanceof WTPart) {
 			WTPart wtPart = (WTPart) pbo;
 			if (PersistenceUtil.isCheckOut(wtPart)) {
@@ -53,7 +60,7 @@ public class PartSenderHelper extends StandardManager {
 			SendSAPService.SendSAPPart(wtPart);
 		} else {
 
-			System.out.println("工作流");
+			System.out.println("进入工作流发送到SAP");
 
 			if (pbo instanceof PromotionNotice) {
 				PromotionNotice pn = (PromotionNotice) pbo;
@@ -64,6 +71,8 @@ public class PartSenderHelper extends StandardManager {
 					if (obj instanceof WTPart) {
 						WTPart wtPart = (WTPart) obj;
 						String json = SendSAPService.SendSAPPart(wtPart);
+						SendSAPResult sendSAPResult = gson.fromJson(json, SendSAPResult.class);
+						list.add(sendSAPResult);
 					}
 				}
 			}
@@ -76,6 +85,8 @@ public class PartSenderHelper extends StandardManager {
 					if (obj instanceof WTPart) {
 						WTPart wtPart = (WTPart) obj;
 						String json = SendSAPService.SendSAPPart(wtPart);
+						SendSAPResult sendSAPResult = gson.fromJson(json, SendSAPResult.class);
+						list.add(sendSAPResult);
 					}
 				}
 			}

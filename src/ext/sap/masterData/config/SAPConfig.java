@@ -14,6 +14,7 @@ public class SAPConfig {
 	static {
 		CONIG = new Properties();
 		try {
+
 			WTProperties wtproperties = WTProperties.getLocalProperties();
 			String wt_home = wtproperties.getProperty("wt.home");
 			String sep = wtproperties.getProperty("dir.sep");
@@ -47,7 +48,7 @@ public class SAPConfig {
 				return false;
 			}
 		} catch (Exception e) {
-			System.out.println("Error:OA Config file not found !");
+			System.out.println("Error:SAP Config file not found !");
 			return false;
 		}
 	}

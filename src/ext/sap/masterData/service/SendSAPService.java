@@ -13,123 +13,163 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 
 import com.google.gson.Gson;
 
+import ext.ait.util.CommUtil;
 import ext.ait.util.IBAUtil;
 import ext.ait.util.PartUtil;
 import ext.sap.masterData.config.SAPConfig;
 import ext.sap.masterData.entity.SendSAPPartEntity;
-import ext.sinoboom.ppmService.util.CommUtil;
 import wt.part.WTPart;
 import wt.pom.WTConnection;
+import wt.util.WTException;
 
 public class SendSAPService {
 
-	public static String SendSAPPart(WTPart wtPart) throws Exception {
-		IBAUtil ibaUtil = new IBAUtil(wtPart);
-		String ibaAttributes = SAPConfig.getConfig("IBAAttributes");
-		SendSAPPartEntity sapPartEntity = new SendSAPPartEntity();
+	public static String SendSAPPart(WTPart wtPart) {
+		IBAUtil ibaUtil;
+		String resultJson = null;
 
-		String HHT_ClassificationCode = ibaUtil.getIBAValue("HHT_ClassificationCode");
+		try {
+			String HHT_Classification = SAPConfig.getConfig("HHT_Classification");
+			String HHT_LongtDescription = SAPConfig.getConfig("HHT_LongtDescription");
+			String HHT_Bonded = SAPConfig.getConfig("HHT_Bonded");
+			String HHT_GrossWeight = SAPConfig.getConfig("HHT_GrossWeight");
+			String HHT_NetWeight = SAPConfig.getConfig("HHT_NetWeight");
+			String HHT_WeightUnit = SAPConfig.getConfig("HHT_WeightUnit");
+			String HHT_Traffic = SAPConfig.getConfig("HHT_Traffic");
+			String HHT_VolumeUnit = SAPConfig.getConfig("HHT_VolumeUnit");
+			String HHT_Length = SAPConfig.getConfig("HHT_Length");
+			String HHT_Width = SAPConfig.getConfig("HHT_Width");
+			String HHT_Height = SAPConfig.getConfig("HHT_Height");
+			String HHT_SizeUnits = SAPConfig.getConfig("HHT_SizeUnits");
+			String HHT_ClassificationCode = SAPConfig.getConfig("HHT_ClassificationCode");
+			String HHT_ClassificationName = SAPConfig.getConfig("HHT_ClassificationName");
+			String HHT_ProductLineNumber = SAPConfig.getConfig("HHT_ProductLineNumber");
+			String HHT_ProductLineName = SAPConfig.getConfig("HHT_ProductLineName");
+			String HHT_ProductNumber = SAPConfig.getConfig("HHT_ProductNumber");
+			String HHT_Productdescription = SAPConfig.getConfig("HHT_Productdescription");
+			String HHT_ModelSpecification = SAPConfig.getConfig("HHT_ModelSpecification");
+			String HHT_CommodityName = SAPConfig.getConfig("HHT_CommodityName");
+			String HHT_Brand = SAPConfig.getConfig("HHT_Brand");
+			String HHT_Year = SAPConfig.getConfig("HHT_Year");
+			String HHT_Size = SAPConfig.getConfig("HHT_Size");
+			String HHT_FinishedSeries = SAPConfig.getConfig("HHT_FinishedSeries");
+			String HHT_Industry = SAPConfig.getConfig("HHT_Industry");
+			String HHT_ProductDevelopmentType = SAPConfig.getConfig("HHT_ProductDevelopmentType");
+			String HHT_CustomizedProductIdentifier = SAPConfig.getConfig("HHT_CustomizedProductIdentifier");
+			String HHT_SupplierSku = SAPConfig.getConfig("HHT_SupplierSku");
+			String HHT_Factory = SAPConfig.getConfig("HHT_Factory");
+			String HHT_Price = SAPConfig.getConfig("HHT_Price");
+			String HHT_PriceUnit = SAPConfig.getConfig("HHT_PriceUnit");
+			String HHT_INValue = SAPConfig.getConfig("HHT_INValue");
 
-		boolean HHT_INValue = ibaUtil.getBooleanValueByName("HHT_INValue").isValue();
+			ibaUtil = new IBAUtil(wtPart);
+			SendSAPPartEntity sapPartEntity = new SendSAPPartEntity();
 
-		String PartType = mapClassificationToPartType(HHT_ClassificationCode, HHT_INValue);
+			String set_ClassificationCode = ibaUtil.getIBAValue(HHT_Classification);
+			boolean set_INValue = ibaUtil.getBooleanValueByName(HHT_INValue).isValue();
+			String PartType = mapClassificationToPartType(set_ClassificationCode, set_INValue);
 
-		String source = wtPart.getSource().getDisplay();
-		String HHT_Classification = getHHT_Classification(HHT_ClassificationCode, source);
-		String number = wtPart.getNumber();
-		String name = wtPart.getName();
+			String source = wtPart.getSource().getDisplay();
+			String set_Classification = getHHT_Classification(set_ClassificationCode, source);
+			String number = wtPart.getNumber();
+			String name = wtPart.getName();
+			String set_LongtDescription = ibaUtil.getIBAValue(HHT_LongtDescription);
 
-		String HHT_LongtDescription = ibaUtil.getIBAValue("HHT_LongtDescription");
+			String version = PartUtil.getVersion(wtPart);
+			String unit = PartUtil.getUnit(wtPart);
 
-		String version = PartUtil.getVersion(wtPart);
-		String unit = PartUtil.getUnit(wtPart);
+			boolean set_Bonded = ibaUtil.getBooleanValueByName(HHT_Bonded).isValue();
+			String set_GrossWeight = ibaUtil.getIBAValue(HHT_GrossWeight);
+			String set_NetWeight = ibaUtil.getIBAValue(HHT_NetWeight);
+			String set_WeightUnit = ibaUtil.getIBAValue(HHT_WeightUnit);
+			String set_Traffic = ibaUtil.getIBAValue(HHT_Traffic);
+			String set_VolumeUnit = ibaUtil.getIBAValue(HHT_VolumeUnit);
+			String set_Length = ibaUtil.getIBAValue(HHT_Length);
+			String set_Width = ibaUtil.getIBAValue(HHT_Width);
+			String set_Height = ibaUtil.getIBAValue(HHT_Height);
+			String set_SizeUnits = ibaUtil.getIBAValue(HHT_SizeUnits);
 
-		boolean HHT_Bonded = ibaUtil.getBooleanValueByName("HHT_Bonded").isValue();
+			String state = wtPart.getState().getState().getDisplay();
 
-		String HHT_GrossWeight = ibaUtil.getIBAValue("HHT_GrossWeight");
-		String HHT_NetWeight = ibaUtil.getIBAValue("HHT_NetWeight");
-		String HHT_WeightUnit = ibaUtil.getIBAValue("HHT_WeightUnit");
-		String HHT_Traffic = ibaUtil.getIBAValue("HHT_Traffic");
-		String HHT_VolumeUnit = ibaUtil.getIBAValue("HHT_VolumeUnit");
-		String HHT_Length = ibaUtil.getIBAValue("HHT_Length");
-		String HHT_Width = ibaUtil.getIBAValue("HHT_Width");
-		String HHT_Height = ibaUtil.getIBAValue("HHT_Height");
-		String HHT_SizeUnits = ibaUtil.getIBAValue("HHT_SizeUnits");
+			String set_ClassificationName = getClassificationdDisPlayName(set_ClassificationCode);
+			String set_ProductLineNumber = ibaUtil.getIBAValue(HHT_ProductLineNumber);
+			String set_ProductLineName = ibaUtil.getIBAValue(HHT_ProductLineName);
+			String set_ProductNumber = ibaUtil.getIBAValue(HHT_ProductNumber);
+			String set_Productdescription = ibaUtil.getIBAValue(HHT_Productdescription);
+			String set_ModelSpecification = ibaUtil.getIBAValue(HHT_ModelSpecification);
+			String set_CommodityName = ibaUtil.getIBAValue(HHT_CommodityName);
+			String set_Brand = ibaUtil.getIBAValue(HHT_Brand);
+			String set_Year = ibaUtil.getIBAValue(HHT_Year);
+			String set_Size = ibaUtil.getIBAValue(HHT_Size);
+			String set_FinishedSeries = ibaUtil.getIBAValue(HHT_FinishedSeries);
+			String set_Industry = ibaUtil.getIBAValue(HHT_Industry);
+			String set_ProductDevelopmentType = ibaUtil.getIBAValue(HHT_ProductDevelopmentType);
+			String set_CustomizedProductIdentifier = ibaUtil.getIBAValue(HHT_CustomizedProductIdentifier);
+			String set_SupplierSku = ibaUtil.getIBAValue(HHT_SupplierSku);
+			String defaultTraceCode = wtPart.getDefaultTraceCode().getDisplay();
 
-		String state = wtPart.getState().getState().getDisplay();
+			String set_Factory = ibaUtil.getIBAValue(HHT_Factory);
+			String set_Price = ibaUtil.getIBAValue(HHT_Price);
+			String set_PriceUnit = ibaUtil.getIBAValue(HHT_PriceUnit);
 
-		String HHT_ClassificationName = getClassificationdDisPlayName(HHT_ClassificationCode);
-		String HHT_ProductLineNumber = ibaUtil.getIBAValue("HHT_ProductLineNumber");
-		String HHT_ProductLineName = ibaUtil.getIBAValue("HHT_ProductLineName");
-		String HHT_ProductNumber = ibaUtil.getIBAValue("HHT_ProductNumber");
-		String HHT_Productdescription = ibaUtil.getIBAValue("HHT_Productdescription");
-		String HHT_ModelSpecification = ibaUtil.getIBAValue("HHT_ModelSpecification");
-		String HHT_CommodityName = ibaUtil.getIBAValue("HHT_CommodityName");
-		String HHT_Brand = ibaUtil.getIBAValue("HHT_Brand");
-		String HHT_Year = ibaUtil.getIBAValue("HHT_Year");
-		String HHT_Size = ibaUtil.getIBAValue("HHT_Size");
-		String HHT_FinishedSeries = ibaUtil.getIBAValue("HHT_FinishedSeries");
-		String HHT_Industry = ibaUtil.getIBAValue("HHT_Industry");
-		String HHT_ProductDevelopmentType = ibaUtil.getIBAValue("HHT_ProductDevelopmentType");
-		String HHT_CustomizedProductIdentifier = ibaUtil.getIBAValue("HHT_CustomizedProductIdentifier");
-		String HHT_SupplierSku = ibaUtil.getIBAValue("HHT_SupplierSku");
+			sapPartEntity.setPartType(PartType);
+			sapPartEntity.setHHT_Classification(set_Classification);
+			sapPartEntity.setNumber(number);
+			sapPartEntity.setName(name);
+			sapPartEntity.setHHT_Length(HHT_Length);
+			sapPartEntity.setRevision(version);
+			sapPartEntity.setUnit(unit);
+			sapPartEntity.setHHT_Bonded(set_Bonded);
+			sapPartEntity.setHHT_GrossWeight(set_GrossWeight);
+			sapPartEntity.setHHT_NetWeight(set_NetWeight);
+			sapPartEntity.setHHT_WeightUnit(set_WeightUnit);
+			sapPartEntity.setHHT_Traffic(set_Traffic);
+			sapPartEntity.setHHT_VolumeUnit(set_VolumeUnit);
+			sapPartEntity.setHHT_Length(set_Length);
+			sapPartEntity.setHHT_Width(set_Width);
+			sapPartEntity.setHHT_Height(set_Height);
+			sapPartEntity.setHHT_SizeUnits(set_SizeUnits);
+			sapPartEntity.setState(state);
+			sapPartEntity.setHHT_ClassificationCode(set_ClassificationCode);
+			sapPartEntity.setHHT_ClassificationName(set_ClassificationName);
+			sapPartEntity.setHHT_ProductLineNumber(set_ProductLineNumber);
+			sapPartEntity.setHHT_ProductLineName(set_ProductLineName);
+			sapPartEntity.setHHT_ProductLineNumber(set_ProductNumber);
+			sapPartEntity.setHHT_Productdescription(set_Productdescription);
+			sapPartEntity.setHHT_ModelSpecification(set_ModelSpecification);
+			sapPartEntity.setHHT_CommodityName(set_CommodityName);
+			sapPartEntity.setHHT_Brand(set_Brand);
+			sapPartEntity.setHHT_Year(set_Year);
+			sapPartEntity.setHHT_Size(set_Size);
+			sapPartEntity.setHHT_FinishedSeries(set_FinishedSeries);
+			sapPartEntity.setHHT_Industry(set_Industry);
+			sapPartEntity.setHHT_ProductDevelopmentType(set_ProductDevelopmentType);
+			sapPartEntity.setHHT_CustomizedProductIdentifier(set_CustomizedProductIdentifier);
+			sapPartEntity.setHHT_SupplierSku(set_SupplierSku);
 
-		String defaultTraceCode = wtPart.getDefaultTraceCode().getDisplay();
+			String DefaultTraceCode = null;
+			if ("S".equals(defaultTraceCode)) {
+				DefaultTraceCode = "0001";
+			} else {
+				DefaultTraceCode = "";
+			}
+			sapPartEntity.setDefaultTraceCode(DefaultTraceCode);
+			sapPartEntity.setHHT_Factory(set_Factory);
+			sapPartEntity.setHHT_Price(set_Price);
+			sapPartEntity.setHHT_PriceUnit(set_PriceUnit);
+			sapPartEntity.setHHT_INValue(set_INValue);
 
-		String HHT_Factory = ibaUtil.getIBAValue("HHT_Factory");
-		String HHT_Price = ibaUtil.getIBAValue("HHT_Price");
-		String HHT_PriceUnit = ibaUtil.getIBAValue("HHT_PriceUnit");
-
-		sapPartEntity.setPartType(PartType);
-		sapPartEntity.setHHT_Classification(HHT_Classification);
-		sapPartEntity.setNumber(number);
-		sapPartEntity.setName(name);
-		sapPartEntity.setHHT_Length(HHT_Length);
-		sapPartEntity.setRevision(version);
-		sapPartEntity.setUnit(unit);
-		sapPartEntity.setHHT_Bonded(HHT_Bonded);
-		sapPartEntity.setHHT_GrossWeight(HHT_GrossWeight);
-		sapPartEntity.setHHT_NetWeight(HHT_NetWeight);
-		sapPartEntity.setHHT_WeightUnit(HHT_WeightUnit);
-		sapPartEntity.setHHT_Traffic(HHT_Traffic);
-		sapPartEntity.setHHT_VolumeUnit(HHT_VolumeUnit);
-		sapPartEntity.setHHT_Length(HHT_Length);
-		sapPartEntity.setHHT_Width(HHT_Width);
-		sapPartEntity.setHHT_Height(HHT_Height);
-		sapPartEntity.setHHT_SizeUnits(HHT_SizeUnits);
-		sapPartEntity.setState(state);
-		sapPartEntity.setHHT_ClassificationCode(HHT_ClassificationCode);
-		sapPartEntity.setHHT_ClassificationName(HHT_ClassificationName);
-		sapPartEntity.setHHT_ProductLineNumber(HHT_ProductLineNumber);
-		sapPartEntity.setHHT_ProductLineName(HHT_ProductLineName);
-		sapPartEntity.setHHT_ProductLineNumber(HHT_ProductNumber);
-		sapPartEntity.setHHT_Productdescription(HHT_Productdescription);
-		sapPartEntity.setHHT_ModelSpecification(HHT_ModelSpecification);
-		sapPartEntity.setHHT_CommodityName(HHT_CommodityName);
-		sapPartEntity.setHHT_Brand(HHT_Brand);
-		sapPartEntity.setHHT_Year(HHT_Year);
-		sapPartEntity.setHHT_Size(HHT_Size);
-		sapPartEntity.setHHT_FinishedSeries(HHT_FinishedSeries);
-		sapPartEntity.setHHT_Industry(HHT_Industry);
-		sapPartEntity.setHHT_ProductDevelopmentType(HHT_ProductDevelopmentType);
-		sapPartEntity.setHHT_CustomizedProductIdentifier(HHT_CustomizedProductIdentifier);
-		sapPartEntity.setHHT_SupplierSku(HHT_SupplierSku);
-
-		String setDefaultTraceCode = null;
-		if ("S".equals(defaultTraceCode)) {
-			setDefaultTraceCode = "0001";
+			Gson gson = new Gson();
+			String json = gson.toJson(sapPartEntity);
+			System.out.println(json);
+			resultJson = sendPartSAP(json);
+			System.out.println(resultJson);
+		} catch (WTException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		sapPartEntity.setDefaultTraceCode(setDefaultTraceCode);
-		sapPartEntity.setHHT_Factory(HHT_Factory);
-		sapPartEntity.setHHT_Price(HHT_Price);
-		sapPartEntity.setHHT_PriceUnit(HHT_PriceUnit);
-		sapPartEntity.setHHT_INValue(HHT_INValue);
-
-		Gson gson = new Gson();
-		String json = gson.toJson(sapPartEntity);
-		System.out.println(json);
-
-		return null;
+		return resultJson;
 	}
 
 	/**
@@ -137,10 +177,11 @@ public class SendSAPService {
 	 */
 	private static String getClassificationdDisPlayName(String classificationCode) throws Exception {
 
+		String namenameSpaceSpace = SAPConfig.getConfig("classificationNamespace");
+
 		String SelectQuery = "SELECT value \r\n" + "FROM LWCLOCALIZABLEPROPERTYVALUE\r\n" + "WHERE ida3b4 IN\r\n"
-				+ "  (\r\n"
-				+ "	  SELECT ida2a2 FROM LWCStructEnumAttTemplate WHERE name= ?  AND NAMESPACE = 'MechParts'\r\n"
-				+ "  )";
+				+ "  (\r\n" + "	  SELECT ida2a2 FROM LWCStructEnumAttTemplate WHERE name= ?  AND NAMESPACE = '"
+				+ namenameSpaceSpace + "'\r\n" + "  )";
 
 		WTConnection con = CommUtil.getWTConnection();
 		PreparedStatement statement = con.prepareStatement(SelectQuery);

@@ -23,6 +23,7 @@ public class SendPartSAPProcessor extends DefaultObjectFormProcessor {
 		FormResult formresult = null;
 
 		try {
+			System.out.println("手动发送sap");
 			PartSenderHelper.sendPartsSAP2(ref);
 		} catch (Exception e) {
 			formresult = new FormResult(FormProcessingStatus.FAILURE);
