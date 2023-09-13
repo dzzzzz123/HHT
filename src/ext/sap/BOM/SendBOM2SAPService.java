@@ -25,9 +25,9 @@ public class SendBOM2SAPService {
 	public static void SendBOM2SAP(BOMEntity bom) {
 		Result result = Result.success(bom);
 		String str = result.toString();
-		String httpResult = SendBOM2SAPUseUrl(str);
+//		String httpResult = SendBOM2SAPUseUrl(str);
 		System.out.println(str);
-		System.out.println("httpResult" + httpResult);
+//		System.out.println("httpResult" + httpResult);
 	}
 
 	@Bean

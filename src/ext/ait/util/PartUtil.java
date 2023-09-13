@@ -408,71 +408,6 @@ public class PartUtil {
 	}
 
 	/**
-	 * 获取替代料的关联关系
-	 * 
-	 * @param WTPartUsageLink
-	 * @return List<WTPartSubstituteLink>
-	 * @throws WTException
-	 */
-	public static List<WTPartSubstituteLink> getSubstitutePartsLink(WTPartUsageLink useagelink) throws WTException {
-		if (useagelink == null) {
-			return null;
-		}
-		List<WTPartSubstituteLink> list = new ArrayList<WTPartSubstituteLink>();
-		long linkid = PersistenceHelper.getObjectIdentifier(useagelink).getId();
-		int[] index = { 0 };
-		QuerySpec qs = new QuerySpec(WTPartSubstituteLink.class);
-		qs.appendWhere(
-				new SearchCondition(WTPartSubstituteLink.class, "roleAObjectRef.key.id", SearchCondition.EQUAL, linkid),
-				index);
-		QueryResult qr = PersistenceHelper.manager.find((StatementSpec) qs);
-		while (qr.hasMoreElements()) {
-			WTPartSubstituteLink sLink = (WTPartSubstituteLink) qr.nextElement();
-			list.add(sLink);
-		}
-		return list;
-	}
-
-	/**
-	 * 获取替代料
-	 * 
-	 * @param WTPartUsageLink
-	 * @return List<WTPart>
-	 * @throws WTException
-	 */
-	public static List<WTPart> getSubstituteParts(WTPartUsageLink useagelink) throws WTException {
-		List<WTPart> list = new ArrayList<WTPart>();
-		List<WTPartSubstituteLink> wtPartSubstituteLinks = getSubstitutePartsLink(useagelink);
-		for (WTPartSubstituteLink wtPartSubstituteLink : wtPartSubstituteLinks) {
-			WTPartMaster partmast = wtPartSubstituteLink.getSubstitutes();
-			WTPart part = getWTPartByNumber(partmast.getNumber());
-			list.add(part);
-		}
-		return list;
-	}
-
-	/**
-	 * 获取替代料的编号，用 | 隔开
-	 * 
-	 * @param WTPartUsageLink
-	 * @return String
-	 * @throws WTException
-	 */
-	public static String getSubstitutePart(WTPartUsageLink useagelink) throws WTException {
-		String nums = "";
-		List<WTPart> wtParts = getSubstituteParts(useagelink);
-		for (WTPart wtPart : wtParts) {
-			String s = wtPart.getNumber();
-			if (nums == "") {
-				nums = s;
-			} else {
-				nums = nums + "|" + s;
-			}
-		}
-		return nums;
-	}
-
-	/**
 	 * 根据部件获取全局替代料的关联关系
 	 * 
 	 * @param WTPart
@@ -958,21 +893,6 @@ public class PartUtil {
 				}
 			}
 		}
-	}
-
-	/**
-	 * 获取部件的单位
-	 * 
-	 * @param WTPart
-	 * @return String
-	 * @throws WTException
-	 */
-	public static String getUnit(WTPart part) {
-		if (part == null) {
-			return "";
-		}
-		String defaultUnit = part.getDefaultUnit().toString().toUpperCase();
-		return defaultUnit;
 	}
 
 	/**

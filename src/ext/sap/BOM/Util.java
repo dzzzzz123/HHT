@@ -7,12 +7,16 @@ import java.util.List;
 import java.util.Set;
 
 import ext.ait.util.PartUtil;
+import ext.ait.util.PropertiesUtil;
 import ext.ait.util.VersionUtil;
 import wt.part.WTPart;
-import wt.part.WTPartAlternateLink;
+import wt.part.WTPartMaster;
+import wt.part.WTPartSubstituteLink;
 import wt.part.WTPartUsageLink;
 
 public class Util {
+	private static PropertiesUtil properties = PropertiesUtil.getInstance("config.properties");
+
 	/**
 	 * 校验部件是否为bom
 	 * 
@@ -34,11 +38,12 @@ public class Util {
 		List<BOMBodyEntity> list = new ArrayList<>();
 		List<WTPart> partList = PartUtil.getBomByPart(wtPart);
 		for (WTPart part : partList) {
+			SendBOM2SAP.sendListBOM2SAP(part);
 			BOMBodyEntity entity = new BOMBodyEntity();
 			entity.setName(part.getName());
 			entity.setNumber(part.getNumber());
 			entity.setVersion(VersionUtil.getVersion(part));
-			entity.setUnit(PartUtil.getUnit(part));
+			entity.setUnit(part.getDefaultUnit().toString());
 			WTPartUsageLink link = PartUtil.getLinkByPart(wtPart, part);
 			entity.setQuantity(link.getQuantity().toString());
 			entity.setReferenceDesignatorRange(PartUtil.getPartUsesOccurrence(link));
@@ -60,11 +65,31 @@ public class Util {
 		return set.contains(state) ? "1" : "2";
 	}
 
+	/**
+	 * 获取部件的替代料信息并放到实体类中
+	 * 
+	 * @param WTPart wtPart
+	 * @return List<SubstituteEntity>
+	 */
 	public static List<SubstituteEntity> getAlternates(WTPart wtPart) {
-		List<SubstituteEntity> list = new ArrayList<>();
-		List<WTPartAlternateLink> linkList = PartUtil.getWTPartAlternateLinks(wtPart);
-		for (WTPartAlternateLink link : linkList) {
 
+		List<SubstituteEntity> list = new ArrayList<>();
+		List<WTPartSubstituteLink> linkList = PartUtil.getWTPartSubstituteLinks(wtPart);
+		for (WTPartSubstituteLink link : linkList) {
+			SubstituteEntity substituteEntity = new SubstituteEntity();
+			WTPartMaster master = (WTPartMaster) link.getRoleBObject();
+			WTPart substitutePart = PartUtil.getWTPartByNumber(master.getNumber());
+			substituteEntity.setNumber(substitutePart.getNumber());
+			substituteEntity.setUnit(substitutePart.getDefaultUnit().toString());
+			substituteEntity.setQuantity(link.getQuantity().toString());
+			String HHT_Priority = properties.getStr(link, "iba.trans.HHT_Priority");
+			String HHT_Strategies = properties.getStr(link, "iba.trans.HHT_Strategies");
+			String HHT_UsagePossibility = properties.getStr(link, "iba.trans.HHT_UsagePossibility");
+			String HHT_MatchGroup = properties.getStr(link, "iba.trans.HHT_MatchGroup");
+			substituteEntity.setHHT_Priority(HHT_Priority);
+			substituteEntity.setHHT_Strategies(HHT_Strategies);
+			substituteEntity.setHHT_UsagePossibility(HHT_UsagePossibility);
+			substituteEntity.setHHT_MatchGroup(HHT_MatchGroup);
 		}
 		return list;
 	}

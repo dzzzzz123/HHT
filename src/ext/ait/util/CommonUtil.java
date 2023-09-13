@@ -31,11 +31,13 @@ import wt.inf.container.OrgContainer;
 import wt.inf.container.WTContainer;
 import wt.inf.container.WTContainerRef;
 import wt.log4j.LogR;
+import wt.method.MethodContext;
 import wt.org.OrganizationServicesHelper;
 import wt.org.WTGroup;
 import wt.org.WTPrincipal;
 import wt.org.WTUser;
 import wt.pds.StatementSpec;
+import wt.pom.WTConnection;
 import wt.query.QueryException;
 import wt.query.QuerySpec;
 import wt.query.SearchCondition;
@@ -420,6 +422,18 @@ public class CommonUtil {
 			e.printStackTrace();
 		}
 		return map;
+	}
+
+	/**
+	 * 连接Windchill数据库来运行自定义sql
+	 * 
+	 * @return WTConnection 数据库连接
+	 * @throws Exception
+	 */
+	public static WTConnection getWTConnection() throws Exception {
+		MethodContext methodcontext = MethodContext.getContext();
+		WTConnection wtconnection = (WTConnection) methodcontext.getConnection();
+		return wtconnection;
 	}
 
 }

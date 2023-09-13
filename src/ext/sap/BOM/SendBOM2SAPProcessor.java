@@ -27,7 +27,7 @@ public class SendBOM2SAPProcessor extends DefaultObjectFormProcessor {
 		FormResult formResult = null;
 
 		try {
-			SendBOM2SAP.sendBOM2SAPSingle(ref);
+			SendBOM2SAP.sendListBOM2SAP(ref);
 		} catch (Exception e) {
 			formResult = new FormResult(FormProcessingStatus.FAILURE);
 			formResult.addFeedbackMessage(new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(), null,

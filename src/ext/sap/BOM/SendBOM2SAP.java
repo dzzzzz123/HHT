@@ -24,7 +24,7 @@ public class SendBOM2SAP extends StandardManager {
 	 * 
 	 * @param WTObject obj
 	 */
-	public static void sendBOM2SAPSingle(WTObject obj) {
+	public static void sendListBOM2SAP(WTObject obj) {
 		List<WTPart> list = processWTPartList(obj);
 		List<WTPart> listFiltered = filterBOM(list);
 		listFiltered.stream().map(SendBOM2SAP::getBOMEntity).forEach(SendBOM2SAPService::SendBOM2SAP);
