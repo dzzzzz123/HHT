@@ -75,8 +75,6 @@ public class Util {
 	 * @return List<SubstituteEntity>
 	 */
 	public static List<SubstituteEntity> getAlternates(WTPartUsageLink usageLink, WTPart wtPart) {
-		System.out.println(usageLink.getPersistInfo().getObjectIdentifier().getId());
-		System.out.println(wtPart.getPersistInfo().getObjectIdentifier().getId());
 		List<SubstituteEntity> list = new ArrayList<>();
 		List<WTPartSubstituteLink> linkList = PartUtil.getWTPartSubstituteLinks(usageLink);
 
