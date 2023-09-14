@@ -438,24 +438,31 @@ public class PartUtil {
 	}
 
 	/**
-	 * 根据部件获取局部替代料的关联关系
+	 * 根据部件于获取局部替代料的关联关系
 	 * 
 	 * @param WTPart part
 	 * @return List<WTPartSubstituteLink>
 	 */
-	public static List<WTPartSubstituteLink> getWTPartSubstituteLinks(WTPart part) {
-		if (part == null) {
+	public static List<WTPartSubstituteLink> getWTPartSubstituteLinks(WTPartUsageLink usageLink) {
+		if (usageLink == null) {
 			return null;
 		}
 		List<WTPartSubstituteLink> list = new ArrayList<WTPartSubstituteLink>();
-		List<WTPartUsageLink> usageLinklist = PartUtil.getLinksByPart(part);
-		for (WTPartUsageLink wtPartUsageLink : usageLinklist) {
-			try {
-				QueryResult qr = WTPartHelper.service.getSubstitutesWTPartMasters(wtPartUsageLink);
-				list.add((WTPartSubstituteLink) qr.nextElement());
-			} catch (WTException e) {
-				e.printStackTrace();
+		long masterId = PersistenceHelper.getObjectIdentifier(usageLink).getId();
+		int[] index = { 0 };
+		try {
+			QuerySpec qs = new QuerySpec(WTPartSubstituteLink.class);
+			qs.appendWhere(new SearchCondition(WTPartSubstituteLink.class, "roleAObjectRef.key.id",
+					SearchCondition.EQUAL, masterId), index);
+			QueryResult qr = PersistenceHelper.manager.find((StatementSpec) qs);
+			while (qr.hasMoreElements()) {
+				WTPartSubstituteLink sLink = (WTPartSubstituteLink) qr.nextElement();
+				list.add(sLink);
 			}
+		} catch (QueryException e) {
+			e.printStackTrace();
+		} catch (WTException e) {
+			e.printStackTrace();
 		}
 		return list;
 	}
@@ -637,6 +644,7 @@ public class PartUtil {
 	 * @return List<WTPartUsageLink>
 	 */
 	public static List<WTPartUsageLink> getLinksByPart(WTPart fatherPart) {
+		System.out.println("getNumber" + fatherPart.getNumber());
 		List<WTPartUsageLink> list = new ArrayList<WTPartUsageLink>();
 		try {
 			QueryResult qr = WTPartHelper.service.getUsesWTPartMasters(fatherPart);
@@ -647,6 +655,7 @@ public class PartUtil {
 		} catch (WTException e) {
 			e.printStackTrace();
 		}
+		System.out.println("listsize" + list.size());
 		return list;
 	}
 

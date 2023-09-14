@@ -43,10 +43,13 @@ public class Util {
 			entity.setName(part.getName());
 			entity.setNumber(part.getNumber());
 			entity.setVersion(VersionUtil.getVersion(part));
-			entity.setUnit(part.getDefaultUnit().toString());
+			entity.setUnit(part.getDefaultUnit().getDisplay());
 			WTPartUsageLink link = PartUtil.getLinkByPart(wtPart, part);
-			entity.setQuantity(link.getQuantity().toString());
+			entity.setQuantity(String.valueOf(link.getQuantity().getAmount()));
 			entity.setReferenceDesignatorRange(PartUtil.getPartUsesOccurrence(link));
+			List<SubstituteEntity> substituteList = getAlternates(link, part);
+			entity.setSubstitute(substituteList);
+			list.add(entity);
 		}
 		return list;
 	}
@@ -71,17 +74,19 @@ public class Util {
 	 * @param WTPart wtPart
 	 * @return List<SubstituteEntity>
 	 */
-	public static List<SubstituteEntity> getAlternates(WTPart wtPart) {
-
+	public static List<SubstituteEntity> getAlternates(WTPartUsageLink usageLink, WTPart wtPart) {
+		System.out.println(usageLink.getPersistInfo().getObjectIdentifier().getId());
+		System.out.println(wtPart.getPersistInfo().getObjectIdentifier().getId());
 		List<SubstituteEntity> list = new ArrayList<>();
-		List<WTPartSubstituteLink> linkList = PartUtil.getWTPartSubstituteLinks(wtPart);
+		List<WTPartSubstituteLink> linkList = PartUtil.getWTPartSubstituteLinks(usageLink);
+
 		for (WTPartSubstituteLink link : linkList) {
 			SubstituteEntity substituteEntity = new SubstituteEntity();
 			WTPartMaster master = (WTPartMaster) link.getRoleBObject();
 			WTPart substitutePart = PartUtil.getWTPartByNumber(master.getNumber());
 			substituteEntity.setNumber(substitutePart.getNumber());
-			substituteEntity.setUnit(substitutePart.getDefaultUnit().toString());
-			substituteEntity.setQuantity(link.getQuantity().toString());
+			substituteEntity.setUnit(substitutePart.getDefaultUnit().getDisplay());
+			substituteEntity.setQuantity(String.valueOf(link.getQuantity().getAmount()));
 			String HHT_Priority = properties.getStr(link, "iba.trans.HHT_Priority");
 			String HHT_Strategies = properties.getStr(link, "iba.trans.HHT_Strategies");
 			String HHT_UsagePossibility = properties.getStr(link, "iba.trans.HHT_UsagePossibility");
@@ -90,6 +95,7 @@ public class Util {
 			substituteEntity.setHHT_Strategies(HHT_Strategies);
 			substituteEntity.setHHT_UsagePossibility(HHT_UsagePossibility);
 			substituteEntity.setHHT_MatchGroup(HHT_MatchGroup);
+			list.add(substituteEntity);
 		}
 		return list;
 	}

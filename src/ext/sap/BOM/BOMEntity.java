@@ -7,21 +7,23 @@ public class BOMEntity {
 	private String Name;
 	private String Version;
 	private String Factory;
+	private String ECNNumber;
 	private String Stlan;
-	private List<BOMBodyEntity> body;
+	private List<BOMBodyEntity> BOMBody;
 
 	public BOMEntity() {
 	}
 
-	public BOMEntity(String number, String name, String version, String factory, String stlan,
-			List<BOMBodyEntity> body) {
+	public BOMEntity(String number, String name, String version, String factory, String eCNNumber, String stlan,
+			List<BOMBodyEntity> bOMBody) {
 		super();
 		Number = number;
 		Name = name;
 		Version = version;
 		Factory = factory;
+		ECNNumber = eCNNumber;
 		Stlan = stlan;
-		this.body = body;
+		BOMBody = bOMBody;
 	}
 
 	public String getNumber() {
@@ -56,14 +58,6 @@ public class BOMEntity {
 		Factory = factory;
 	}
 
-	public List<BOMBodyEntity> getBody() {
-		return body;
-	}
-
-	public void setBody(List<BOMBodyEntity> body) {
-		this.body = body;
-	}
-
 	public String getStlan() {
 		return Stlan;
 	}
@@ -72,10 +66,26 @@ public class BOMEntity {
 		Stlan = stlan;
 	}
 
+	public String getECNNumber() {
+		return ECNNumber;
+	}
+
+	public void setECNNumber(String eCNNumber) {
+		ECNNumber = eCNNumber;
+	}
+
+	public List<BOMBodyEntity> getBOMBody() {
+		return BOMBody;
+	}
+
+	public void setBOMBody(List<BOMBodyEntity> bOMBody) {
+		BOMBody = bOMBody;
+	}
+
 	@Override
 	public String toString() {
 		return "BOMEntity [Number=" + Number + ", Name=" + Name + ", Version=" + Version + ", Factory=" + Factory
-				+ ", Stlan=" + Stlan + ", body=" + body.toString() + "]";
+				+ ", ECNNumber=" + ECNNumber + ", Stlan=" + Stlan + ", BOMBody=" + BOMBody.toString() + "]";
 	}
 
 }

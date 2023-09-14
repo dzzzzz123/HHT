@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.ptc.windchill.enterprise.change2.commands.RelatedChangesQueryCommands;
+
 import ext.ait.util.VersionUtil;
 import wt.change2.ChangeException2;
 import wt.change2.ChangeHelper2;
 import wt.change2.WTChangeOrder2;
 import wt.fc.QueryResult;
 import wt.fc.WTObject;
+import wt.fc.collections.WTCollection;
 import wt.maturity.MaturityHelper;
 import wt.maturity.PromotionNotice;
 import wt.part.WTPart;
@@ -94,8 +97,22 @@ public class SendBOM2SAP extends StandardManager {
 		bom.setNumber(part.getNumber());
 		bom.setName(part.getName());
 		bom.setVersion(VersionUtil.getVersion(part));
+		bom.setFactory(part.getViewName());
+		String ECNnum = "";
+		try {
+			WTCollection conllection = RelatedChangesQueryCommands.getRelatedResultingChangeNotices(part);
+			for (Object object : conllection) {
+				if (object instanceof WTChangeOrder2) {
+					WTChangeOrder2 wtChangeOrder2 = (WTChangeOrder2) object;
+					ECNnum += wtChangeOrder2.getNumber();
+				}
+			}
+		} catch (WTException e) {
+			e.printStackTrace();
+		}
+		bom.setECNNumber(ECNnum);
 		bom.setStlan(stlan);
-		bom.setBody(body);
+		bom.setBOMBody(body);
 		return bom;
 	}
 }

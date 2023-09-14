@@ -32,6 +32,7 @@ public class SendBOM2SAPProcessor extends DefaultObjectFormProcessor {
 			formResult = new FormResult(FormProcessingStatus.FAILURE);
 			formResult.addFeedbackMessage(new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(), null,
 					null, new String[] { "设置失败！", e.getMessage() }));
+			e.printStackTrace();
 			return formResult;
 		}
 
