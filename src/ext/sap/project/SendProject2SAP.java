@@ -1,5 +1,6 @@
 package ext.sap.project;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,7 +84,12 @@ public class SendProject2SAP extends StandardManager {
 		projectEntity.setProjectCategory(project.getCategory().getDisplay());
 		projectEntity.setProjectOwner(project.getOwner().getName());
 		projectEntity.setProjectCreateStamp(project.getCreateTimestamp().toString());
-		projectEntity.setProjectEndStamp(project.getEstimatedEndDate().toString());
+		Timestamp endTime = project.getEstimatedEndDate();
+		if (endTime == null) {
+			projectEntity.setProjectEndStamp("无结束日期");
+		} else {
+			projectEntity.setProjectEndStamp(endTime.toString());
+		}
 		projectEntity.setFactoryCode(project.getBusinessUnit());
 		projectEntity.setDeleteFlag(properties.getStr(project, "iba.internal.deleteFlag"));
 		projectEntity.setProjectDescription(project.getDescription());

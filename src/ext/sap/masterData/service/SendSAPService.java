@@ -10,14 +10,15 @@ import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
 
-import ext.ait.util.CommUtil;
 import ext.ait.util.IBAUtil;
-import ext.ait.util.PartUtil;
+import ext.ait.util.PersistenceUtil;
 import ext.sap.masterData.config.SAPConfig;
 import ext.sap.masterData.entity.SendSAPPartEntity;
+import wt.method.MethodContext;
 import wt.part.WTPart;
 import wt.pom.WTConnection;
 import wt.util.WTException;
@@ -75,8 +76,11 @@ public class SendSAPService {
 			String name = wtPart.getName();
 			String set_LongtDescription = ibaUtil.getIBAValue(HHT_LongtDescription);
 
-			String version = PartUtil.getVersion(wtPart);
-			String unit = PartUtil.getUnit(wtPart);
+			String version_1 = wtPart.getVersionInfo().getIdentifier().getValue();
+			String value_2 = wtPart.getIterationInfo().getIdentifier().getValue();
+			String version = new StringBuffer().append(version_1).append(".").append(value_2).toString();
+
+			String unit = getUnit(wtPart);
 
 			boolean set_Bonded = ibaUtil.getBooleanValueByName(HHT_Bonded).isValue();
 			String set_GrossWeight = ibaUtil.getIBAValue(HHT_GrossWeight);
@@ -183,7 +187,8 @@ public class SendSAPService {
 				+ "  (\r\n" + "	  SELECT ida2a2 FROM LWCStructEnumAttTemplate WHERE name= ?  AND NAMESPACE = '"
 				+ namenameSpaceSpace + "'\r\n" + "  )";
 
-		WTConnection con = CommUtil.getWTConnection();
+		MethodContext methodcontext = MethodContext.getContext();
+		WTConnection con = (WTConnection) methodcontext.getConnection();
 		PreparedStatement statement = con.prepareStatement(SelectQuery);
 		// 设置参数值
 		statement.setString(1, classificationCode);
@@ -293,6 +298,46 @@ public class SendSAPService {
 			}
 		}
 
+	}
+
+	/**
+	 * 获取部件的单位
+	 * 
+	 * @param WTPart
+	 * @return String
+	 * @throws WTException
+	 */
+	public static String getUnit(WTPart part) throws WTException {
+
+		if (part == null) {
+			return "";
+		}
+		String defaultUnit = part.getDefaultUnit().toString().toUpperCase();// 默认单位
+		IBAUtil ibautil = new IBAUtil(part);
+		String jldw = ibautil.getIBAValue("net.haige.jldw");// 计量单位
+		String P_UNIT = ibautil.getIBAValue("net.haige.P_UNIT");// 结构件单位
+		String typeName = PersistenceUtil.getTypeName(part);
+		if (StringUtils.equalsIgnoreCase(typeName, "com.ptc.ElectricalPart")) {// 电子元器件
+			if (StringUtils.isNotBlank(jldw)) {
+				return jldw.toUpperCase();
+			} else {
+				return defaultUnit;
+			}
+		} else if (StringUtils.equalsIgnoreCase(typeName, "Part")
+				|| StringUtils.equalsIgnoreCase(typeName, "wt.part.WTPart")) {
+			if (StringUtils.isNotBlank(P_UNIT)) {
+				return P_UNIT.toUpperCase();
+			} else {
+				return defaultUnit;
+			}
+		}
+		if (StringUtils.isNotBlank(jldw)) {
+			return jldw.toUpperCase();
+		} else if (StringUtils.isNotBlank(P_UNIT)) {
+			return P_UNIT.toUpperCase();
+		} else {
+			return defaultUnit;
+		}
 	}
 
 }
