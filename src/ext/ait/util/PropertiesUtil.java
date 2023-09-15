@@ -2,7 +2,14 @@ package ext.ait.util;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.logging.log4j.Logger;
@@ -69,7 +76,7 @@ public class PropertiesUtil {
 	}
 
 	// 读取properties文件中对应的value值
-	public String getStr(String key) {
+	public String getValueByKey(String key) {
 		loadProperties(); // 在每次调用 getStr 时重新加载
 		String strinfo = properties.getProperty(key);
 		if (strinfo != null) {
@@ -81,8 +88,8 @@ public class PropertiesUtil {
 
 	// 读取properties文件中对应的value值
 	// 并直接获取对应对象的IBA属性对应值
-	public String getStr(IBAHolder ibaHolder, String key) {
-		String IBAKey = getStr(key);
+	public String getValueByKey(IBAHolder ibaHolder, String key) {
+		String IBAKey = getValueByKey(key);
 		String IBAValue = "";
 		try {
 			IBAUtil ibaUtil = new IBAUtil(ibaHolder);
@@ -91,5 +98,52 @@ public class PropertiesUtil {
 			e.printStackTrace();
 		}
 		return IBAValue;
+	}
+
+	/**
+	 * 获取properties文件中所有的key/value所对应的map
+	 * 
+	 * @return Map<String, String>
+	 */
+	public Map<String, String> getAll() {
+		loadProperties(); // 在每次调用 getStr 时重新加载
+		Map<String, String> map = new HashMap<>();
+
+		for (String key : properties.stringPropertyNames()) {
+			String value = properties.getProperty(key);
+			value = value.trim();
+			map.put(key, value);
+		}
+		return map;
+	}
+
+	/**
+	 * 将map中的key/value值写入properties文件中
+	 * 
+	 * @param map 写入properties文件值
+	 * @return int 修改的条数：判断是否修改正确
+	 */
+	public int writeAll(Map<String, String> map) {
+		loadProperties(); // 在每次调用 getStr 时重新加载
+		int affectedRows = 0;
+
+		// 保存到与加载时相同的文件
+		String propertiefile = callingClass.getResource(configFileName).getFile();
+
+		try (OutputStream outputStream = new FileOutputStream(propertiefile)) {
+			Writer writer = new OutputStreamWriter(outputStream, "UTF-8");
+			// 使用map中的值修改现有属性
+			for (String key : map.keySet()) {
+				properties.setProperty(key, map.get(key));
+				affectedRows++;
+			}
+
+			// 将已修改的属性存储回文件
+			properties.store(writer, null);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return affectedRows;
 	}
 }

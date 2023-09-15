@@ -31,7 +31,7 @@ public class SendBOM2SAPService {
 	}
 
 	public static String SendBOM2SAPUseUrl(String param) {
-		String url = properties.getStr("sap.url");
+		String url = properties.getValueByKey("sap.url");
 
 		// 自定义请求头
 		RestTemplate restTemplate = new RestTemplate();

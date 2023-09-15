@@ -85,10 +85,10 @@ public class Util {
 			substituteEntity.setNumber(substitutePart.getNumber());
 			substituteEntity.setUnit(substitutePart.getDefaultUnit().getDisplay());
 			substituteEntity.setQuantity(String.valueOf(link.getQuantity().getAmount()));
-			String HHT_Priority = properties.getStr(link, "iba.internal.HHT_Priority");
-			String HHT_Strategies = properties.getStr(link, "iba.internal.HHT_Strategies");
-			String HHT_UsagePossibility = properties.getStr(link, "iba.internal.HHT_UsagePossibility");
-			String HHT_MatchGroup = properties.getStr(link, "iba.internal.HHT_MatchGroup");
+			String HHT_Priority = properties.getValueByKey(link, "iba.internal.HHT_Priority");
+			String HHT_Strategies = properties.getValueByKey(link, "iba.internal.HHT_Strategies");
+			String HHT_UsagePossibility = properties.getValueByKey(link, "iba.internal.HHT_UsagePossibility");
+			String HHT_MatchGroup = properties.getValueByKey(link, "iba.internal.HHT_MatchGroup");
 			substituteEntity.setHHT_Priority(HHT_Priority);
 			substituteEntity.setHHT_Strategies(HHT_Strategies);
 			substituteEntity.setHHT_UsagePossibility(HHT_UsagePossibility);

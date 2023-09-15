@@ -91,7 +91,7 @@ public class SendProject2SAP extends StandardManager {
 			projectEntity.setProjectEndStamp(endTime.toString());
 		}
 		projectEntity.setFactoryCode(project.getBusinessUnit());
-		projectEntity.setDeleteFlag(properties.getStr(project, "iba.internal.deleteFlag"));
+		projectEntity.setDeleteFlag(properties.getValueByKey(project, "iba.internal.deleteFlag"));
 		projectEntity.setProjectDescription(project.getDescription());
 		projectEntity.setFinishFlag(project.getContainerTeamManagedInfo().getState().getDisplay());
 		return projectEntity;

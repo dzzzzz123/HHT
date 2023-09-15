@@ -1,11 +1,11 @@
 package ext.sap.CostCenter;
 
 import java.io.BufferedReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,9 +15,11 @@ import org.springframework.web.servlet.mvc.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ext.ait.util.PropertiesUtil;
 import ext.ait.util.Result;
 
 public class CostCenterServlet implements Controller {
+	private static PropertiesUtil pUtil = PropertiesUtil.getInstance("customEnum.properties");
 
 	@Override
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -36,19 +38,24 @@ public class CostCenterServlet implements Controller {
 		ObjectMapper objectMapper = new ObjectMapper();
 		CostCenterEntity[] costCenterEntities = objectMapper.readValue(jsonData, CostCenterEntity[].class);
 		List<CostCenterEntity> costCenterEntityList = Arrays.asList(costCenterEntities);
+		// 写入接收到的数据到properties文件中
+		writeToProperties(costCenterEntityList);
 
-		String jsonOutput = objectMapper.writeValueAsString(costCenterEntityList);
-
-		// 将JSON写入文件
-		try (FileWriter fileWriter = new FileWriter("costCenter.json")) {
-			fileWriter.write(jsonOutput);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		PrintWriter out = response.getWriter();
 		out.print(Result.success().toString());
 		out.close();
 		return null;
+	}
+
+	private void writeToProperties(List<CostCenterEntity> list) {
+		Map<String, String> map = new HashMap<>();
+		list.forEach(costCenter -> {
+			String key = costCenter.getInternalName();
+			String value = costCenter.getDisplayName() + "/" + costCenter.getFactoryCode();
+			map.put(key, value);
+		});
+		int result = pUtil.writeAll(map);
+		System.out.println("result" + result);
 	}
 
 }

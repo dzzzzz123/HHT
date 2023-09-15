@@ -57,7 +57,7 @@ public class SAPResultTableBuilder extends AbstractComponentBuilder {
 		SourceChildPartConfig.setLabel("集成时间");
 		tableConfig.addComponent(SourceChildPartConfig);
 
-		return null;
+		return tableConfig;
 	}
 
 }
