@@ -308,10 +308,8 @@ public class PartUtil {
 	 * 
 	 * @param WTPart
 	 * @param String
-	 * @return boolean
-	 * @throws Exception
 	 */
-	public static boolean changePartNumber(WTPart part, String newPartNumber) throws Exception {
+	public static void changePartNumber(WTPart part, String newPartNumber) {
 		try {
 			part = (WTPart) PersistenceHelper.manager.refresh(part);
 			Identified identified = (Identified) part.getMaster();
@@ -319,10 +317,8 @@ public class PartUtil {
 			partIdentity.setNumber(newPartNumber);
 			identified = wt.fc.IdentityHelper.service.changeIdentity(identified, partIdentity);
 			part = (WTPart) PersistenceHelper.manager.refresh(part);
-			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw e;
 		}
 	}
 
@@ -331,10 +327,8 @@ public class PartUtil {
 	 * 
 	 * @param WTPart
 	 * @param String
-	 * @return WTPart
-	 * @throws WTException
 	 */
-	public static WTPart changePartName(WTPart part, String newName) throws WTException {
+	public static void changePartName(WTPart part, String newName) {
 		try {
 			part = (WTPart) PersistenceHelper.manager.refresh(part);
 			Identified identified = (Identified) part.getMaster();
@@ -342,10 +336,8 @@ public class PartUtil {
 			partIdentity.setName(newName);
 			identified = wt.fc.IdentityHelper.service.changeIdentity(identified, partIdentity);
 			part = (WTPart) PersistenceHelper.manager.refresh(part);
-			return part;
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new WTException(e.getMessage());
 		}
 	}
 
