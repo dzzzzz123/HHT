@@ -9,14 +9,15 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.logging.log4j.Logger;
 
 import wt.iba.value.IBAHolder;
 import wt.log4j.LogR;
-import wt.util.WTException;
 
 public class PropertiesUtil {
 
@@ -36,18 +37,17 @@ public class PropertiesUtil {
 		loadProperties();
 	}
 
-	// 单例
+	// 单例?
+	// 其实也不完全算是单例，只是为了保证每次调用方法时都是新的对象
 	public static PropertiesUtil getInstance(String configFileName) {
-		if (instance == null) {
-			// 使用 Thread.currentThread().getStackTrace() 获取调用者的类
-			Class<?> callingClass = getCallingClass();
-			instance = new PropertiesUtil(callingClass, configFileName);
-		}
+		Class<?> callingClass = getCallingClass();
+		instance = new PropertiesUtil(callingClass, configFileName);
 		return instance;
 	}
 
 	// 获取调用当前方法的方法的class
 	private static Class<?> getCallingClass() {
+		// 使用 Thread.currentThread().getStackTrace() 获取调用者的类
 		StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 		try {
 			if (stackTrace.length >= 4) {
@@ -82,7 +82,6 @@ public class PropertiesUtil {
 		if (strinfo != null) {
 			strinfo = strinfo.trim();
 		}
-		LOGGER.info("----->得到config文件中的[" + key + ":" + strinfo + "]");
 		return strinfo;
 	}
 
@@ -93,8 +92,14 @@ public class PropertiesUtil {
 		String IBAValue = "";
 		try {
 			IBAUtil ibaUtil = new IBAUtil(ibaHolder);
-			IBAValue = ibaUtil.getIBAValue(IBAKey);
-		} catch (WTException e) {
+			Hashtable hashtable = ibaUtil.getAllIBAValues();
+			Set set = hashtable.keySet();
+			if (set.contains(IBAKey)) {
+				IBAValue = ibaUtil.getIBAValue(IBAKey);
+			} else {
+				IBAValue = "";
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return IBAValue;

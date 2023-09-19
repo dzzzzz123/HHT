@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.ptc.windchill.enterprise.change2.commands.RelatedChangesQueryCommands;
 
+import ext.ait.util.ClassificationUtil;
 import ext.ait.util.VersionUtil;
 import wt.change2.ChangeException2;
 import wt.change2.ChangeHelper2;
@@ -91,6 +92,8 @@ public class SendBOM2SAP extends StandardManager {
 	 * @return BOMEntity
 	 */
 	public static BOMEntity getBOMEntity(WTPart part) {
+		String classification = ClassificationUtil.getClassificationFullPathByPart(part);
+		System.out.println("classification" + classification);
 		BOMEntity bom = new BOMEntity();
 		String stlan = Util.getStlan(part);
 		List<BOMBodyEntity> body = Util.getBodyEntitiesByBOM(part);

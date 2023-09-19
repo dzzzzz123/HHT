@@ -32,7 +32,7 @@ public class SendBOM2SAPService {
 
 	public static String SendBOM2SAPUseUrl(String param) {
 		String url = properties.getValueByKey("sap.url");
-
+		System.out.println("url" + url);
 		// 自定义请求头
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.getMessageConverters().set(1, new StringHttpMessageConverter(Charset.forName("utf-8")));

@@ -33,14 +33,14 @@ public class ChangeNameProcessor extends DefaultObjectFormProcessor {
 		} catch (Exception e) {
 			formResult = new FormResult(FormProcessingStatus.FAILURE);
 			formResult.addFeedbackMessage(new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(), null,
-					null, new String[] { "设置失败！", e.getMessage() }));
+					null, new String[] { "部件名称设置失败！", e.getMessage() }));
 			e.printStackTrace();
 			return formResult;
 		}
 
 		formResult = new FormResult(FormProcessingStatus.SUCCESS);
 		formResult.addFeedbackMessage(new FeedbackMessage(FeedbackType.SUCCESS, SessionHelper.getLocale(), null, null,
-				new String[] { "设置成功！" }));
+				new String[] { "部件名称设置成功！" }));
 		return formResult;
 	}
 

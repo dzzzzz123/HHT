@@ -32,7 +32,7 @@ import wt.util.WTException;
 
 public class ClassificationUtil {
 
-	private static String CLASSIFICATIONROOT = "零部件库名称";
+	private static String CLASSIFICATIONROOT = "05_成品";
 
 	/**
 	 * @param part 根据part对象得到据体part分类路径

@@ -1,9 +1,11 @@
 package ext.ait.util;
 
+import java.rmi.RemoteException;
 import java.util.HashMap;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.ptc.core.meta.common.impl.TypeIdentifierUtilityHelper;
 import com.ptc.core.meta.type.mgmt.common.TypeDefinitionDefaultView;
 import com.ptc.core.meta.type.mgmt.server.impl.WTTypeDefinition;
 import com.ptc.netmarkets.model.NmOid;
@@ -53,7 +55,7 @@ import wt.vc.wip.Workable;
 public class PersistenceUtil {
 
 	/**
-	 * @description 得到对象的自定义/内部名称
+	 * @description 得到对象的自定义/显示名称？
 	 * @param WTObject
 	 * @return String
 	 * @throws WTException
@@ -74,6 +76,30 @@ public class PersistenceUtil {
 			}
 		}
 		return typeDisplayName;
+	}
+
+	/**
+	 * 获取子类型 内部名称
+	 * 
+	 * @param per 持久化对象
+	 * @return String
+	 * @throws Exception
+	 */
+	public static String getSubTypeInternal(Persistable per) {
+		try {
+			String type = TypeIdentifierUtilityHelper.service.getTypeIdentifier(per).toString();
+			String[] typeArray = type.split("\\|");
+			if (typeArray.length > 0) {
+				return typeArray[typeArray.length - 1];
+			} else {
+				return "";
+			}
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		} catch (WTException e) {
+			e.printStackTrace();
+		}
+		return "";
 	}
 
 	/**
