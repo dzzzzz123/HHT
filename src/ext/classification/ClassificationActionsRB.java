@@ -26,6 +26,12 @@ public class ClassificationActionsRB extends WTListResourceBundle {
 	public static final String PRIVATE_CONSTANT_7 = "classificationWizard.changeDescription.description";
 	@RBEntry("changeDescription")
 	public static final String PRIVATE_CONSTANT_8 = "classificationWizard.changeDescription.tooltip";
-	@RBEntry("")
+	@RBEntry("update.png")
 	public static final String PRIVATE_CONSTANT_9 = "classificationWizard.changeDescription.icon";
+	@RBEntry("changeAll")
+	public static final String PRIVATE_CONSTANT_10 = "classificationWizard.changeAll.description";
+	@RBEntry("changeAll")
+	public static final String PRIVATE_CONSTANT_11 = "classificationWizard.changeAll.tooltip";
+	@RBEntry("update.png")
+	public static final String PRIVATE_CONSTANT_12 = "classificationWizard.changeAll.icon";
 }

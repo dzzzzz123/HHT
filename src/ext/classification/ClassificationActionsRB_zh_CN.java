@@ -28,4 +28,10 @@ public class ClassificationActionsRB_zh_CN extends WTListResourceBundle {
 	public static final String PRIVATE_CONSTANT_8 = "classificationWizard.changeDescription.tooltip";
 	@RBEntry("update.png")
 	public static final String PRIVATE_CONSTANT_9 = "classificationWizard.changeDescription.icon";
+	@RBEntry("更新所有")
+	public static final String PRIVATE_CONSTANT_10 = "classificationWizard.changeAll.description";
+	@RBEntry("更新所有")
+	public static final String PRIVATE_CONSTANT_11 = "classificationWizard.changeAll.tooltip";
+	@RBEntry("update.png")
+	public static final String PRIVATE_CONSTANT_12 = "classificationWizard.changeAll.icon";
 }
