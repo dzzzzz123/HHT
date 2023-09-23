@@ -1,0 +1,23 @@
+ResourceInfo.class=wt.tools.resource.StringResourceInfo
+ResourceInfo.customizable=true
+ResourceInfo.deprecated=false
+
+# Entry Format (values equal to default value are not included)
+# <key>.value=
+# <key>.comment=
+# <key>.argComment<n>=
+# <key>.constant=
+# <key>.customizable=
+# <key>.deprecated=
+
+# Entry Contents
+
+document.doc_manually_signed.title.value=手动签名
+document.doc_manually_signed.description.value=手动签名
+document.doc_manually_signed.tooltip.value=手动签名
+document.doc_manually_signed.icon.value=newdoc.gif
+document.doc_manually_signed.icon.pseudo=false
+document.doc_manually_signed.moreurlinfo.value=height=750,width=750 
+document.doc_manually_signed.moreurlinfo.pseudo=false
+
+
