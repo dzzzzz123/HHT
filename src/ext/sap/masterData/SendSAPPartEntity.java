@@ -1,17 +1,16 @@
-package ext.sap.masterData.entity;
+package ext.sap.masterData;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonGetter;
 
-public class SendSAPPartEntity implements Serializable {
+public class SendSAPPartEntity {
 
 	private String PartType;
 	private String HHT_Classification;
 	private String Number;
 	private String Name;
-	private String HHT_LongtDescription;
 	private String revision;
 	private String Unit;
-	private Boolean HHT_Bonded;
+	private String HHT_Bonded;
 	private String HHT_GrossWeight;
 	private String HHT_NetWeight;
 	private String HHT_WeightUnit;
@@ -42,16 +41,61 @@ public class SendSAPPartEntity implements Serializable {
 	private String HHT_Factory;
 	private String HHT_Price;
 	private String HHT_PriceUnit;
-	private Boolean HHT_INValue;
+	private String HHT_INValue;
 
-	public Boolean getHHT_INValue() {
-		return HHT_INValue;
+	public SendSAPPartEntity() {
 	}
 
-	public void setHHT_INValue(Boolean hHT_INValue) {
+	public SendSAPPartEntity(String partType, String hHT_Classification, String number, String name, String revision,
+			String unit, String hHT_Bonded, String hHT_GrossWeight, String hHT_NetWeight, String hHT_WeightUnit,
+			String hHT_Traffic, String hHT_VolumeUnit, String hHT_Length, String hHT_Width, String hHT_Height,
+			String hHT_SizeUnits, String state, String hHT_ClassificationCode, String hHT_ClassificationName,
+			String hHT_ProductLineNumber, String hHT_ProductLineName, String hHT_ProductNumber,
+			String hHT_Productdescription, String hHT_ModelSpecification, String hHT_CommodityName, String hHT_Brand,
+			String hHT_Year, String hHT_Size, String hHT_FinishedSeries, String hHT_Industry,
+			String hHT_ProductDevelopmentType, String hHT_CustomizedProductIdentifier, String hHT_SupplierSku,
+			String defaultTraceCode, String hHT_Factory, String hHT_Price, String hHT_PriceUnit, String hHT_INValue) {
+		PartType = partType;
+		HHT_Classification = hHT_Classification;
+		Number = number;
+		Name = name;
+		this.revision = revision;
+		Unit = unit;
+		HHT_Bonded = hHT_Bonded;
+		HHT_GrossWeight = hHT_GrossWeight;
+		HHT_NetWeight = hHT_NetWeight;
+		HHT_WeightUnit = hHT_WeightUnit;
+		HHT_Traffic = hHT_Traffic;
+		HHT_VolumeUnit = hHT_VolumeUnit;
+		HHT_Length = hHT_Length;
+		HHT_Width = hHT_Width;
+		HHT_Height = hHT_Height;
+		HHT_SizeUnits = hHT_SizeUnits;
+		this.state = state;
+		HHT_ClassificationCode = hHT_ClassificationCode;
+		HHT_ClassificationName = hHT_ClassificationName;
+		HHT_ProductLineNumber = hHT_ProductLineNumber;
+		HHT_ProductLineName = hHT_ProductLineName;
+		HHT_ProductNumber = hHT_ProductNumber;
+		HHT_Productdescription = hHT_Productdescription;
+		HHT_ModelSpecification = hHT_ModelSpecification;
+		HHT_CommodityName = hHT_CommodityName;
+		HHT_Brand = hHT_Brand;
+		HHT_Year = hHT_Year;
+		HHT_Size = hHT_Size;
+		HHT_FinishedSeries = hHT_FinishedSeries;
+		HHT_Industry = hHT_Industry;
+		HHT_ProductDevelopmentType = hHT_ProductDevelopmentType;
+		HHT_CustomizedProductIdentifier = hHT_CustomizedProductIdentifier;
+		HHT_SupplierSku = hHT_SupplierSku;
+		DefaultTraceCode = defaultTraceCode;
+		HHT_Factory = hHT_Factory;
+		HHT_Price = hHT_Price;
+		HHT_PriceUnit = hHT_PriceUnit;
 		HHT_INValue = hHT_INValue;
 	}
 
+	@JsonGetter("MTART")
 	public String getPartType() {
 		return PartType;
 	}
@@ -60,6 +104,7 @@ public class SendSAPPartEntity implements Serializable {
 		PartType = partType;
 	}
 
+	@JsonGetter("MATKL")
 	public String getHHT_Classification() {
 		return HHT_Classification;
 	}
@@ -68,6 +113,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_Classification = hHT_Classification;
 	}
 
+	@JsonGetter("MATNR")
 	public String getNumber() {
 		return Number;
 	}
@@ -76,6 +122,7 @@ public class SendSAPPartEntity implements Serializable {
 		Number = number;
 	}
 
+	@JsonGetter("MAKTX")
 	public String getName() {
 		return Name;
 	}
@@ -84,14 +131,7 @@ public class SendSAPPartEntity implements Serializable {
 		Name = name;
 	}
 
-	public String getHHT_LongtDescription() {
-		return HHT_LongtDescription;
-	}
-
-	public void setHHT_LongtDescription(String hHT_LongtDescription) {
-		HHT_LongtDescription = hHT_LongtDescription;
-	}
-
+	@JsonGetter("ZEIVR")
 	public String getRevision() {
 		return revision;
 	}
@@ -100,6 +140,7 @@ public class SendSAPPartEntity implements Serializable {
 		this.revision = revision;
 	}
 
+	@JsonGetter("MEINS")
 	public String getUnit() {
 		return Unit;
 	}
@@ -108,14 +149,16 @@ public class SendSAPPartEntity implements Serializable {
 		Unit = unit;
 	}
 
-	public Boolean getHHT_Bonded() {
+	@JsonGetter("ZZJHBS")
+	public String getHHT_Bonded() {
 		return HHT_Bonded;
 	}
 
-	public void setHHT_Bonded(Boolean hHT_Bonded) {
+	public void setHHT_Bonded(String hHT_Bonded) {
 		HHT_Bonded = hHT_Bonded;
 	}
 
+	@JsonGetter("BRGEW")
 	public String getHHT_GrossWeight() {
 		return HHT_GrossWeight;
 	}
@@ -124,6 +167,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_GrossWeight = hHT_GrossWeight;
 	}
 
+	@JsonGetter("NTGEW")
 	public String getHHT_NetWeight() {
 		return HHT_NetWeight;
 	}
@@ -132,6 +176,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_NetWeight = hHT_NetWeight;
 	}
 
+	@JsonGetter("GEWEI")
 	public String getHHT_WeightUnit() {
 		return HHT_WeightUnit;
 	}
@@ -140,6 +185,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_WeightUnit = hHT_WeightUnit;
 	}
 
+	@JsonGetter("VOLUM")
 	public String getHHT_Traffic() {
 		return HHT_Traffic;
 	}
@@ -148,6 +194,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_Traffic = hHT_Traffic;
 	}
 
+	@JsonGetter("VOLEH")
 	public String getHHT_VolumeUnit() {
 		return HHT_VolumeUnit;
 	}
@@ -156,6 +203,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_VolumeUnit = hHT_VolumeUnit;
 	}
 
+	@JsonGetter("LAENG")
 	public String getHHT_Length() {
 		return HHT_Length;
 	}
@@ -164,6 +212,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_Length = hHT_Length;
 	}
 
+	@JsonGetter("BREIT")
 	public String getHHT_Width() {
 		return HHT_Width;
 	}
@@ -172,6 +221,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_Width = hHT_Width;
 	}
 
+	@JsonGetter("HOEHE")
 	public String getHHT_Height() {
 		return HHT_Height;
 	}
@@ -180,6 +230,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_Height = hHT_Height;
 	}
 
+	@JsonGetter("MEABM")
 	public String getHHT_SizeUnits() {
 		return HHT_SizeUnits;
 	}
@@ -188,6 +239,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_SizeUnits = hHT_SizeUnits;
 	}
 
+	@JsonGetter("MSTAE")
 	public String getState() {
 		return state;
 	}
@@ -196,6 +248,7 @@ public class SendSAPPartEntity implements Serializable {
 		this.state = state;
 	}
 
+	@JsonGetter("ZZWLFLBM")
 	public String getHHT_ClassificationCode() {
 		return HHT_ClassificationCode;
 	}
@@ -204,6 +257,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_ClassificationCode = hHT_ClassificationCode;
 	}
 
+	@JsonGetter("ZZWLFLMC")
 	public String getHHT_ClassificationName() {
 		return HHT_ClassificationName;
 	}
@@ -212,6 +266,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_ClassificationName = hHT_ClassificationName;
 	}
 
+	@JsonGetter("ZZCPXBM")
 	public String getHHT_ProductLineNumber() {
 		return HHT_ProductLineNumber;
 	}
@@ -220,6 +275,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_ProductLineNumber = hHT_ProductLineNumber;
 	}
 
+	@JsonGetter("ZZCPXMC")
 	public String getHHT_ProductLineName() {
 		return HHT_ProductLineName;
 	}
@@ -228,6 +284,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_ProductLineName = hHT_ProductLineName;
 	}
 
+	@JsonGetter("ZZCPBM")
 	public String getHHT_ProductNumber() {
 		return HHT_ProductNumber;
 	}
@@ -236,6 +293,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_ProductNumber = hHT_ProductNumber;
 	}
 
+	@JsonGetter("ZZCPMS")
 	public String getHHT_Productdescription() {
 		return HHT_Productdescription;
 	}
@@ -244,6 +302,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_Productdescription = hHT_Productdescription;
 	}
 
+	@JsonGetter("ZZCPXH")
 	public String getHHT_ModelSpecification() {
 		return HHT_ModelSpecification;
 	}
@@ -252,6 +311,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_ModelSpecification = hHT_ModelSpecification;
 	}
 
+	@JsonGetter("ZZHPMC")
 	public String getHHT_CommodityName() {
 		return HHT_CommodityName;
 	}
@@ -260,6 +320,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_CommodityName = hHT_CommodityName;
 	}
 
+	@JsonGetter("ZZPP")
 	public String getHHT_Brand() {
 		return HHT_Brand;
 	}
@@ -268,6 +329,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_Brand = hHT_Brand;
 	}
 
+	@JsonGetter("ZZNF")
 	public String getHHT_Year() {
 		return HHT_Year;
 	}
@@ -276,6 +338,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_Year = hHT_Year;
 	}
 
+	@JsonGetter("ZZCC")
 	public String getHHT_Size() {
 		return HHT_Size;
 	}
@@ -284,6 +347,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_Size = hHT_Size;
 	}
 
+	@JsonGetter("ZZCPXL")
 	public String getHHT_FinishedSeries() {
 		return HHT_FinishedSeries;
 	}
@@ -292,6 +356,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_FinishedSeries = hHT_FinishedSeries;
 	}
 
+	@JsonGetter("ZZHY")
 	public String getHHT_Industry() {
 		return HHT_Industry;
 	}
@@ -300,6 +365,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_Industry = hHT_Industry;
 	}
 
+	@JsonGetter("ZZCPKFLX")
 	public String getHHT_ProductDevelopmentType() {
 		return HHT_ProductDevelopmentType;
 	}
@@ -308,6 +374,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_ProductDevelopmentType = hHT_ProductDevelopmentType;
 	}
 
+	@JsonGetter("ZZDZCPBS")
 	public String getHHT_CustomizedProductIdentifier() {
 		return HHT_CustomizedProductIdentifier;
 	}
@@ -316,6 +383,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_CustomizedProductIdentifier = hHT_CustomizedProductIdentifier;
 	}
 
+	@JsonGetter("ZZGYSHH")
 	public String getHHT_SupplierSku() {
 		return HHT_SupplierSku;
 	}
@@ -324,6 +392,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_SupplierSku = hHT_SupplierSku;
 	}
 
+	@JsonGetter("SERNP")
 	public String getDefaultTraceCode() {
 		return DefaultTraceCode;
 	}
@@ -332,6 +401,7 @@ public class SendSAPPartEntity implements Serializable {
 		DefaultTraceCode = defaultTraceCode;
 	}
 
+	@JsonGetter("ZZCD")
 	public String getHHT_Factory() {
 		return HHT_Factory;
 	}
@@ -340,6 +410,7 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_Factory = hHT_Factory;
 	}
 
+	@JsonGetter("ZZJG")
 	public String getHHT_Price() {
 		return HHT_Price;
 	}
@@ -348,12 +419,41 @@ public class SendSAPPartEntity implements Serializable {
 		HHT_Price = hHT_Price;
 	}
 
+	@JsonGetter("PEINH")
 	public String getHHT_PriceUnit() {
 		return HHT_PriceUnit;
 	}
 
 	public void setHHT_PriceUnit(String hHT_PriceUnit) {
 		HHT_PriceUnit = hHT_PriceUnit;
+	}
+
+	public String getHHT_INValue() {
+		return HHT_INValue;
+	}
+
+	public void setHHT_INValue(String hHT_INValue) {
+		HHT_INValue = hHT_INValue;
+	}
+
+	@Override
+	public String toString() {
+		return "SendSAPPartEntity [PartType=" + PartType + ", HHT_Classification=" + HHT_Classification + ", Number="
+				+ Number + ", Name=" + Name + ", revision=" + revision + ", Unit=" + Unit + ", HHT_Bonded=" + HHT_Bonded
+				+ ", HHT_GrossWeight=" + HHT_GrossWeight + ", HHT_NetWeight=" + HHT_NetWeight + ", HHT_WeightUnit="
+				+ HHT_WeightUnit + ", HHT_Traffic=" + HHT_Traffic + ", HHT_VolumeUnit=" + HHT_VolumeUnit
+				+ ", HHT_Length=" + HHT_Length + ", HHT_Width=" + HHT_Width + ", HHT_Height=" + HHT_Height
+				+ ", HHT_SizeUnits=" + HHT_SizeUnits + ", state=" + state + ", HHT_ClassificationCode="
+				+ HHT_ClassificationCode + ", HHT_ClassificationName=" + HHT_ClassificationName
+				+ ", HHT_ProductLineNumber=" + HHT_ProductLineNumber + ", HHT_ProductLineName=" + HHT_ProductLineName
+				+ ", HHT_ProductNumber=" + HHT_ProductNumber + ", HHT_Productdescription=" + HHT_Productdescription
+				+ ", HHT_ModelSpecification=" + HHT_ModelSpecification + ", HHT_CommodityName=" + HHT_CommodityName
+				+ ", HHT_Brand=" + HHT_Brand + ", HHT_Year=" + HHT_Year + ", HHT_Size=" + HHT_Size
+				+ ", HHT_FinishedSeries=" + HHT_FinishedSeries + ", HHT_Industry=" + HHT_Industry
+				+ ", HHT_ProductDevelopmentType=" + HHT_ProductDevelopmentType + ", HHT_CustomizedProductIdentifier="
+				+ HHT_CustomizedProductIdentifier + ", HHT_SupplierSku=" + HHT_SupplierSku + ", DefaultTraceCode="
+				+ DefaultTraceCode + ", HHT_Factory=" + HHT_Factory + ", HHT_Price=" + HHT_Price + ", HHT_PriceUnit="
+				+ HHT_PriceUnit + ", HHT_INValue=" + HHT_INValue + "]";
 	}
 
 }

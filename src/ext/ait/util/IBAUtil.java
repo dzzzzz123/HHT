@@ -97,6 +97,7 @@ import wt.iba.value.service.IBAValueHelper;
 import wt.iba.value.service.LoadValue;
 import wt.iba.value.service.StandardIBAValueService;
 import wt.lite.AbstractLiteObject;
+import wt.method.RemoteAccess;
 import wt.part.WTPart;
 import wt.pds.StatementSpec;
 import wt.pom.PersistenceException;
@@ -117,7 +118,7 @@ import wt.vc.wip.WorkInProgressHelper;
  * 
  * @author wide @version：2020-10-23
  */
-public class IBAUtil {
+public class IBAUtil implements RemoteAccess {
 
 	/**
 	 * @Description LOG:Logger
@@ -295,12 +296,12 @@ public class IBAUtil {
 			if (value == null && value.trim().length() == 0) {
 				value = "";
 			}
-//			AttributeDefDefaultView view = getAttributeDefinition((String)key);
-//			String keyLocal = view.getLocalizedDisplayString();
+			//			AttributeDefDefaultView view = getAttributeDefinition((String)key);
+			//			String keyLocal = view.getLocalizedDisplayString();
 			String keyLocal = getInternalDisplayName((String) key);
-//			LOGGER.debug("getAllAttrValueKeyShowLocale>>>>当前获取到的IBA key>>>" + key
-//					+ " 当前获取到的IBA keyLocal>>>keyLocal" + keyLocal
-//					+ " 当前获取到的IBA keyLocal>>>keyLocal" + value);
+			//			LOGGER.debug("getAllAttrValueKeyShowLocale>>>>当前获取到的IBA key>>>" + key
+			//					+ " 当前获取到的IBA keyLocal>>>keyLocal" + keyLocal
+			//					+ " 当前获取到的IBA keyLocal>>>keyLocal" + value);
 			map.put(keyLocal, value);
 		}
 		return map;
@@ -348,42 +349,42 @@ public class IBAUtil {
 	 * @param name String
 	 * @return Vector
 	 */
-//	public Vector getIBAValuesWithBusinessEntity(String name) {
-//		Vector vector1 = new Vector();
-//		try {
-//			if (ibaContainer.get(name) != null) {
-//				Object[] objs = (Object[]) ibaContainer.get(name);
-//				for (int i = 1; i < objs.length; i++) {
-//					AbstractValueView theValue = (AbstractValueView) objs[i];
-//					Object[] temp = new Object[2];
-//					temp[0] = IBAValueUtility
-//							.getLocalizedIBAValueDisplayString(theValue,
-//									SessionHelper.manager.getLocale());
-//					if ((theValue instanceof AbstractContextualValueDefaultView)
-//							&& ((AbstractContextualValueDefaultView) theValue)
-//									.getReferenceValueDefaultView() != null) {
-//						ReferenceValueDefaultView referencevaluedefaultview =
-//							((AbstractContextualValueDefaultView) theValue)
-//								.getReferenceValueDefaultView();
-//						ObjectIdentifier objectidentifier =
-//							((wt.iba.value.litevalue.DefaultLiteIBAReferenceable)
-//									referencevaluedefaultview
-//								.getLiteIBAReferenceable()).getObjectID();
-//						Persistable persistable = ObjectReference
-//								.newObjectReference(objectidentifier)
-//								.getObject();
-//						temp[1] = (BusinessEntity) persistable;
-//					} else {
-//						temp[1] = null;
-//					}
-//					vector1.addElement(temp);
-//				}
-//			}
-//		} catch (WTException e) {
-//			e.printStackTrace();
-//		}
-//		return vector1;
-//	}
+	//	public Vector getIBAValuesWithBusinessEntity(String name) {
+	//		Vector vector1 = new Vector();
+	//		try {
+	//			if (ibaContainer.get(name) != null) {
+	//				Object[] objs = (Object[]) ibaContainer.get(name);
+	//				for (int i = 1; i < objs.length; i++) {
+	//					AbstractValueView theValue = (AbstractValueView) objs[i];
+	//					Object[] temp = new Object[2];
+	//					temp[0] = IBAValueUtility
+	//							.getLocalizedIBAValueDisplayString(theValue,
+	//									SessionHelper.manager.getLocale());
+	//					if ((theValue instanceof AbstractContextualValueDefaultView)
+	//							&& ((AbstractContextualValueDefaultView) theValue)
+	//									.getReferenceValueDefaultView() != null) {
+	//						ReferenceValueDefaultView referencevaluedefaultview =
+	//							((AbstractContextualValueDefaultView) theValue)
+	//								.getReferenceValueDefaultView();
+	//						ObjectIdentifier objectidentifier =
+	//							((wt.iba.value.litevalue.DefaultLiteIBAReferenceable)
+	//									referencevaluedefaultview
+	//								.getLiteIBAReferenceable()).getObjectID();
+	//						Persistable persistable = ObjectReference
+	//								.newObjectReference(objectidentifier)
+	//								.getObject();
+	//						temp[1] = (BusinessEntity) persistable;
+	//					} else {
+	//						temp[1] = null;
+	//					}
+	//					vector1.addElement(temp);
+	//				}
+	//			}
+	//		} catch (WTException e) {
+	//			e.printStackTrace();
+	//		}
+	//		return vector1;
+	//	}
 
 	/**
 	 * @description getIBABusinessEntity
@@ -391,27 +392,27 @@ public class IBAUtil {
 	 * @param name String
 	 * @return BusinessEntity
 	 */
-//	public BusinessEntity getIBABusinessEntity(String name) {
-//		BusinessEntity value = null;
-//		try {
-//			if (ibaContainer.get(name) != null) {
-//				AbstractValueView theValue = (AbstractValueView) ((Object[]) ibaContainer
-//						.get(name))[1];
-//				ReferenceValueDefaultView referencevaluedefaultview =
-//					(ReferenceValueDefaultView) theValue;
-//				ObjectIdentifier objectidentifier =
-//					((wt.iba.value.litevalue.DefaultLiteIBAReferenceable)
-//							referencevaluedefaultview
-//						.getLiteIBAReferenceable()).getObjectID();
-//				Persistable persistable = ObjectReference.newObjectReference(
-//						objectidentifier).getObject();
-//				value = (BusinessEntity) persistable;
-//			}
-//		} catch (WTException e) {
-//			e.printStackTrace();
-//		}
-//		return value;
-//	}
+	//	public BusinessEntity getIBABusinessEntity(String name) {
+	//		BusinessEntity value = null;
+	//		try {
+	//			if (ibaContainer.get(name) != null) {
+	//				AbstractValueView theValue = (AbstractValueView) ((Object[]) ibaContainer
+	//						.get(name))[1];
+	//				ReferenceValueDefaultView referencevaluedefaultview =
+	//					(ReferenceValueDefaultView) theValue;
+	//				ObjectIdentifier objectidentifier =
+	//					((wt.iba.value.litevalue.DefaultLiteIBAReferenceable)
+	//							referencevaluedefaultview
+	//						.getLiteIBAReferenceable()).getObjectID();
+	//				Persistable persistable = ObjectReference.newObjectReference(
+	//						objectidentifier).getObject();
+	//				value = (BusinessEntity) persistable;
+	//			}
+	//		} catch (WTException e) {
+	//			e.printStackTrace();
+	//		}
+	//		return value;
+	//	}
 
 	/**
 	 * @description getIBABusinessEntities
@@ -656,22 +657,22 @@ public class IBAUtil {
 
 		ibaContainer.put(name, temp);
 	}
-//	public Vector a(String name) throws WTRuntimeException, WTException{
-//		Vector<URLValue> values = new Vector<>();
-//		Object[] objs = (Object[]) ibaContainer.get(name);
-//		
-//		if(objs!=null && objs.length>0) {		 
-//			objs = ArrayUtils.remove(objs, 0);
-//			for(Object obj : objs) {
-//				AbstractValueView view = (AbstractValueView) obj;
-//				URLValueDefaultView urlValuedefaultview =(URLValueDefaultView) view;				 
-//				ObjectIdentifier objectidentifier = urlValuedefaultview.getObjectID();
-//				Persistable persistable = ObjectReference.newObjectReference(objectidentifier).getObject();
-//				values.add((URLValue) persistable);	
-//			}
-//		}
-//		return values;
-//	}
+	//	public Vector a(String name) throws WTRuntimeException, WTException{
+	//		Vector<URLValue> values = new Vector<>();
+	//		Object[] objs = (Object[]) ibaContainer.get(name);
+	//		
+	//		if(objs!=null && objs.length>0) {		 
+	//			objs = ArrayUtils.remove(objs, 0);
+	//			for(Object obj : objs) {
+	//				AbstractValueView view = (AbstractValueView) obj;
+	//				URLValueDefaultView urlValuedefaultview =(URLValueDefaultView) view;				 
+	//				ObjectIdentifier objectidentifier = urlValuedefaultview.getObjectID();
+	//				Persistable persistable = ObjectReference.newObjectReference(objectidentifier).getObject();
+	//				values.add((URLValue) persistable);	
+	//			}
+	//		}
+	//		return values;
+	//	}
 
 	public void addURLValue(String name, String value, String des) throws WTException, WTPropertyVetoException {
 		Object[] obj = (Object[]) ibaContainer.get(name);
@@ -869,46 +870,46 @@ public class IBAUtil {
 	 * @return DefaultAttributeContainer
 	 * @throws WTException
 	 */
-//	private DefaultAttributeContainer suppressCSMConstraint(
-//			DefaultAttributeContainer theContainer, String s)
-//			throws WTException {
-//		ClassificationStructDefaultView defStructure = null;
-//		defStructure = getClassificationStructDefaultViewByName(s);
-//		if (defStructure != null) {
-//			// ReferenceDefView ref = defStructure.getReferenceDefView();
-//			Vector cgs = theContainer.getConstraintGroups();
-//			Vector newCgs = new Vector();
-//			// AttributeConstraint immutable = null;
-//			try {
-//				// if (VERBOSE)
-//				// LOG.info("cgs size="+cgs.size());
-//				for (int i = 0; i < cgs.size(); i++) {
-//					ConstraintGroup cg = (ConstraintGroup) cgs.elementAt(i);
-//					if (cg != null) {
-//						// LOG.info(cg.getConstraintGroupLabel());
-//						if (!cg
-//								.getConstraintGroupLabel()
-//								.equals(
-//										wt.csm.constraint.CSMConstraintFactory.
-//										CONSTRAINT_GROUP_LABEL)) {
-//							newCgs.addElement(cg);
-//						} else {
-//							// Enumeration enum = cg.getConstraints();
-//							ConstraintGroup newCg = new ConstraintGroup();
-//							newCg.setConstraintGroupLabel(cg
-//									.getConstraintGroupLabel());
-//							newCgs.addElement(newCg);
-//						}
-//					}
-//				}
-//				theContainer.setConstraintGroups(newCgs);
-//			} catch (wt.util.WTPropertyVetoException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		// end of CSM constraint removal, rjla 2000-11-17
-//		return theContainer;
-//	}
+	//	private DefaultAttributeContainer suppressCSMConstraint(
+	//			DefaultAttributeContainer theContainer, String s)
+	//			throws WTException {
+	//		ClassificationStructDefaultView defStructure = null;
+	//		defStructure = getClassificationStructDefaultViewByName(s);
+	//		if (defStructure != null) {
+	//			// ReferenceDefView ref = defStructure.getReferenceDefView();
+	//			Vector cgs = theContainer.getConstraintGroups();
+	//			Vector newCgs = new Vector();
+	//			// AttributeConstraint immutable = null;
+	//			try {
+	//				// if (VERBOSE)
+	//				// LOG.info("cgs size="+cgs.size());
+	//				for (int i = 0; i < cgs.size(); i++) {
+	//					ConstraintGroup cg = (ConstraintGroup) cgs.elementAt(i);
+	//					if (cg != null) {
+	//						// LOG.info(cg.getConstraintGroupLabel());
+	//						if (!cg
+	//								.getConstraintGroupLabel()
+	//								.equals(
+	//										wt.csm.constraint.CSMConstraintFactory.
+	//										CONSTRAINT_GROUP_LABEL)) {
+	//							newCgs.addElement(cg);
+	//						} else {
+	//							// Enumeration enum = cg.getConstraints();
+	//							ConstraintGroup newCg = new ConstraintGroup();
+	//							newCg.setConstraintGroupLabel(cg
+	//									.getConstraintGroupLabel());
+	//							newCgs.addElement(newCg);
+	//						}
+	//					}
+	//				}
+	//				theContainer.setConstraintGroups(newCgs);
+	//			} catch (wt.util.WTPropertyVetoException e) {
+	//				e.printStackTrace();
+	//			}
+	//		}
+	//		// end of CSM constraint removal, rjla 2000-11-17
+	//		return theContainer;
+	//	}
 	/**
 	 *
 	 * @description
@@ -946,46 +947,46 @@ public class IBAUtil {
 	 * @throws WTPropertyVetoException
 	 * @throws RemoteException
 	 */
-//	public IBAHolder updateAttributeContainer(IBAHolder ibaHolder)
-//			throws WTException, WTPropertyVetoException, RemoteException {
-//		if (ibaHolder.getAttributeContainer() == null){
-//			ibaHolder = IBAValueHelper.service.refreshAttributeContainer(
-//					ibaHolder, null, SessionHelper.manager.getLocale(), null);
-//		}
-//		DefaultAttributeContainer defaultattributecontainer = (DefaultAttributeContainer) ibaHolder
-//				.getAttributeContainer();
-//
-//		defaultattributecontainer = suppressCSMConstraint(
-//				defaultattributecontainer, getIBAHolderClassName(ibaHolder));
-//
-//		AttributeDefDefaultView[] theAtts = defaultattributecontainer
-//				.getAttributeDefinitions();
-//		// Delete existed iba if they aren't in the hashtable of this class
-//		for (int i = 0; i < theAtts.length; i++) {
-//			AttributeDefDefaultView theDef = theAtts[i];
-//			if (ibaContainer.get(theDef.getName()) == null) {
-//				createOrUpdateAttributeValuesInContainer(
-//						defaultattributecontainer, theDef, null);
-//			}
-//		}
-//
-//		Enumeration enum1 = ibaContainer.elements();
-//		while (enum1.hasMoreElements()) {
-//			Object[] temp = (Object[]) enum1.nextElement();
-//			AttributeDefDefaultView theDef = (AttributeDefDefaultView) temp[0];
-//			AbstractValueView abstractvalueviews[] = new AbstractValueView[temp.length - 1];
-//			for (int i = 0; i < temp.length - 1; i++) {
-//				abstractvalueviews[i] = (AbstractValueView) temp[i + 1];
-//			}
-//			createOrUpdateAttributeValuesInContainer(defaultattributecontainer,
-//					theDef, abstractvalueviews);
-//		}
-//
-//		defaultattributecontainer = removeCSMConstraint(defaultattributecontainer);
-//		ibaHolder.setAttributeContainer(defaultattributecontainer);
-//
-//		return ibaHolder;
-//	}
+	//	public IBAHolder updateAttributeContainer(IBAHolder ibaHolder)
+	//			throws WTException, WTPropertyVetoException, RemoteException {
+	//		if (ibaHolder.getAttributeContainer() == null){
+	//			ibaHolder = IBAValueHelper.service.refreshAttributeContainer(
+	//					ibaHolder, null, SessionHelper.manager.getLocale(), null);
+	//		}
+	//		DefaultAttributeContainer defaultattributecontainer = (DefaultAttributeContainer) ibaHolder
+	//				.getAttributeContainer();
+	//
+	//		defaultattributecontainer = suppressCSMConstraint(
+	//				defaultattributecontainer, getIBAHolderClassName(ibaHolder));
+	//
+	//		AttributeDefDefaultView[] theAtts = defaultattributecontainer
+	//				.getAttributeDefinitions();
+	//		// Delete existed iba if they aren't in the hashtable of this class
+	//		for (int i = 0; i < theAtts.length; i++) {
+	//			AttributeDefDefaultView theDef = theAtts[i];
+	//			if (ibaContainer.get(theDef.getName()) == null) {
+	//				createOrUpdateAttributeValuesInContainer(
+	//						defaultattributecontainer, theDef, null);
+	//			}
+	//		}
+	//
+	//		Enumeration enum1 = ibaContainer.elements();
+	//		while (enum1.hasMoreElements()) {
+	//			Object[] temp = (Object[]) enum1.nextElement();
+	//			AttributeDefDefaultView theDef = (AttributeDefDefaultView) temp[0];
+	//			AbstractValueView abstractvalueviews[] = new AbstractValueView[temp.length - 1];
+	//			for (int i = 0; i < temp.length - 1; i++) {
+	//				abstractvalueviews[i] = (AbstractValueView) temp[i + 1];
+	//			}
+	//			createOrUpdateAttributeValuesInContainer(defaultattributecontainer,
+	//					theDef, abstractvalueviews);
+	//		}
+	//
+	//		defaultattributecontainer = removeCSMConstraint(defaultattributecontainer);
+	//		ibaHolder.setAttributeContainer(defaultattributecontainer);
+	//
+	//		return ibaHolder;
+	//	}
 
 	/**
 	 * Update without checkout/checkin
@@ -1220,51 +1221,51 @@ public class IBAUtil {
 	 * @return String
 	 * @throws IBAConstraintException
 	 */
-//	public static String getClassificationStructName(IBAHolder ibaHolder)
-//			throws IBAConstraintException {
-//		String s = getIBAHolderClassName(ibaHolder);
-//		ClassificationService classificationservice1 = ClassificationHelper.service;
-//		ClassificationStructDefaultView aclassificationstructdefaultview[] = null;
-//		try {
-//			aclassificationstructdefaultview = classificationservice1
-//					.getAllClassificationStructures();
-//		} catch (RemoteException remoteexception1) {
-//			remoteexception1.printStackTrace();
-//			throw new IBAConstraintException(remoteexception1);
-//		} catch (CSMClassificationNavigationException csmclassificationnavigationexception1) {
-//			csmclassificationnavigationexception1.printStackTrace();
-//			throw new IBAConstraintException(
-//					csmclassificationnavigationexception1);
-//		} catch (WTException wtexception1) {
-//			wtexception1.printStackTrace();
-//			throw new IBAConstraintException(wtexception1);
-//		}
-//		for (int i = 0; aclassificationstructdefaultview != null
-//				&& i < aclassificationstructdefaultview.length; i++)
-//			if (s.equals(aclassificationstructdefaultview[i]
-//					.getPrimaryClassName())) {
-//				return s;
-//			}
-//
-//		try {
-//			for (Class class1 = Class.forName(s).getSuperclass(); !class1
-//					.getName().equals((wt.fc.WTObject.class).getName())
-//					&& !class1.getName().equals(
-//							(java.lang.Object.class).getName()); class1 = class1
-//					.getSuperclass()) {
-//				for (int j = 0; aclassificationstructdefaultview != null
-//						&& j < aclassificationstructdefaultview.length; j++)
-//					if (class1.getName().equals(
-//							aclassificationstructdefaultview[j]
-//									.getPrimaryClassName())) {
-//						return class1.getName();
-//					}
-//			}
-//		} catch (ClassNotFoundException classnotfoundexception) {
-//			classnotfoundexception.printStackTrace();
-//		}
-//		return null;
-//	}
+	//	public static String getClassificationStructName(IBAHolder ibaHolder)
+	//			throws IBAConstraintException {
+	//		String s = getIBAHolderClassName(ibaHolder);
+	//		ClassificationService classificationservice1 = ClassificationHelper.service;
+	//		ClassificationStructDefaultView aclassificationstructdefaultview[] = null;
+	//		try {
+	//			aclassificationstructdefaultview = classificationservice1
+	//					.getAllClassificationStructures();
+	//		} catch (RemoteException remoteexception1) {
+	//			remoteexception1.printStackTrace();
+	//			throw new IBAConstraintException(remoteexception1);
+	//		} catch (CSMClassificationNavigationException csmclassificationnavigationexception1) {
+	//			csmclassificationnavigationexception1.printStackTrace();
+	//			throw new IBAConstraintException(
+	//					csmclassificationnavigationexception1);
+	//		} catch (WTException wtexception1) {
+	//			wtexception1.printStackTrace();
+	//			throw new IBAConstraintException(wtexception1);
+	//		}
+	//		for (int i = 0; aclassificationstructdefaultview != null
+	//				&& i < aclassificationstructdefaultview.length; i++)
+	//			if (s.equals(aclassificationstructdefaultview[i]
+	//					.getPrimaryClassName())) {
+	//				return s;
+	//			}
+	//
+	//		try {
+	//			for (Class class1 = Class.forName(s).getSuperclass(); !class1
+	//					.getName().equals((wt.fc.WTObject.class).getName())
+	//					&& !class1.getName().equals(
+	//							(java.lang.Object.class).getName()); class1 = class1
+	//					.getSuperclass()) {
+	//				for (int j = 0; aclassificationstructdefaultview != null
+	//						&& j < aclassificationstructdefaultview.length; j++)
+	//					if (class1.getName().equals(
+	//							aclassificationstructdefaultview[j]
+	//									.getPrimaryClassName())) {
+	//						return class1.getName();
+	//					}
+	//			}
+	//		} catch (ClassNotFoundException classnotfoundexception) {
+	//			classnotfoundexception.printStackTrace();
+	//		}
+	//		return null;
+	//	}
 
 	/**
 	 * Please refer to the method "getIBAHolderClassName" of class
@@ -1290,50 +1291,50 @@ public class IBAUtil {
 	 * @return ClassificationStructDefaultView
 	 * @throws IBAConstraintException
 	 */
-//	private ClassificationStructDefaultView getClassificationStructDefaultViewByName(
-//			String s) throws IBAConstraintException {
-//		ClassificationService classificationservice = ClassificationHelper.service;
-//		ClassificationStructDefaultView aclassificationstructdefaultview[] = null;
-//		try {
-//			aclassificationstructdefaultview = classificationservice
-//					.getAllClassificationStructures();
-//		} catch (RemoteException remoteexception) {
-//			remoteexception.printStackTrace();
-//			throw new IBAConstraintException(remoteexception);
-//		} catch (CSMClassificationNavigationException csmclassificationnavigationexception) {
-//			csmclassificationnavigationexception.printStackTrace();
-//			throw new IBAConstraintException(
-//					csmclassificationnavigationexception);
-//		} catch (WTException wtexception) {
-//			wtexception.printStackTrace();
-//			throw new IBAConstraintException(wtexception);
-//		}
-//		for (int i = 0; aclassificationstructdefaultview != null
-//				&& i < aclassificationstructdefaultview.length; i++)
-//			if (s.equals(aclassificationstructdefaultview[i]
-//					.getPrimaryClassName())) {
-//				return aclassificationstructdefaultview[i];
-//			}
-//
-//		try {
-//			for (Class class2 = Class.forName(s).getSuperclass(); !class2
-//					.getName().equals((wt.fc.WTObject.class).getName())
-//					&& !class2.getName().equals(
-//							(java.lang.Object.class).getName()); class2 = class2
-//					.getSuperclass()) {
-//				for (int j = 0; aclassificationstructdefaultview != null
-//						&& j < aclassificationstructdefaultview.length; j++)
-//					if (class2.getName().equals(
-//							aclassificationstructdefaultview[j]
-//									.getPrimaryClassName())) {
-//						return aclassificationstructdefaultview[j];
-//					}
-//			}
-//		} catch (ClassNotFoundException classnotfoundexception) {
-//			classnotfoundexception.printStackTrace();
-//		}
-//		return null;
-//	}
+	//	private ClassificationStructDefaultView getClassificationStructDefaultViewByName(
+	//			String s) throws IBAConstraintException {
+	//		ClassificationService classificationservice = ClassificationHelper.service;
+	//		ClassificationStructDefaultView aclassificationstructdefaultview[] = null;
+	//		try {
+	//			aclassificationstructdefaultview = classificationservice
+	//					.getAllClassificationStructures();
+	//		} catch (RemoteException remoteexception) {
+	//			remoteexception.printStackTrace();
+	//			throw new IBAConstraintException(remoteexception);
+	//		} catch (CSMClassificationNavigationException csmclassificationnavigationexception) {
+	//			csmclassificationnavigationexception.printStackTrace();
+	//			throw new IBAConstraintException(
+	//					csmclassificationnavigationexception);
+	//		} catch (WTException wtexception) {
+	//			wtexception.printStackTrace();
+	//			throw new IBAConstraintException(wtexception);
+	//		}
+	//		for (int i = 0; aclassificationstructdefaultview != null
+	//				&& i < aclassificationstructdefaultview.length; i++)
+	//			if (s.equals(aclassificationstructdefaultview[i]
+	//					.getPrimaryClassName())) {
+	//				return aclassificationstructdefaultview[i];
+	//			}
+	//
+	//		try {
+	//			for (Class class2 = Class.forName(s).getSuperclass(); !class2
+	//					.getName().equals((wt.fc.WTObject.class).getName())
+	//					&& !class2.getName().equals(
+	//							(java.lang.Object.class).getName()); class2 = class2
+	//					.getSuperclass()) {
+	//				for (int j = 0; aclassificationstructdefaultview != null
+	//						&& j < aclassificationstructdefaultview.length; j++)
+	//					if (class2.getName().equals(
+	//							aclassificationstructdefaultview[j]
+	//									.getPrimaryClassName())) {
+	//						return aclassificationstructdefaultview[j];
+	//					}
+	//			}
+	//		} catch (ClassNotFoundException classnotfoundexception) {
+	//			classnotfoundexception.printStackTrace();
+	//		}
+	//		return null;
+	//	}
 
 	/**
 	 * 根据属性名称获取其软属性对象 by Wide
@@ -1891,7 +1892,7 @@ public class IBAUtil {
 			if (sd != null) {
 				StringValue sv = util.getStringValueByName(typeName);
 				if (sv != null) {
-//					LOGGER.debug("对象["+holder.toString()+"]属性["+sd.getName()+"]旧值为["+sv.getValue()+"]");
+					//					LOGGER.debug("对象["+holder.toString()+"]属性["+sd.getName()+"]旧值为["+sv.getValue()+"]");
 					if (value == null || value.trim().length() == 0) {
 						PersistenceHelper.manager.delete(sv);
 					} else {
@@ -2275,7 +2276,7 @@ public class IBAUtil {
 		AttributeDefDefaultView view = getAttributeDefinition(typeName);
 		if (view == null) {
 			LOGGER.error("属性[" + typeName + "]不存在，不设置该IBA属性");
-//			throw new Exception("属性[" + typeName + "]不存在");
+			//			throw new Exception("属性[" + typeName + "]不存在");
 			return;
 		}
 		LOGGER.debug("当前需设置的IBA内部名称为=>" + typeName + " 软属性类型为=>[" + view.getClass().getName() + "]" + " 值为=>[" + value
@@ -2380,8 +2381,8 @@ public class IBAUtil {
 			AttributeDefinitionReadView attView = tdrv.getAttributeByName(ibaName); // att1 is attribute name
 			if (attView != null) {
 				displayName = PropertyHolderHelper.getDisplayName(attView, SessionHelper.manager.getLocale());
-//				LOGGER.debug("display Name:" + displayName);
-//				LOGGER.debug("attView Name:" + attView.getName());
+				//				LOGGER.debug("display Name:" + displayName);
+				//				LOGGER.debug("attView Name:" + attView.getName());
 			}
 		}
 		return displayName;
@@ -2402,9 +2403,9 @@ public class IBAUtil {
 			com.ptc.core.meta.container.common.AttributeTypeSummary ats = pbo.getAttributeDescriptor(key);
 			value = com.ptc.core.components.util.AttributeHelper.getEnumeratedEntryDisplayValue(codeOfAccountsValue,
 					ats, locale);
-//				System.out.println(codeOfAccountsValue+"<<<<"+key+"--3------->"+value);
+			//				System.out.println(codeOfAccountsValue+"<<<<"+key+"--3------->"+value);
 		} catch (Exception e) {
-//				e.printStackTrace();
+			//				e.printStackTrace();
 		}
 		return value;
 	}

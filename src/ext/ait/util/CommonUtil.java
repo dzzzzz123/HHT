@@ -1,5 +1,7 @@
 package ext.ait.util;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
@@ -14,10 +16,6 @@ import com.ptc.core.lwc.common.view.EnumerationEntryReadView;
 import com.ptc.core.lwc.server.LWCLocalizablePropertyValue;
 import com.ptc.core.lwc.server.LWCTypeDefinition;
 import com.ptc.core.lwc.server.TypeDefinitionServiceHelper;
-import com.ptc.core.meta.common.IdentifierFactory;
-import com.ptc.core.meta.common.TypeIdentifier;
-import com.ptc.core.meta.type.mgmt.server.impl.WTTypeDefinition;
-import com.ptc.core.meta.type.mgmt.server.impl.WTTypeDefinitionMaster;
 
 import wt.enterprise.RevisionControlled;
 import wt.fc.PersistenceHelper;
@@ -32,6 +30,7 @@ import wt.inf.container.WTContainer;
 import wt.inf.container.WTContainerRef;
 import wt.log4j.LogR;
 import wt.method.MethodContext;
+import wt.method.RemoteAccess;
 import wt.org.OrganizationServicesHelper;
 import wt.org.WTGroup;
 import wt.org.WTPrincipal;
@@ -41,12 +40,10 @@ import wt.pom.WTConnection;
 import wt.query.QueryException;
 import wt.query.QuerySpec;
 import wt.query.SearchCondition;
-import wt.services.ServiceProviderHelper;
 import wt.session.SessionHelper;
-import wt.type.TypedUtilityServiceHelper;
 import wt.util.WTException;
 
-public class CommonUtil {
+public class CommonUtil implements RemoteAccess {
 
 	private static Logger LOGGER = LogR.getLogger(CommonUtil.class.getName());
 
@@ -155,58 +152,6 @@ public class CommonUtil {
 	}
 
 	/**
-	 * 通过高级查询获取文档类型的ID
-	 * 
-	 * @param name
-	 * @return
-	 * @throws WTException
-	 */
-	public static long getTypeDefinitionIdByName(String name) throws WTException {
-		long id = 0;
-		WTTypeDefinition typeDef = getTypeDefinitionByName(name);
-		if (typeDef.isLatestIteration()) {
-			id = typeDef.getPersistInfo().getObjectIdentifier().getId();
-		}
-		LOGGER.debug("###[" + id + "] isInheritedDomain --->" + typeDef.isInheritedDomain() + " ;;;isUserAttributeable "
-				+ typeDef.isUserAttributeable() + ";;;; isLatestIteration " + typeDef.isLatestIteration());
-		return id;
-	}
-
-	/**
-	 * 通过高级查询获取文档类型的对象
-	 * 
-	 * @param name
-	 * @return
-	 * @throws WTException
-	 */
-	@SuppressWarnings("deprecation")
-	public static WTTypeDefinition getTypeDefinitionByName(String name) throws WTException {
-		WTTypeDefinition type = null;
-		QuerySpec qs = new QuerySpec();
-		int typeDefine = qs.appendClassList(WTTypeDefinition.class, true);
-		int typeDefineMaster = qs.appendClassList(WTTypeDefinitionMaster.class, false);
-		qs.setAdvancedQueryEnabled(true);
-		SearchCondition typebyMaster = new SearchCondition(WTTypeDefinition.class, "masterReference.key.id",
-				WTTypeDefinitionMaster.class, "thePersistInfo.theObjectIdentifier.id");
-		qs.appendWhere(typebyMaster, new int[] { typeDefine, typeDefineMaster });
-		qs.appendAnd();
-		SearchCondition typeMasterName = new SearchCondition(WTTypeDefinitionMaster.class, "displayNameKey", "=", name);
-		qs.appendWhere(typeMasterName, typeDefineMaster);
-		QueryResult qr = PersistenceHelper.manager.find(qs);
-		while (qr.hasMoreElements()) {
-			Object[] objs = (Object[]) qr.nextElement();
-			if (objs[0] instanceof WTTypeDefinition) {
-				WTTypeDefinition typeDef = (WTTypeDefinition) objs[0];
-				if (typeDef.isLatestIteration()) {
-					type = typeDef;
-				}
-
-			}
-		}
-		return type;
-	}
-
-	/**
 	 * 通过类型的Key获取国际化的名称
 	 * 
 	 * @param key
@@ -274,27 +219,6 @@ public class CommonUtil {
 			SessionHelper.manager.setPrincipal(curUser.getName());
 		}
 		return folder;
-	}
-
-	/**
-	 * 根据对象类型和类型获取对象（暂不清楚）
-	 * 
-	 * @param queryClass
-	 * @param type
-	 * @return
-	 * @throws Exception
-	 */
-	public static QueryResult findObjectByType(Class queryClass, String type) throws Exception {
-		IdentifierFactory identifier_factory = (IdentifierFactory) ServiceProviderHelper
-				.getService(IdentifierFactory.class, "logical");
-		TypeIdentifier tid = (TypeIdentifier) identifier_factory.get(type);
-		QuerySpec qs = new QuerySpec(queryClass);
-		int idx = qs.addClassList(queryClass, true);
-		SearchCondition sc = TypedUtilityServiceHelper.service.getSearchCondition(tid, true);
-		qs.appendWhere(sc, new int[] { idx });
-		System.out.println(queryClass);
-		QueryResult qr = PersistenceHelper.manager.find((StatementSpec) qs);
-		return qr;
 	}
 
 	/**
@@ -434,6 +358,49 @@ public class CommonUtil {
 		MethodContext methodcontext = MethodContext.getContext();
 		WTConnection wtconnection = (WTConnection) methodcontext.getConnection();
 		return wtconnection;
+	}
+
+	/**
+	 * 执行查询的SQL语句并返回结果
+	 * SQL示例：SELECT WTPARTNUMBER FROM WTPARTMASTER WHERE WTPARTNUMBER LIKE ?
+	 * @param sql SQL语句
+	 * @param params 参数集
+	 * @return ResultSet 返回结果集
+	 */
+	public static ResultSet excuteSelect(String sql, String... params) {
+		try {
+			WTConnection connection = CommonUtil.getWTConnection();
+			PreparedStatement statement = connection.prepareStatement(sql);
+			for (int i = 0; i < params.length; i++) {
+				statement.setString(i + 1, params[i]);
+			}
+			ResultSet resultSet = statement.executeQuery();
+			return resultSet;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * 执行更新的SQL语句并返回被更新的条数
+	 * SQL示例：UPDATE WTPARTMASTER SET WTPARTNUMBER = ? WHERE IDA2A2 = ?
+	 * @param sql SQL语句
+	 * @param params 参数集
+	 * @return int 数据库表被影响的行数
+	 */
+	public static int excuteUpdate(String sql, String... params) {
+		try {
+			WTConnection connection = CommonUtil.getWTConnection();
+			PreparedStatement statement = connection.prepareStatement(sql);
+			for (int i = 0; i < params.length; i++) {
+				statement.setString(i + 1, params[i]);
+			}
+			return statement.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 
 }

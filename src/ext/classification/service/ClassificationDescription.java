@@ -15,7 +15,8 @@ public class ClassificationDescription {
 
 	private static PropertiesUtil pUtil = PropertiesUtil.getInstance("descriptionConfig.properties");
 
-	public static void process(WTPart part) {
+	public static String process(WTPart part) {
+		String result = "";
 		String classInternalName = pUtil.getValueByKey(part, "iba.internal.HHT_Classification");
 		String partten = pUtil.getValueByKey(classInternalName);
 		String newDescription = Util.processPartten(partten, part);
@@ -28,5 +29,6 @@ public class ClassificationDescription {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return result;
 	}
 }

@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import wt.enterprise.RevisionControlled;
 import wt.fc.QueryResult;
 import wt.log4j.LogR;
+import wt.method.RemoteAccess;
 import wt.part.WTPartMaster;
 import wt.util.WTException;
 import wt.vc.Iterated;
@@ -14,7 +15,7 @@ import wt.vc.config.ConfigHelper;
 import wt.vc.config.ConfigSpec;
 import wt.vc.config.LatestConfigSpec;
 
-public class VersionUtil {
+public class VersionUtil implements RemoteAccess {
 
 	private static Logger LOGGER = LogR.getLogger(CommonUtil.class.getName());
 

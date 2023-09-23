@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import com.ptc.windchill.enterprise.change2.commands.RelatedChangesQueryCommands;
 
-import ext.ait.util.ClassificationUtil;
 import ext.ait.util.VersionUtil;
 import wt.change2.ChangeException2;
 import wt.change2.ChangeHelper2;
@@ -21,6 +20,7 @@ import wt.services.StandardManager;
 import wt.util.WTException;
 
 public class SendBOM2SAP extends StandardManager {
+
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -30,7 +30,9 @@ public class SendBOM2SAP extends StandardManager {
 	 */
 	public static void sendListBOM2SAP(WTObject obj) {
 		List<WTPart> list = processWTPartList(obj);
-		List<WTPart> listFiltered = filterBOM(list);
+		// 过滤部件，判断是否为BOM
+		List<WTPart> listFiltered = list.stream().filter(Util::verifyBOM).collect(Collectors.toList());
+		// 从部件中获取BOM实体类，并逐个发送给SAP
 		listFiltered.stream().map(SendBOM2SAP::getBOMEntity).forEach(SendBOM2SAPService::SendBOM2SAP);
 	}
 
@@ -76,24 +78,12 @@ public class SendBOM2SAP extends StandardManager {
 	}
 
 	/**
-	 * 筛选出BOM来进行处理
-	 * 
-	 * @param List<WTPart> list
-	 * @return List<WTPart>
-	 */
-	private static List<WTPart> filterBOM(List<WTPart> list) {
-		return list.stream().filter(Util::verifyBOM).collect(Collectors.toList());
-	}
-
-	/**
 	 * 从WTPart中获取需要的数据并组装为BOMEntity
 	 * 
 	 * @param WTPart part
 	 * @return BOMEntity
 	 */
 	public static BOMEntity getBOMEntity(WTPart part) {
-		String classification = ClassificationUtil.getClassificationFullPathByPart(part);
-		System.out.println("classification" + classification);
 		BOMEntity bom = new BOMEntity();
 		String stlan = Util.getStlan(part);
 		List<BOMBodyEntity> body = Util.getBodyEntitiesByBOM(part);

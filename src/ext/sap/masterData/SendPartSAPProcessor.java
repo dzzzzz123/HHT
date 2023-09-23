@@ -1,4 +1,4 @@
-package ext.sap.masterData.mvc;
+package ext.sap.masterData;
 
 import java.util.List;
 
@@ -10,7 +10,6 @@ import com.ptc.core.components.util.FeedbackMessage;
 import com.ptc.core.ui.resources.FeedbackType;
 import com.ptc.netmarkets.util.beans.NmCommandBean;
 
-import ext.sap.masterData.PartSenderHelper;
 import wt.fc.WTObject;
 import wt.session.SessionHelper;
 import wt.util.WTException;
@@ -23,18 +22,18 @@ public class SendPartSAPProcessor extends DefaultObjectFormProcessor {
 		FormResult formresult = null;
 
 		try {
-			System.out.println("手动发送sap");
-			PartSenderHelper.sendPartsSAP2(ref);
+			PartSenderHelper.sendParts2SAP(ref);
 		} catch (Exception e) {
 			formresult = new FormResult(FormProcessingStatus.FAILURE);
 			formresult.addFeedbackMessage(new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(), null,
-					null, new String[] { "设置失败！", e.getMessage() }));
+					null, new String[] { "发送失败！", e.getMessage() }));
+			e.printStackTrace();
 			return formresult;
 		}
 
 		formresult = new FormResult(FormProcessingStatus.SUCCESS);
 		formresult.addFeedbackMessage(new FeedbackMessage(FeedbackType.SUCCESS, SessionHelper.getLocale(), null, null,
-				new String[] { "设置成功！" }));
+				new String[] { "发送成功！" }));
 		return formresult;
 	}
 

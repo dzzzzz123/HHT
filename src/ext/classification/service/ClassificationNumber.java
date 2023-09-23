@@ -18,18 +18,32 @@ public class ClassificationNumber {
 	 * 
 	 * @param part
 	 */
-	public static void process(WTPart part) {
+	public static String process(WTPart part) {
+		String result = "";
+		String prefix = pUtil.getValueByKey("temporary.number.prefix");
 		String typeName = PersistenceUtil.getSubTypeInternal(part);
 		String endItemTypeName = pUtil.getValueByKey("subType.internal.endItem");
+		String oldNumber = part.getNumber();
 		String newNumber = "";
 		if (typeName.equals(endItemTypeName)) {
 			newNumber = getNewNumberForEndItem(part);
+			// 对部件输出的新编码进行校验
+			if (newNumber.length() != 15) {
+				newNumber = oldNumber;
+				result = oldNumber + " 所生成的新编码不符合规范为 " + newNumber;
+			}
 		} else {
-			newNumber = getNewNumberForPart(part);
+			// 对成品部件原编码的前缀进行判断
+			if (oldNumber.startsWith(prefix)) {
+				newNumber = getNewNumberForPart(part);
+			} else {
+				result = oldNumber + " 的前缀不符合规范";
+			}
 		}
-		System.out.println("oldNumber" + part.getNumber());
+		System.out.println("oldNumber" + oldNumber);
 		System.out.println("newNumber" + newNumber);
 		PartUtil.changePartNumber(part, newNumber);
+		return result;
 	}
 
 	/**
@@ -39,7 +53,6 @@ public class ClassificationNumber {
 	 * @return String 新编号
 	 */
 	private static String getNewNumberForEndItem(WTPart part) {
-		String oldNumber = part.getNumber();
 		String classInternalName = pUtil.getValueByKey(part, "iba.internal.HHT_Classification");
 		String Brand = pUtil.getValueByKey(part, "iba.internal.Brand");
 		String Producer = pUtil.getValueByKey(part, "iba.internal.Producer");
@@ -52,13 +65,8 @@ public class ClassificationNumber {
 			}
 			ProductModel = paddedProductModel.toString();
 		}
-		String newNumber = classInternalName + Brand + Producer + ProductModel;
 
-		if (newNumber.length() == 15) {
-			return newNumber;
-		}
-		System.out.println("生成的新编码不符合规范为：" + newNumber);
-		return oldNumber;
+		return classInternalName + Brand + Producer + ProductModel;
 	}
 
 	/**
@@ -69,30 +77,22 @@ public class ClassificationNumber {
 	 */
 	private static String getNewNumberForPart(WTPart part) {
 		String classInternalName = pUtil.getValueByKey(part, "iba.internal.HHT_Classification");
-		String prefix = pUtil.getValueByKey("temporary.number.prefix");
 		String suffix = pUtil.getValueByKey("formal.number.suffix");
-		String oldNumber = part.getNumber();
 		int serialNumber = 0;
 		String serialNumberStr = "";
-		String newNumber = "";
-		if (oldNumber.startsWith(prefix)) {
-			List<String> numbers = Util.getPartNumbersByPrefix(classInternalName);
+		List<String> numbers = Util.getPartNumbersByPrefix(classInternalName);
 
-			// 流示获取最大值
-			Optional<String> maxSerialNumber = numbers.stream().max(String::compareTo);
+		// 流示获取最大值
+		Optional<String> maxSerialNumber = numbers.stream().max(String::compareTo);
 
-			if (maxSerialNumber.isPresent()) {
-				serialNumber = Integer.parseInt(maxSerialNumber.get()) + 1;
-			} else {
-				serialNumber = 1;
-			}
-			// 添加前导0000
-			DecimalFormat decimalFormat = new DecimalFormat("0000");
-			serialNumberStr = decimalFormat.format(serialNumber);
-			newNumber = classInternalName + serialNumberStr + suffix;
-			return newNumber;
+		if (maxSerialNumber.isPresent()) {
+			serialNumber = Integer.parseInt(maxSerialNumber.get()) + 1;
 		} else {
-			return oldNumber;
+			serialNumber = 1;
 		}
+		// 添加前导0000
+		DecimalFormat decimalFormat = new DecimalFormat("0000");
+		serialNumberStr = decimalFormat.format(serialNumber);
+		return classInternalName + serialNumberStr + suffix;
 	}
 }

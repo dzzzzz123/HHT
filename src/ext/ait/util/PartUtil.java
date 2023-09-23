@@ -3,7 +3,6 @@ package ext.ait.util;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.TreeMap;
 import java.util.Vector;
 import java.util.regex.Matcher;
@@ -11,9 +10,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.ptc.core.lwc.server.LWCLocalizablePropertyValue;
-import com.ptc.core.lwc.server.LWCPropertyDefinition;
-import com.ptc.core.lwc.server.LWCStructEnumAttTemplate;
 import com.ptc.netmarkets.model.NmOid;
 import com.ptc.windchill.cadx.common.WTPartUtilities;
 import com.ptc.windchill.enterprise.workflow.WorkflowCommands;
@@ -41,6 +37,7 @@ import wt.lifecycle.LifeCycleState;
 import wt.lifecycle.State;
 import wt.maturity.MaturityHelper;
 import wt.maturity.PromotionNotice;
+import wt.method.RemoteAccess;
 import wt.org.WTPrincipal;
 import wt.part.PartType;
 import wt.part.PartUsesOccurrence;
@@ -56,15 +53,10 @@ import wt.part.WTPartStandardConfigSpec;
 import wt.part.WTPartSubstituteLink;
 import wt.part.WTPartUsageLink;
 import wt.pds.StatementSpec;
-import wt.query.CompositeWhereExpression;
-import wt.query.ConstantExpression;
-import wt.query.LogicalOperator;
 import wt.query.QueryException;
 import wt.query.QuerySpec;
 import wt.query.SearchCondition;
-import wt.query.TableColumn;
 import wt.session.SessionHelper;
-import wt.session.SessionServerHelper;
 import wt.util.WTException;
 import wt.util.WTPropertyVetoException;
 import wt.vc.VersionControlHelper;
@@ -78,7 +70,7 @@ import wt.vc.wip.Workable;
 import wt.workflow.engine.WfProcess;
 import wt.workflow.engine.WfState;
 
-public class PartUtil {
+public class PartUtil implements RemoteAccess {
 
 	/**
 	 * 取得所有子部件的关联
@@ -152,156 +144,6 @@ public class PartUtil {
 		}
 		return list;
 	}
-
-	/**
-	 * 获取分类的全名称/路径（暂不清楚）
-	 * 
-	 * @param LWCStructEnumAttTemplate
-	 * @return String
-	 */
-	public static String getClassificationFullPath(LWCStructEnumAttTemplate structureEum) {
-		String part = "";
-		try {
-			QuerySpec queryspec = new QuerySpec();
-			int a = queryspec.appendClassList(LWCLocalizablePropertyValue.class, true);
-			int b = queryspec.appendClassList(LWCPropertyDefinition.class, false);
-			queryspec.setAdvancedQueryEnabled(true);
-			String[] aliases = new String[2];
-			aliases[0] = queryspec.getFromClause().getAliasAt(a);
-			aliases[1] = queryspec.getFromClause().getAliasAt(b);
-			TableColumn tc1 = new TableColumn(aliases[0], "IDA3C4");
-			TableColumn tc3 = new TableColumn(aliases[0], "CLASSNAMEKEYC4");
-			TableColumn tc11 = new TableColumn(aliases[0], "IDA3B4");
-			TableColumn tc33 = new TableColumn(aliases[0], "CLASSNAMEKEYB4");
-			TableColumn tc2 = new TableColumn(aliases[0], "IDA3A4");
-			TableColumn tc4 = new TableColumn(aliases[1], "IDA2A2");
-			TableColumn tc5 = new TableColumn(aliases[1], "NAME");
-			TableColumn tc6 = new TableColumn(aliases[1], "CLASSNAME");
-			CompositeWhereExpression andExpression = new CompositeWhereExpression(LogicalOperator.AND);
-			andExpression.append(new SearchCondition(tc1, "=",
-					new ConstantExpression(structureEum.getPersistInfo().getObjectIdentifier().getId())));
-			andExpression.append(new SearchCondition(tc3, "=",
-					new ConstantExpression("com.ptc.core.lwc.server.LWCStructEnumAttTemplate")));
-			andExpression.append(new SearchCondition(tc11, "=",
-					new ConstantExpression(structureEum.getPersistInfo().getObjectIdentifier().getId())));
-			andExpression.append(new SearchCondition(tc33, "=",
-					new ConstantExpression("com.ptc.core.lwc.server.LWCStructEnumAttTemplate")));
-			andExpression.append(new SearchCondition(tc2, "=", tc4));
-			andExpression.append(new SearchCondition(tc5, "=", new ConstantExpression("displayName")));
-			andExpression.append(new SearchCondition(tc6, "=",
-					new ConstantExpression("com.ptc.core.lwc.server.LWCAbstractAttributeTemplate")));
-			queryspec.appendWhere(andExpression, null);
-
-			QueryResult qr = PersistenceHelper.manager.find(queryspec);
-			if (qr.hasMoreElements()) {
-				Object[] nextElement = (Object[]) qr.nextElement();
-				LWCLocalizablePropertyValue value = (LWCLocalizablePropertyValue) nextElement[0];
-				String zh = value.getValue(Locale.CHINA);
-				if (StringUtils.isBlank(zh)) {
-					return value.getValue();
-				} else {
-					return zh;
-				}
-			}
-		} catch (QueryException e) {
-			e.printStackTrace();
-		} catch (WTException e) {
-			e.printStackTrace();
-		}
-		return part;
-
-	}
-
-	/**
-	 * 获取分类的父节点（暂不清楚）
-	 * 
-	 * @param LWCStructEnumAttTemplate
-	 * @return LWCStructEnumAttTemplate
-	 * @throws WTException
-	 */
-	@SuppressWarnings("deprecation")
-	public static LWCStructEnumAttTemplate getParentStructEnum(LWCStructEnumAttTemplate structureEum)
-			throws WTException {
-		boolean setAccessEnforced = SessionServerHelper.manager.setAccessEnforced(false);
-		LWCStructEnumAttTemplate result = null;
-		try {
-			if (structureEum.getParent() == null) {
-				return result;
-			}
-			QuerySpec queryspec = new QuerySpec(LWCStructEnumAttTemplate.class);
-			queryspec.appendWhere(new SearchCondition(LWCStructEnumAttTemplate.class,
-					"thePersistInfo.theObjectIdentifier", "=", structureEum.getParentReference().getObjectId()),
-					new int[] {});
-			QueryResult qr = PersistenceServerHelper.manager.query(queryspec);
-			if (qr.hasMoreElements()) {
-				result = (LWCStructEnumAttTemplate) qr.nextElement();
-			}
-		} catch (WTException e) {
-			throw e;
-		} finally {
-			SessionServerHelper.manager.setAccessEnforced(setAccessEnforced);
-		}
-		return result;
-	}
-
-	/**
-	 * 根据名称获取分类节点
-	 * 
-	 * @param String
-	 * @return LWCStructEnumAttTemplate
-	 * @throws WTException
-	 */
-	public static LWCStructEnumAttTemplate getStructureEum(String name) throws WTException {
-		LWCStructEnumAttTemplate result = null;
-		QuerySpec queryspec = new QuerySpec(LWCStructEnumAttTemplate.class);
-		queryspec.appendWhere(
-				new SearchCondition(LWCStructEnumAttTemplate.class, LWCStructEnumAttTemplate.NAME, "=", name),
-				new int[] {});
-//		queryspec.appendAnd();
-//		queryspec.appendWhere(new SearchCondition(LWCStructEnumAttTemplate.class,
-//				LWCStructEnumAttTemplate.DELETED_ID, SearchCondition.IS_NULL), new int[] {});
-		QueryResult qr = PersistenceServerHelper.manager.query(queryspec);
-		while (qr.hasMoreElements()) {
-			result = (LWCStructEnumAttTemplate) qr.nextElement();
-			if (StringUtils.isBlank(result.getDeletedId())) {
-				return result;
-			}
-		}
-		return result;
-	}
-
-//	这里缺少ClassificationNodeDefaultView类，在12.x后windchill不再让直接调用这个包
-//	public static String getClassificationFullPath(ClassificationNodeDefaultView clsNodeDftView) {
-//		if (clsNodeDftView == null)
-//			return "";
-//		String clsPath = clsNodeDftView.getName();
-//		ClassificationNodeDefaultView tmpNodeView = null;
-//		try {
-//			for (tmpNodeView = ClassificationHelper.service.getParentNodeDefaultView(
-//					clsNodeDftView); tmpNodeView != null; tmpNodeView = ClassificationHelper.service
-//							.getParentNodeDefaultView(tmpNodeView))
-//				clsPath = tmpNodeView.getName() + "/" + clsPath;
-//		} catch (RemoteException rme2) {
-//			rme2.printStackTrace();
-//		} catch (CSMClassificationNavigationException csmclassificationnavigationexception2) {
-//			csmclassificationnavigationexception2.printStackTrace();
-//		} catch (WTException wte2) {
-//			wte2.printStackTrace();
-//		}
-//		return clsPath;
-//	}
-//
-//	public static ClassificationNodeDefaultView getClassificationNodeDefaultView(ClassificationNode clsNode) {
-//		ClassificationNodeDefaultView cndv = null;
-//		if (clsNode != null) {
-//			try {
-//				cndv = ClassificationObjectsFactory.newClassificationNodeDefaultView(clsNode);
-//			} catch (CSMClassificationNavigationException cne) {
-//				return null;
-//			}
-//		}
-//		return cndv;
-//	}
 
 	/**
 	 * 修改部件编号

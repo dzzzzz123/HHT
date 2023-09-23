@@ -18,8 +18,9 @@ import org.apache.logging.log4j.Logger;
 
 import wt.iba.value.IBAHolder;
 import wt.log4j.LogR;
+import wt.method.RemoteAccess;
 
-public class PropertiesUtil {
+public class PropertiesUtil implements RemoteAccess {
 
 	// 单例模式实例对象
 	private static PropertiesUtil instance;

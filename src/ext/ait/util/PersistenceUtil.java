@@ -28,6 +28,7 @@ import wt.folder.Folder;
 import wt.httpgw.URLFactory;
 import wt.lifecycle.LifeCycleManaged;
 import wt.lifecycle.State;
+import wt.method.RemoteAccess;
 import wt.org.WTPrincipal;
 import wt.org.WTPrincipalReference;
 import wt.part.WTPart;
@@ -52,7 +53,7 @@ import wt.vc.wip.CheckoutLink;
 import wt.vc.wip.WorkInProgressHelper;
 import wt.vc.wip.Workable;
 
-public class PersistenceUtil {
+public class PersistenceUtil implements RemoteAccess {
 
 	/**
 	 * @description 得到对象的自定义/显示名称？

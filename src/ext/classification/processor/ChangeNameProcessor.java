@@ -1,5 +1,6 @@
 package ext.classification.processor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ptc.core.components.beans.ObjectBean;
@@ -27,9 +28,12 @@ public class ChangeNameProcessor extends DefaultObjectFormProcessor {
 	public FormResult doOperation(NmCommandBean arg0, List<ObjectBean> arg1) throws WTException {
 		WTObject ref = (WTObject) arg0.getPrimaryOid().getRef();
 		FormResult formResult = null;
+		List<String> errorList = new ArrayList<>();
+		String[] result = new String[] {};
 
 		try {
-			ClassificationHelper.classify(ref, "name");
+			errorList = ClassificationHelper.classify(ref, "name");
+			result = errorList.toArray(new String[errorList.size()]);
 		} catch (Exception e) {
 			formResult = new FormResult(FormProcessingStatus.FAILURE);
 			formResult.addFeedbackMessage(new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(), null,
@@ -38,10 +42,16 @@ public class ChangeNameProcessor extends DefaultObjectFormProcessor {
 			return formResult;
 		}
 
-		formResult = new FormResult(FormProcessingStatus.SUCCESS);
-		formResult.addFeedbackMessage(new FeedbackMessage(FeedbackType.SUCCESS, SessionHelper.getLocale(), null, null,
-				new String[] { "部件名称设置成功！" }));
-		return formResult;
+		if (result.length > 0) {
+			formResult = new FormResult(FormProcessingStatus.FAILURE);
+			formResult.addFeedbackMessage(
+					new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(), null, null, result));
+			return formResult;
+		} else {
+			formResult = new FormResult(FormProcessingStatus.SUCCESS);
+			formResult.addFeedbackMessage(new FeedbackMessage(FeedbackType.SUCCESS, SessionHelper.getLocale(), null,
+					null, new String[] { "部件名称设置成功！" }));
+			return formResult;
+		}
 	}
-
 }

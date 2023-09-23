@@ -14,10 +14,12 @@ public class ClassificationName {
 
 	private static PropertiesUtil pUtil = PropertiesUtil.getInstance("nameConfig.properties");
 
-	public static void process(WTPart part) {
+	public static String process(WTPart part) {
+		String result = "";
 		String classInternalName = pUtil.getValueByKey(part, "iba.internal.HHT_Classification");
 		String partten = pUtil.getValueByKey(classInternalName);
 		String newName = Util.processPartten(partten, part);
 		PartUtil.changePartName(part, newName);
+		return result;
 	}
 }

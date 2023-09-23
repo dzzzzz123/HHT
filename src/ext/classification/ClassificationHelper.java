@@ -2,6 +2,7 @@ package ext.classification;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import ext.classification.service.ClassificationDescription;
 import ext.classification.service.ClassificationName;
@@ -26,25 +27,34 @@ public class ClassificationHelper extends StandardManager {
 	 * 
 	 * @param obj
 	 */
-	public static void classify(WTObject obj, String type) {
+	public static List<String> classify(WTObject obj, String type) {
 		List<WTPart> list = getPartList(obj);
+		List<String> result = new ArrayList<>();
 		switch (type) {
 		case "number":
-			list.forEach(ClassificationNumber::process);
+			result = list.stream().map(ClassificationNumber::process)
+					.filter(processedString -> !processedString.isEmpty()).collect(Collectors.toList());
 			break;
 		case "name":
-			list.forEach(ClassificationName::process);
+			result = list.stream().map(ClassificationName::process)
+					.filter(processedString -> !processedString.isEmpty()).collect(Collectors.toList());
 			break;
 		case "description":
-			list.forEach(ClassificationDescription::process);
+			result = list.stream().map(ClassificationDescription::process)
+					.filter(processedString -> !processedString.isEmpty()).collect(Collectors.toList());
 			break;
 		default:
-			list.forEach(part -> {
-				ClassificationNumber.process(part);
-				ClassificationName.process(part);
-				ClassificationDescription.process(part);
-			});
+			List<String> desResult = list.stream().map(ClassificationDescription::process)
+					.filter(processedString -> !processedString.isEmpty()).collect(Collectors.toList());
+			List<String> nameResult = list.stream().map(ClassificationName::process)
+					.filter(processedString -> !processedString.isEmpty()).collect(Collectors.toList());
+			List<String> numberResult = list.stream().map(ClassificationNumber::process)
+					.filter(processedString -> !processedString.isEmpty()).collect(Collectors.toList());
+			result.addAll(desResult);
+			result.addAll(nameResult);
+			result.addAll(numberResult);
 		}
+		return result;
 	}
 
 	/**

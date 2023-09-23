@@ -5,7 +5,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.Logger;
 
+import com.ptc.core.meta.type.mgmt.server.impl.WTTypeDefinition;
+import com.ptc.core.meta.type.mgmt.server.impl.WTTypeDefinitionMaster;
 import com.ptc.windchill.enterprise.part.commands.AssociationLinkObject;
 import com.ptc.windchill.enterprise.part.commands.PartDocServiceCommand;
 
@@ -21,6 +24,8 @@ import wt.epm.EPMDocument;
 import wt.epm.EPMDocumentType;
 import wt.fc.PersistenceHelper;
 import wt.fc.QueryResult;
+import wt.log4j.LogR;
+import wt.method.RemoteAccess;
 import wt.org.WTPrincipal;
 import wt.part.WTPart;
 import wt.part.WTPartHelper;
@@ -31,7 +36,9 @@ import wt.util.WTException;
 import wt.vc.VersionControlHelper;
 import wt.vc.config.LatestConfigSpec;
 
-public class DocumentUtil {
+public class DocumentUtil implements RemoteAccess {
+
+	private static Logger LOGGER = LogR.getLogger(DocumentUtil.class.getName());
 
 	/**
 	 * 获取被参考文档
@@ -293,5 +300,57 @@ public class DocumentUtil {
 			e1.printStackTrace();
 		}
 		return dataList;
+	}
+
+	/**
+	 * 通过高级查询获取文档类型的ID
+	 * 
+	 * @param name
+	 * @return
+	 * @throws WTException
+	 */
+	public static long getTypeDefinitionIdByName(String name) throws WTException {
+		long id = 0;
+		WTTypeDefinition typeDef = getTypeDefinitionByName(name);
+		if (typeDef.isLatestIteration()) {
+			id = typeDef.getPersistInfo().getObjectIdentifier().getId();
+		}
+		LOGGER.debug("###[" + id + "] isInheritedDomain --->" + typeDef.isInheritedDomain() + " ;;;isUserAttributeable "
+				+ typeDef.isUserAttributeable() + ";;;; isLatestIteration " + typeDef.isLatestIteration());
+		return id;
+	}
+
+	/**
+	 * 通过高级查询获取文档类型的对象
+	 * 
+	 * @param name
+	 * @return
+	 * @throws WTException
+	 */
+	@SuppressWarnings("deprecation")
+	public static WTTypeDefinition getTypeDefinitionByName(String name) throws WTException {
+		WTTypeDefinition type = null;
+		QuerySpec qs = new QuerySpec();
+		int typeDefine = qs.appendClassList(WTTypeDefinition.class, true);
+		int typeDefineMaster = qs.appendClassList(WTTypeDefinitionMaster.class, false);
+		qs.setAdvancedQueryEnabled(true);
+		SearchCondition typebyMaster = new SearchCondition(WTTypeDefinition.class, "masterReference.key.id",
+				WTTypeDefinitionMaster.class, "thePersistInfo.theObjectIdentifier.id");
+		qs.appendWhere(typebyMaster, new int[] { typeDefine, typeDefineMaster });
+		qs.appendAnd();
+		SearchCondition typeMasterName = new SearchCondition(WTTypeDefinitionMaster.class, "displayNameKey", "=", name);
+		qs.appendWhere(typeMasterName, typeDefineMaster);
+		QueryResult qr = PersistenceHelper.manager.find(qs);
+		while (qr.hasMoreElements()) {
+			Object[] objs = (Object[]) qr.nextElement();
+			if (objs[0] instanceof WTTypeDefinition) {
+				WTTypeDefinition typeDef = (WTTypeDefinition) objs[0];
+				if (typeDef.isLatestIteration()) {
+					type = typeDef;
+				}
+
+			}
+		}
+		return type;
 	}
 }

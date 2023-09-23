@@ -33,6 +33,7 @@ import wt.maturity.MaturityHelper;
 import wt.maturity.Promotable;
 import wt.maturity.PromotionNotice;
 import wt.maturity.PromotionTarget;
+import wt.method.RemoteAccess;
 import wt.org.WTPrincipalReference;
 import wt.query.QuerySpec;
 import wt.query.SearchCondition;
@@ -55,7 +56,7 @@ import wt.workflow.work.WfAssignment;
 import wt.workflow.work.WorkItem;
 import wt.workflow.work.WorkItemLink;
 
-public class WorkflowUtil {
+public class WorkflowUtil implements RemoteAccess {
 	private static Logger LOGGER = LogR.getLogger(WorkflowUtil.class.getName());
 
 	/**
