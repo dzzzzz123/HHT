@@ -1,7 +1,7 @@
 package ext.classification.service;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -13,7 +13,6 @@ import ext.ait.util.ClassificationUtil;
 import ext.ait.util.CommonUtil;
 import ext.ait.util.IBAUtil;
 import wt.part.WTPart;
-import wt.pom.WTConnection;
 import wt.util.WTException;
 
 public class Util {
@@ -26,19 +25,14 @@ public class Util {
 	 */
 	public static List<String> getPartNumbersByPrefix(String classInternalName) {
 		List<String> partNumbers = new ArrayList<>();
-		String selectQuery = "SELECT WTPARTNUMBER FROM WTPARTMASTER WHERE WTPARTNUMBER LIKE ?";
+		String sql = "SELECT WTPARTNUMBER FROM WTPARTMASTER WHERE WTPARTNUMBER LIKE ?";
+		ResultSet resultSet = CommonUtil.excuteSelect(sql, classInternalName);
 		try {
-			WTConnection connection = CommonUtil.getWTConnection();
-			PreparedStatement statement = connection.prepareStatement(selectQuery);
-			statement.setString(1, classInternalName + "%");
-			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				String partNumber = resultSet.getString("WTPARTNUMBER");
 				partNumbers.add(partNumber);
 			}
-			resultSet.close();
-			statement.close();
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return partNumbers;
@@ -64,7 +58,6 @@ public class Util {
 				} else {
 					if (set.contains(word)) {
 						String displayName = ClassificationUtil.getDisplayByInternal(part, word);
-						System.out.println("displayName" + displayName);
 						if (displayName.length() > 0) {
 							newStr += displayName;
 						} else {
@@ -74,7 +67,6 @@ public class Util {
 						newStr += "";
 					}
 				}
-				System.out.println("newName：" + newStr);
 			}
 		} catch (WTException e) {
 			e.printStackTrace();

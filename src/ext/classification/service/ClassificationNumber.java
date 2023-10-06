@@ -40,8 +40,6 @@ public class ClassificationNumber {
 				result = oldNumber + " 的前缀不符合规范";
 			}
 		}
-		System.out.println("oldNumber" + oldNumber);
-		System.out.println("newNumber" + newNumber);
 		PartUtil.changePartNumber(part, newNumber);
 		return result;
 	}

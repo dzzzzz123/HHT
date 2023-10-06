@@ -2,7 +2,6 @@ package ext.ait.util;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Locale;
@@ -23,7 +22,6 @@ import wt.facade.classification.ClassificationFacade;
 import wt.meta.LocalizedValues;
 import wt.method.RemoteAccess;
 import wt.part.WTPart;
-import wt.pom.WTConnection;
 import wt.session.SessionHelper;
 import wt.util.WTException;
 
@@ -99,18 +97,13 @@ public class ClassificationUtil implements RemoteAccess {
 	 * @return 分类外部名称
 	 */
 	public static String getClassificationdDisPlayName(String classificationCode) {
-		String SelectQuery = "SELECT VALUE FROM LWCLOCALIZABLEPROPERTYVALUE WHERE IDA3B4 IN ( SELECT IDA2A2 FROM LWCStructEnumAttTemplate WHERE NAME= ? )";
+		String sql = "SELECT VALUE FROM LWCLOCALIZABLEPROPERTYVALUE WHERE IDA3B4 IN ( SELECT IDA2A2 FROM LWCStructEnumAttTemplate WHERE NAME= ? )";
 		String classificationName = "";
 		try {
-			WTConnection connection = CommonUtil.getWTConnection();
-			PreparedStatement statement = connection.prepareStatement(SelectQuery);
-			statement.setString(1, classificationCode);
-			ResultSet resultSet = statement.executeQuery();
+			ResultSet resultSet = CommonUtil.excuteSelect(sql, classificationCode);
 			while (resultSet.next()) {
 				classificationName = resultSet.getString("value");
 			}
-			resultSet.close();
-			statement.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

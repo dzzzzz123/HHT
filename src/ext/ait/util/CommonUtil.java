@@ -374,6 +374,15 @@ public class CommonUtil implements RemoteAccess {
 			for (int i = 0; i < params.length; i++) {
 				statement.setString(i + 1, params[i]);
 			}
+
+			// 输出当前执行查询操作的SQL语句
+			String fullSql = sql;
+			for (String param : params) {
+				fullSql = fullSql.replaceFirst("\\?", "'" + param + "'");
+			}
+			System.out.println("--------当前执行查询操作的SQL语句为--------");
+			System.out.println(fullSql);
+
 			ResultSet resultSet = statement.executeQuery();
 			return resultSet;
 		} catch (Exception e) {
@@ -396,11 +405,19 @@ public class CommonUtil implements RemoteAccess {
 			for (int i = 0; i < params.length; i++) {
 				statement.setString(i + 1, params[i]);
 			}
+
+			// 输出当前执行更新操作的SQL语句
+			String fullSql = sql;
+			for (String param : params) {
+				fullSql = fullSql.replaceFirst("\\?", "'" + param + "'");
+			}
+			System.out.println("--------当前执行更新操作的SQL语句为--------");
+			System.out.println(fullSql);
+
 			return statement.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return 0;
 	}
-
 }
