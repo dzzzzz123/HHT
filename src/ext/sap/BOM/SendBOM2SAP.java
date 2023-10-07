@@ -2,17 +2,13 @@ package ext.sap.BOM;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import com.ptc.windchill.enterprise.change2.commands.RelatedChangesQueryCommands;
-
-import ext.ait.util.VersionUtil;
+import ext.ait.util.PartUtil;
 import wt.change2.ChangeException2;
 import wt.change2.ChangeHelper2;
 import wt.change2.WTChangeOrder2;
 import wt.fc.QueryResult;
 import wt.fc.WTObject;
-import wt.fc.collections.WTCollection;
 import wt.maturity.MaturityHelper;
 import wt.maturity.PromotionNotice;
 import wt.part.WTPart;
@@ -30,10 +26,22 @@ public class SendBOM2SAP extends StandardManager {
 	 */
 	public static void sendListBOM2SAP(WTObject obj) {
 		List<WTPart> list = processWTPartList(obj);
+		List<WTPart> listFiltered = new ArrayList<>();
 		// 过滤部件，判断是否为BOM
-		List<WTPart> listFiltered = list.stream().filter(Util::verifyBOM).collect(Collectors.toList());
+		list.forEach(part -> {
+			List<WTPart> BOMList = PartUtil.getBomByPart(part);
+			if (BOMList.size() > 0) {
+				listFiltered.add(part);
+			}
+		});
 		// 从部件中获取BOM实体类，并逐个发送给SAP
-		listFiltered.stream().map(SendBOM2SAP::getBOMEntity).forEach(SendBOM2SAPService::SendBOM2SAP);
+		listFiltered.forEach(part -> {
+			BOMEntity bomEntity = SendBOM2SAPService.getBOMEntity(part);
+			String json = SendBOM2SAPService.getJsonByEntity(bomEntity);
+			System.out.println(json);
+			String result = SendBOM2SAPService.SendBOM2SAPUseUrl(json);
+			System.out.println(result);
+		});
 	}
 
 	/**
@@ -77,35 +85,4 @@ public class SendBOM2SAP extends StandardManager {
 		return list;
 	}
 
-	/**
-	 * 从WTPart中获取需要的数据并组装为BOMEntity
-	 * 
-	 * @param WTPart part
-	 * @return BOMEntity
-	 */
-	public static BOMEntity getBOMEntity(WTPart part) {
-		BOMEntity bom = new BOMEntity();
-		String stlan = Util.getStlan(part);
-		List<BOMBodyEntity> body = Util.getBodyEntitiesByBOM(part);
-		bom.setNumber(part.getNumber());
-		bom.setName(part.getName());
-		bom.setVersion(VersionUtil.getVersion(part));
-		bom.setFactory(part.getViewName());
-		String ECNnum = "";
-		try {
-			WTCollection conllection = RelatedChangesQueryCommands.getRelatedResultingChangeNotices(part);
-			for (Object object : conllection) {
-				if (object instanceof WTChangeOrder2) {
-					WTChangeOrder2 wtChangeOrder2 = (WTChangeOrder2) object;
-					ECNnum += wtChangeOrder2.getNumber();
-				}
-			}
-		} catch (WTException e) {
-			e.printStackTrace();
-		}
-		bom.setECNNumber(ECNnum);
-		bom.setStlan(stlan);
-		bom.setBOMBody(body);
-		return bom;
-	}
 }

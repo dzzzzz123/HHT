@@ -1,10 +1,8 @@
 package ext.sap.project;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import ext.ait.util.PropertiesUtil;
 import wt.change2.ChangeException2;
 import wt.change2.ChangeHelper2;
 import wt.change2.WTChangeOrder2;
@@ -18,7 +16,6 @@ import wt.util.WTException;
 
 public class SendProject2SAP extends StandardManager {
 	private static final long serialVersionUID = 1L;
-	private static PropertiesUtil properties = PropertiesUtil.getInstance("config.properties");
 
 	/**
 	 * 向SAP发送BOM数据的主方法
@@ -27,7 +24,13 @@ public class SendProject2SAP extends StandardManager {
 	 */
 	public static void sendProjectList2SAP(WTObject obj) {
 		List<Project2> list = processProjectList(obj);
-		list.stream().map(SendProject2SAP::getProjectEntity).forEach(SendProject2SAPService::sendProject2SAP);
+		list.forEach(project -> {
+			ProjectEntity projectEntity = SendProject2SAPService.getProjectEntity(project);
+			String json = SendProject2SAPService.getJsonByEntity(projectEntity);
+			System.out.println(json);
+			String result = SendProject2SAPService.sendProject2SAPUseUrl(json);
+			System.out.println(result);
+		});
 	}
 
 	/**
@@ -52,8 +55,7 @@ public class SendProject2SAP extends StandardManager {
 				}
 			} else if (obj instanceof WTChangeOrder2) {
 				WTChangeOrder2 co = (WTChangeOrder2) obj;
-				QueryResult qr;
-				qr = ChangeHelper2.service.getChangeablesAfter(co);
+				QueryResult qr = ChangeHelper2.service.getChangeablesAfter(co);
 				while (qr.hasMoreElements()) {
 					Object object = qr.nextElement();
 					if (object instanceof Project2) {
@@ -71,29 +73,4 @@ public class SendProject2SAP extends StandardManager {
 		return list;
 	}
 
-	/**
-	 * 从WTPart中获取需要的数据并组装为BOMEntity
-	 * 
-	 * @param WTPart part
-	 * @return BOMEntity
-	 */
-	public static ProjectEntity getProjectEntity(Project2 project) {
-		ProjectEntity projectEntity = new ProjectEntity();
-		projectEntity.setProjectNumber(project.getProjectNumber());
-		projectEntity.setProjectName(project.getName());
-		projectEntity.setProjectCategory(project.getCategory().getDisplay());
-		projectEntity.setProjectOwner(project.getOwner().getName());
-		projectEntity.setProjectCreateStamp(project.getCreateTimestamp().toString());
-		Timestamp endTime = project.getEstimatedEndDate();
-		if (endTime == null) {
-			projectEntity.setProjectEndStamp("无结束日期");
-		} else {
-			projectEntity.setProjectEndStamp(endTime.toString());
-		}
-		projectEntity.setFactoryCode(project.getBusinessUnit());
-		projectEntity.setDeleteFlag(properties.getValueByKey(project, "iba.internal.deleteFlag"));
-		projectEntity.setProjectDescription(project.getDescription());
-		projectEntity.setFinishFlag(project.getContainerTeamManagedInfo().getState().getDisplay());
-		return projectEntity;
-	}
 }

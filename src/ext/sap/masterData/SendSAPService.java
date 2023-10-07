@@ -2,12 +2,15 @@ package ext.sap.masterData;
 
 import java.nio.charset.Charset;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
@@ -196,8 +199,50 @@ public class SendSAPService {
 	 */
 	public static String entityToJson(SendSAPPartEntity entity) {
 		ObjectMapper objectMapper = new ObjectMapper();
+		Map<String, Object> rootMap = new HashMap<>();
+		Map<String, Object> isMatnrMap = new HashMap<>();
+
+		isMatnrMap.put("MTART", entity.getPartType());
+		isMatnrMap.put("MATKL", entity.getHHT_Classification());
+		isMatnrMap.put("MATNR", entity.getNumber());
+		isMatnrMap.put("MAKTX", entity.getName());
+		isMatnrMap.put("ZEIVR", entity.getRevision());
+		isMatnrMap.put("MEINS", entity.getUnit());
+		isMatnrMap.put("BRGEW", entity.getHHT_GrossWeight());
+		isMatnrMap.put("NTGEW", entity.getHHT_NetWeight());
+		isMatnrMap.put("GEWEI", entity.getHHT_WeightUnit());
+		isMatnrMap.put("VOLUM", entity.getHHT_Traffic());
+		isMatnrMap.put("VOLEH", entity.getHHT_VolumeUnit());
+		isMatnrMap.put("LAENG", entity.getHHT_Length());
+		isMatnrMap.put("BREIT", entity.getHHT_Width());
+		isMatnrMap.put("HOEHE", entity.getHHT_Height());
+		isMatnrMap.put("MEABM", entity.getHHT_SizeUnits());
+		isMatnrMap.put("MSTAE", entity.getState());
+		isMatnrMap.put("ZZWLFLBM", entity.getHHT_ClassificationCode());
+		isMatnrMap.put("ZZWLFLMC", entity.getHHT_ClassificationName());
+		isMatnrMap.put("ZZCPXBM", entity.getHHT_ProductLineNumber());
+		isMatnrMap.put("ZZCPXMC", entity.getHHT_ProductLineName());
+		isMatnrMap.put("ZZCPBM", entity.getHHT_ProductNumber());
+		isMatnrMap.put("ZZCPMS", entity.getHHT_Productdescription());
+		isMatnrMap.put("ZZCPXH", entity.getHHT_ModelSpecification());
+		isMatnrMap.put("ZZHPMC", entity.getHHT_CommodityName());
+		isMatnrMap.put("ZZPP", entity.getHHT_Brand());
+		isMatnrMap.put("ZZNF", entity.getHHT_Year());
+		isMatnrMap.put("ZZCC", entity.getHHT_Size());
+		isMatnrMap.put("ZZCPXL", entity.getHHT_FinishedSeries());
+		isMatnrMap.put("ZZHY", entity.getHHT_Industry());
+		isMatnrMap.put("ZZCPKFLX", entity.getHHT_ProductDevelopmentType());
+		isMatnrMap.put("ZZDZCPBS", entity.getHHT_CustomizedProductIdentifier());
+		isMatnrMap.put("ZZGYSHH", entity.getHHT_SupplierSku());
+		isMatnrMap.put("SERNP", entity.getDefaultTraceCode());
+		isMatnrMap.put("ZZCD", entity.getHHT_Factory());
+		isMatnrMap.put("ZZJG", entity.getHHT_Price());
+		isMatnrMap.put("PEINH", entity.getHHT_PriceUnit());
+		isMatnrMap.put("INValue", entity.getHHT_INValue());
+
+		rootMap.put("IS_MATNR", isMatnrMap);
 		try {
-			return objectMapper.writeValueAsString(entity);
+			return objectMapper.writeValueAsString(rootMap);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -211,10 +256,13 @@ public class SendSAPService {
 	 */
 	public static String sendPartSAP(String masterDataJson) {
 
-		String url = pUtil.getValueByKey("sendPartUrl");
-		System.out.println("url" + url);
+		String url = pUtil.getValueByKey("sap.url");
+		String username = pUtil.getValueByKey("sap.username");
+		String password = pUtil.getValueByKey("sap.password");
+
 		// 自定义请求头
 		RestTemplate restTemplate = new RestTemplate();
+		restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(username, password));
 		restTemplate.getMessageConverters().set(1, new StringHttpMessageConverter(Charset.forName("utf-8")));
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
