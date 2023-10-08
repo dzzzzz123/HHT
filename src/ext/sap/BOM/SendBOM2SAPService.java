@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ptc.windchill.enterprise.change2.commands.RelatedChangesQueryCommands;
 
@@ -115,6 +116,7 @@ public class SendBOM2SAPService {
 
 	/**
 	 * 从BOM的实体对象中解析出SAP需要的json字符串
+	 * 
 	 * @param bomEnrity bom的实体类
 	 * @return 解析得到的json
 	 */
@@ -167,6 +169,7 @@ public class SendBOM2SAPService {
 
 	/**
 	 * 将BOM的json发送给SAP
+	 * 
 	 * @param json BOM的json
 	 * @return 得到的返回信息
 	 */
@@ -177,6 +180,26 @@ public class SendBOM2SAPService {
 
 		return CommonUtil.requestInterface(url, username, password, json);
 
+	}
+
+	public static String getResultFromJson(String json) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			JsonNode rootNode = objectMapper.readTree(json);
+			JsonNode esMessgNode = rootNode.get("ES_MESSG");
+			if (esMessgNode != null && esMessgNode.has("TYPE")) {
+				String typeValue = esMessgNode.get("TYPE").asText();
+				String msgValue = esMessgNode.get("MESSG").asText();
+				if ("E".equals(typeValue)) {
+					return "发送失败！" + msgValue;
+				}
+			} else {
+				return "发送失败！SAP未给出错误信息!";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

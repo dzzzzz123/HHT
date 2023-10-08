@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ext.ait.util.ClassificationUtil;
@@ -29,7 +30,7 @@ public class SendSAPService {
 		String HHT_Height = pUtil.getValueByKey(part, "HHT_Height");
 		String HHT_SizeUnits = pUtil.getValueByKey(part, "HHT_SizeUnits");
 		String HHT_ClassificationCode = ClassificationUtil.getClassificationInternal(part,
-				pUtil.getValueByKey("iba.internal.HHT_Classification"));
+				pUtil.getValueByKey("HHT_Classification"));
 		String HHT_ProductLineNumber = pUtil.getValueByKey(part, "HHT_ProductLineNumber");
 		String HHT_ProductLineName = pUtil.getValueByKey(part, "HHT_ProductLineName");
 		String HHT_ProductNumber = pUtil.getValueByKey(part, "HHT_ProductNumber");
@@ -111,6 +112,7 @@ public class SendSAPService {
 
 	/**
 	 * 获取SAP生命周期状态的显示名称
+	 * 
 	 * @param state PLM生命周期状态
 	 * @return String SAP生命周期状态
 	 */
@@ -141,8 +143,9 @@ public class SendSAPService {
 
 	/**
 	 * PLM处理物料类型
+	 * 
 	 * @param classificationCode 分类编码
-	 * @param inValue 是否有价值
+	 * @param inValue            是否有价值
 	 * @return 物料类型
 	 */
 	public static String mapClassificationToPartType(String classificationCode, boolean inValue) {
@@ -185,6 +188,7 @@ public class SendSAPService {
 
 	/**
 	 * 将实体类转换为发送给SAP的json
+	 * 
 	 * @param entity 物料主数据实体类
 	 * @return String json格式数据
 	 */
@@ -242,6 +246,7 @@ public class SendSAPService {
 
 	/**
 	 * 发送物料主数据json到SAP的发送代码
+	 * 
 	 * @param masterDataJson
 	 * @return
 	 */
@@ -252,5 +257,25 @@ public class SendSAPService {
 		String password = pUtil.getValueByKey("sap.password");
 
 		return CommonUtil.requestInterface(url, username, password, masterDataJson);
+	}
+
+	public static String getResultFromJson(String json) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			JsonNode rootNode = objectMapper.readTree(json);
+			JsonNode esMessgNode = rootNode.get("ES_MESSG");
+			if (esMessgNode != null && esMessgNode.has("TYPE")) {
+				String typeValue = esMessgNode.get("TYPE").asText();
+				String msgValue = esMessgNode.get("MESSG").asText();
+				if ("E".equals(typeValue)) {
+					return "发送失败！" + msgValue;
+				}
+			} else {
+				return "发送失败！SAP未给出错误信息!";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

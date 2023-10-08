@@ -11,26 +11,27 @@ import wt.fc.WTObject;
 import wt.maturity.MaturityHelper;
 import wt.maturity.PromotionNotice;
 import wt.projmgmt.admin.Project2;
-import wt.services.StandardManager;
 import wt.util.WTException;
 
-public class SendProject2SAP extends StandardManager {
-	private static final long serialVersionUID = 1L;
+public class SendProject2SAP {
 
 	/**
 	 * 向SAP发送BOM数据的主方法
 	 * 
 	 * @param WTObject obj
 	 */
-	public static void sendProjectList2SAP(WTObject obj) {
+	public static List<String> sendProjectList2SAP(WTObject obj) {
 		List<Project2> list = processProjectList(obj);
+		List<String> msg = new ArrayList<>();
 		list.forEach(project -> {
 			ProjectEntity projectEntity = SendProject2SAPService.getProjectEntity(project);
 			String json = SendProject2SAPService.getJsonByEntity(projectEntity);
 			System.out.println(json);
 			String result = SendProject2SAPService.sendProject2SAPUseUrl(json);
 			System.out.println(result);
+			msg.add(SendProject2SAPService.getResultFromJson(result));
 		});
+		return msg;
 	}
 
 	/**

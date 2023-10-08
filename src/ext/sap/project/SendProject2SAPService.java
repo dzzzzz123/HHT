@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ext.ait.util.CommonUtil;
@@ -41,6 +42,7 @@ public class SendProject2SAPService {
 
 	/**
 	 * 从entity中解析获取SAP需要的json
+	 * 
 	 * @param entity
 	 * @return
 	 */
@@ -82,4 +84,23 @@ public class SendProject2SAPService {
 		return CommonUtil.requestInterface(url, username, password, json);
 	}
 
+	public static String getResultFromJson(String json) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			JsonNode rootNode = objectMapper.readTree(json);
+			JsonNode esMessgNode = rootNode.get("ES_MESSG");
+			if (esMessgNode != null && esMessgNode.has("TYPE")) {
+				String typeValue = esMessgNode.get("TYPE").asText();
+				String msgValue = esMessgNode.get("MESSG").asText();
+				if ("E".equals(typeValue)) {
+					return "发送失败！" + msgValue;
+				}
+			} else {
+				return "发送失败！SAP未给出错误信息!";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

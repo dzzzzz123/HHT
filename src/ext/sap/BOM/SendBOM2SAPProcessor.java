@@ -2,6 +2,8 @@ package ext.sap.BOM;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.ptc.core.components.beans.ObjectBean;
 import com.ptc.core.components.forms.DefaultObjectFormProcessor;
 import com.ptc.core.components.forms.FormProcessingStatus;
@@ -27,7 +29,13 @@ public class SendBOM2SAPProcessor extends DefaultObjectFormProcessor {
 		FormResult formResult = null;
 
 		try {
-			SendBOM2SAP.sendListBOM2SAP(ref);
+			List<String> msg = SendBOM2SAP.sendListBOM2SAP(ref);
+			if (msg.size() == 1 && StringUtils.isNotBlank(msg.get(0))) {
+				formResult = new FormResult(FormProcessingStatus.FAILURE);
+				formResult.addFeedbackMessage(new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(), null,
+						null, new String[] { msg.get(0) }));
+				return formResult;
+			}
 		} catch (Exception e) {
 			formResult = new FormResult(FormProcessingStatus.FAILURE);
 			formResult.addFeedbackMessage(new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(), null,

@@ -15,12 +15,9 @@ import wt.fc.WTObject;
 import wt.maturity.MaturityHelper;
 import wt.maturity.PromotionNotice;
 import wt.part.WTPart;
-import wt.services.StandardManager;
 import wt.util.WTException;
 
-public class ClassificationHelper extends StandardManager {
-
-	private static final long serialVersionUID = 1L;
+public class ClassificationHelper {
 
 	/**
 	 * 根据分类对物料名称/编号/长描述进行修改的主方法

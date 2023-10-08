@@ -2,6 +2,8 @@ package ext.sap.masterData;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.ptc.core.components.beans.ObjectBean;
 import com.ptc.core.components.forms.DefaultObjectFormProcessor;
 import com.ptc.core.components.forms.FormProcessingStatus;
@@ -22,7 +24,13 @@ public class SendPartSAPProcessor extends DefaultObjectFormProcessor {
 		FormResult formresult = null;
 
 		try {
-			PartSenderHelper.sendParts2SAP(ref);
+			List<String> msg = PartSenderHelper.sendParts2SAP(ref);
+			if (msg.size() == 1 && StringUtils.isNotBlank(msg.get(0))) {
+				formresult = new FormResult(FormProcessingStatus.FAILURE);
+				formresult.addFeedbackMessage(new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(), null,
+						null, new String[] { msg.get(0) }));
+				return formresult;
+			}
 		} catch (Exception e) {
 			formresult = new FormResult(FormProcessingStatus.FAILURE);
 			formresult.addFeedbackMessage(new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(), null,

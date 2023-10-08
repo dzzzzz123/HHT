@@ -11,30 +11,32 @@ import wt.fc.WTObject;
 import wt.maturity.MaturityHelper;
 import wt.maturity.PromotionNotice;
 import wt.part.WTPart;
-import wt.services.StandardManager;
 
-public class PartSenderHelper extends StandardManager {
-
-	private static final long serialVersionUID = 1L;
+public class PartSenderHelper {
 
 	/**
 	 * 发送物料主数据到SAP的主方法
-	 * @param pbo 
-	 * @throws Exception 
+	 * 
+	 * @param pbo
+	 * @return
+	 * @throws Exception
 	 */
-	public static void sendParts2SAP(WTObject pbo) throws Exception {
+	public static List<String> sendParts2SAP(WTObject pbo) throws Exception {
 		List<WTPart> list = getPartsByPbo(pbo);
+		List<String> msg = new ArrayList<>();
 		list.forEach(part -> {
 			SendSAPPartEntity entity = SendSAPService.SendSAPPart(part);
 			String json = SendSAPService.entityToJson(entity);
 			System.out.println("json" + json);
-			SendSAPService.sendPartSAP(json);
+			String result = SendSAPService.sendPartSAP(json);
+			System.out.println("result" + result);
+			msg.add(SendSAPService.getResultFromJson(result));
 		});
+		return msg;
 	}
 
 	public static List<WTPart> getPartsByPbo(WTObject pbo) throws Exception {
 		List<WTPart> list = new ArrayList<>();
-		//		List<SendSAPResult> list = new ArrayList<>();
 		if (pbo instanceof WTPart) {
 			WTPart wtPart = (WTPart) pbo;
 			if (PersistenceUtil.isCheckOut(wtPart)) {

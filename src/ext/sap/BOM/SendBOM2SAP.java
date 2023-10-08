@@ -12,21 +12,19 @@ import wt.fc.WTObject;
 import wt.maturity.MaturityHelper;
 import wt.maturity.PromotionNotice;
 import wt.part.WTPart;
-import wt.services.StandardManager;
 import wt.util.WTException;
 
-public class SendBOM2SAP extends StandardManager {
-
-	private static final long serialVersionUID = 1L;
+public class SendBOM2SAP {
 
 	/**
 	 * 向SAP发送BOM数据的主方法
 	 * 
 	 * @param WTObject obj
 	 */
-	public static void sendListBOM2SAP(WTObject obj) {
+	public static List<String> sendListBOM2SAP(WTObject obj) {
 		List<WTPart> list = processWTPartList(obj);
 		List<WTPart> listFiltered = new ArrayList<>();
+		List<String> msg = new ArrayList<>();
 		// 过滤部件，判断是否为BOM
 		list.forEach(part -> {
 			List<WTPart> BOMList = PartUtil.getBomByPart(part);
@@ -41,7 +39,9 @@ public class SendBOM2SAP extends StandardManager {
 			System.out.println(json);
 			String result = SendBOM2SAPService.SendBOM2SAPUseUrl(json);
 			System.out.println(result);
+			msg.add(SendBOM2SAPService.getResultFromJson(result));
 		});
+		return msg;
 	}
 
 	/**
