@@ -1,36 +1,24 @@
 package ext.sap.BOM;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.support.BasicAuthenticationInterceptor;
-import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ptc.windchill.enterprise.change2.commands.RelatedChangesQueryCommands;
 
+import ext.ait.util.CommonUtil;
 import ext.ait.util.PartUtil;
 import ext.ait.util.PropertiesUtil;
 import ext.ait.util.VersionUtil;
 import wt.change2.WTChangeOrder2;
 import wt.fc.collections.WTCollection;
 import wt.part.WTPart;
-import wt.part.WTPartMaster;
-import wt.part.WTPartSubstituteLink;
 import wt.part.WTPartUsageLink;
 import wt.util.WTException;
 
@@ -50,6 +38,8 @@ public class SendBOM2SAPService {
 		List<BOMBodyEntity> body = getBodyEntitiesByBOM(part);
 		bom.setNumber(part.getNumber());
 		bom.setName(part.getName());
+		bom.setHHT_BasicQuantity(properties.getValueByKey(part, "iba.internal.HHT_BasicQuantity"));
+		bom.setUnit(part.getDefaultUnit().getDisplay());
 		bom.setVersion(VersionUtil.getVersion(part));
 		bom.setFactory(part.getViewName());
 		String ECNnum = "";
@@ -89,39 +79,18 @@ public class SendBOM2SAPService {
 			WTPartUsageLink link = PartUtil.getLinkByPart(wtPart, part);
 			entity.setQuantity(String.valueOf(link.getQuantity().getAmount()));
 			entity.setReferenceDesignatorRange(PartUtil.getPartUsesOccurrence(link));
-			List<SubstituteEntity> substituteList = getAlternates(link, part);
-			entity.setSubstitute(substituteList);
-			list.add(entity);
-		}
-		return list;
-	}
 
-	/**
-	 * 获取部件的替代料信息并放到实体类中
-	 * 
-	 * @param WTPart wtPart
-	 * @return List<SubstituteEntity>
-	 */
-	public static List<SubstituteEntity> getAlternates(WTPartUsageLink usageLink, WTPart wtPart) {
-		List<SubstituteEntity> list = new ArrayList<>();
-		List<WTPartSubstituteLink> linkList = PartUtil.getWTPartSubstituteLinks(usageLink);
-
-		for (WTPartSubstituteLink link : linkList) {
-			SubstituteEntity substituteEntity = new SubstituteEntity();
-			WTPartMaster master = (WTPartMaster) link.getRoleBObject();
-			WTPart substitutePart = PartUtil.getWTPartByNumber(master.getNumber());
-			substituteEntity.setNumber(substitutePart.getNumber());
-			substituteEntity.setUnit(substitutePart.getDefaultUnit().getDisplay());
-			substituteEntity.setQuantity(String.valueOf(link.getQuantity().getAmount()));
+			String HHT_SubstituteGroup = properties.getValueByKey(link, "iba.internal.HHT_SubstituteGroup");
 			String HHT_Priority = properties.getValueByKey(link, "iba.internal.HHT_Priority");
 			String HHT_Strategies = properties.getValueByKey(link, "iba.internal.HHT_Strategies");
 			String HHT_UsagePossibility = properties.getValueByKey(link, "iba.internal.HHT_UsagePossibility");
 			String HHT_MatchGroup = properties.getValueByKey(link, "iba.internal.HHT_MatchGroup");
-			substituteEntity.setHHT_Priority(HHT_Priority);
-			substituteEntity.setHHT_Strategies(HHT_Strategies);
-			substituteEntity.setHHT_UsagePossibility(HHT_UsagePossibility);
-			substituteEntity.setHHT_MatchGroup(HHT_MatchGroup);
-			list.add(substituteEntity);
+			entity.setHHT_SubstituteGroup(HHT_SubstituteGroup);
+			entity.setHHT_Priority(HHT_Priority);
+			entity.setHHT_Strategies(HHT_Strategies);
+			entity.setHHT_UsagePossibility(HHT_UsagePossibility);
+			entity.setHHT_MatchGroup(HHT_MatchGroup);
+			list.add(entity);
 		}
 		return list;
 	}
@@ -135,9 +104,13 @@ public class SendBOM2SAPService {
 	public static String getStlan(WTPart wtPart) {
 		String number = wtPart.getNumber();
 		WTPart designPart = PartUtil.getWTPartByNumberAndView(number, "Design");
-		String state = designPart.getState().toString();
-		Set<String> set = new HashSet<>(Arrays.asList("PVT", "MP"));
-		return set.contains(state) ? "1" : "2";
+		if (designPart == null) {
+			return "2";
+		} else {
+			String state = designPart.getState().toString();
+			Set<String> set = new HashSet<>(Arrays.asList("PVT", "MP"));
+			return set.contains(state) ? "1" : "2";
+		}
 	}
 
 	/**
@@ -150,42 +123,40 @@ public class SendBOM2SAPService {
 		List<Map<String, Object>> bomBodyList = new ArrayList<>(); // 用于存储BOM_Body
 
 		Map<String, Object> rootMap = new HashMap<>();
-		Map<String, Object> bomMap = new HashMap<>();
+		Map<String, Object> bomHeadMap = new HashMap<>();
 		Map<String, Object> bomBodyMap = new HashMap<>();
-		Map<String, Object> substituteMap = new HashMap<>();
 
 		// 填入BOMHead的内容
-		bomMap.put("MATNR", bomEnrity.getNumber());
-		bomMap.put("WERKS", bomEnrity.getFactory());
-		bomMap.put("MAKTX", bomEnrity.getName());
-		bomMap.put("VERSI", bomEnrity.getVersion());
-		bomMap.put("AENNR", bomEnrity.getECNNumber());
-		bomMap.put("STLAN", bomEnrity.getStlan());
+		bomHeadMap.put("MATNR", bomEnrity.getNumber());
+		bomHeadMap.put("WERKS", bomEnrity.getFactory());
+		bomHeadMap.put("MAKTX", bomEnrity.getName());
+		bomHeadMap.put("BMENG", bomEnrity.getHHT_BasicQuantity());
+		bomHeadMap.put("BMEIN", bomEnrity.getUnit());
+		bomHeadMap.put("VERSI", bomEnrity.getVersion());
+		bomHeadMap.put("AENNR", bomEnrity.getECNNumber());
+		bomHeadMap.put("STLAN", bomEnrity.getStlan());
 
 		// 获取BOMbody的内容并填入map
 		List<BOMBodyEntity> bomBodyEntities = bomEnrity.getBOMBody();
 		bomBodyEntities.forEach(bomBodyEntity -> {
+
 			bomBodyMap.put("IDNRK", bomBodyEntity.getNumber());
 			bomBodyMap.put("MAKTX", bomBodyEntity.getName());
 			bomBodyMap.put("MENGE", bomBodyEntity.getQuantity());
 			bomBodyMap.put("MEINS", bomBodyEntity.getUnit());
 			bomBodyMap.put("POTXT", bomBodyEntity.getReferenceDesignatorRange());
 
-			// 获取每个部件的替代料并填入map
-			List<SubstituteEntity> substituteEntities = bomBodyEntity.getSubstitute();
-			List<Map<String, Object>> substituteEntityList = new ArrayList<>(); //用来存储替代料的list
-			substituteEntities.forEach(substituteEntity -> {
-				substituteMap.put("ALPGR", substituteEntity.getNumber());
-				substituteMap.put("ALPRF", substituteEntity.getHHT_Priority());
-				substituteMap.put("ALPST", substituteEntity.getHHT_Strategies());
-				substituteMap.put("EWAHR", substituteEntity.getHHT_UsagePossibility());
-				substituteEntityList.add(substituteMap);
-			});
-			bomBodyMap.put("Substitute", substituteEntityList);
+			// 获取每个部件的替代信息并填入map
+			bomBodyMap.put("ALPGR", bomBodyEntity.getHHT_SubstituteGroup());
+			bomBodyMap.put("ALPRF", bomBodyEntity.getHHT_Priority());
+			bomBodyMap.put("ALPST", bomBodyEntity.getHHT_Strategies());
+			bomBodyMap.put("EWAHR", bomBodyEntity.getHHT_UsagePossibility());
+			bomBodyMap.put("EWAHR", bomBodyEntity.getHHT_UsagePossibility());
+
 			bomBodyList.add(bomBodyMap);
 		});
-		bomMap.put("BOM_Body", bomBodyList);
-		rootMap.put("BOM_Head", bomMap);
+		rootMap.put("IS_MAST", bomHeadMap);
+		rootMap.put("IT_STPO", bomBodyList);
 		try {
 			return objectMapper.writeValueAsString(rootMap);
 		} catch (JsonProcessingException e) {
@@ -196,32 +167,16 @@ public class SendBOM2SAPService {
 
 	/**
 	 * 将BOM的json发送给SAP
-	 * @param param BOM的json
+	 * @param json BOM的json
 	 * @return 得到的返回信息
 	 */
-	public static String SendBOM2SAPUseUrl(String param) {
+	public static String SendBOM2SAPUseUrl(String json) {
 		String url = properties.getValueByKey("sap.url");
 		String username = properties.getValueByKey("sap.username");
 		String password = properties.getValueByKey("sap.password");
 
-		// 自定义请求头
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(username, password));
-		restTemplate.getMessageConverters().set(1, new StringHttpMessageConverter(Charset.forName("utf-8")));
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAcceptCharset(Collections.singletonList(Charset.forName("utf-8")));
-		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+		return CommonUtil.requestInterface(url, username, password, json);
 
-		// 参数
-		HttpEntity<String> entity = new HttpEntity<String>(param, headers);
-		// POST方式请求
-		ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-		if (responseEntity == null) {
-			return null;
-		}
-
-		return responseEntity.getBody().toString();
 	}
 
 }

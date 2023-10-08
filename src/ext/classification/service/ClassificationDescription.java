@@ -1,5 +1,6 @@
 package ext.classification.service;
 
+import ext.ait.util.ClassificationUtil;
 import ext.ait.util.IBAUtil;
 import ext.ait.util.PropertiesUtil;
 import wt.part.WTPart;
@@ -17,7 +18,8 @@ public class ClassificationDescription {
 
 	public static String process(WTPart part) {
 		String result = "";
-		String classInternalName = pUtil.getValueByKey(part, "iba.internal.HHT_Classification");
+		String classInternalName = ClassificationUtil.getClassificationInternal(part,
+				pUtil.getValueByKey("iba.internal.HHT_Classification"));
 		String partten = pUtil.getValueByKey(classInternalName);
 		String newDescription = Util.processPartten(partten, part);
 		try {

@@ -1,23 +1,13 @@
 package ext.sap.masterData;
 
-import java.nio.charset.Charset;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.support.BasicAuthenticationInterceptor;
-import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ext.ait.util.ClassificationUtil;
+import ext.ait.util.CommonUtil;
 import ext.ait.util.PropertiesUtil;
 import ext.ait.util.VersionUtil;
 import wt.part.WTPart;
@@ -38,7 +28,8 @@ public class SendSAPService {
 		String HHT_Width = pUtil.getValueByKey(part, "HHT_Width");
 		String HHT_Height = pUtil.getValueByKey(part, "HHT_Height");
 		String HHT_SizeUnits = pUtil.getValueByKey(part, "HHT_SizeUnits");
-		String HHT_ClassificationCode = pUtil.getValueByKey(part, "HHT_Classification");
+		String HHT_ClassificationCode = ClassificationUtil.getClassificationInternal(part,
+				pUtil.getValueByKey("iba.internal.HHT_Classification"));
 		String HHT_ProductLineNumber = pUtil.getValueByKey(part, "HHT_ProductLineNumber");
 		String HHT_ProductLineName = pUtil.getValueByKey(part, "HHT_ProductLineName");
 		String HHT_ProductNumber = pUtil.getValueByKey(part, "HHT_ProductNumber");
@@ -260,24 +251,6 @@ public class SendSAPService {
 		String username = pUtil.getValueByKey("sap.username");
 		String password = pUtil.getValueByKey("sap.password");
 
-		// 自定义请求头
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(username, password));
-		restTemplate.getMessageConverters().set(1, new StringHttpMessageConverter(Charset.forName("utf-8")));
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAcceptCharset(Collections.singletonList(Charset.forName("utf-8")));
-		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-
-		// 参数
-		HttpEntity<String> entity = new HttpEntity<String>(masterDataJson, headers);
-		// POST方式请求
-		ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-		if (responseEntity == null) {
-			return null;
-		}
-
-		return responseEntity.getBody().toString();
-
+		return CommonUtil.requestInterface(url, username, password, masterDataJson);
 	}
 }

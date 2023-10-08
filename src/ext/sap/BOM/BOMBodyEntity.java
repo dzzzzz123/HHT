@@ -1,29 +1,21 @@
 package ext.sap.BOM;
 
-import java.util.List;
-
 public class BOMBodyEntity {
+
 	private String Number;
 	private String Name;
 	private String Version;
 	private String Quantity;
 	private String Unit;
 	private String ReferenceDesignatorRange;
-	private List<SubstituteEntity> Substitute;
+	private String HHT_SubstituteGroup;
+	private String HHT_Priority;
+	private String HHT_Strategies;
+	private String HHT_UsagePossibility;
+	private String HHT_MatchGroup;
 
 	public BOMBodyEntity() {
 
-	}
-
-	public BOMBodyEntity(String number, String name, String version, String quantity, String unit,
-			String referenceDesignatorRange, List<SubstituteEntity> substitute) {
-		Number = number;
-		Name = name;
-		Version = version;
-		Quantity = quantity;
-		Unit = unit;
-		ReferenceDesignatorRange = referenceDesignatorRange;
-		Substitute = substitute;
 	}
 
 	public String getNumber() {
@@ -74,19 +66,44 @@ public class BOMBodyEntity {
 		ReferenceDesignatorRange = referenceDesignatorRange;
 	}
 
-	public List<SubstituteEntity> getSubstitute() {
-		return Substitute;
+	public String getHHT_SubstituteGroup() {
+		return HHT_SubstituteGroup;
 	}
 
-	public void setSubstitute(List<SubstituteEntity> substitute) {
-		Substitute = substitute;
+	public void setHHT_SubstituteGroup(String hHT_SubstituteGroup) {
+		HHT_SubstituteGroup = hHT_SubstituteGroup;
 	}
 
-	@Override
-	public String toString() {
-		return "BOMBodyEntity [Number=" + Number + ", Name=" + Name + ", Version=" + Version + ", Quantity=" + Quantity
-				+ ", Unit=" + Unit + ", ReferenceDesignatorRange=" + ReferenceDesignatorRange + ", Substitute="
-				+ Substitute.toString() + "]";
+	public String getHHT_Priority() {
+		return HHT_Priority;
+	}
+
+	public void setHHT_Priority(String hHT_Priority) {
+		HHT_Priority = hHT_Priority;
+	}
+
+	public String getHHT_Strategies() {
+		return HHT_Strategies;
+	}
+
+	public void setHHT_Strategies(String hHT_Strategies) {
+		HHT_Strategies = hHT_Strategies;
+	}
+
+	public String getHHT_UsagePossibility() {
+		return HHT_UsagePossibility;
+	}
+
+	public void setHHT_UsagePossibility(String hHT_UsagePossibility) {
+		HHT_UsagePossibility = hHT_UsagePossibility;
+	}
+
+	public String getHHT_MatchGroup() {
+		return HHT_MatchGroup;
+	}
+
+	public void setHHT_MatchGroup(String hHT_MatchGroup) {
+		HHT_MatchGroup = hHT_MatchGroup;
 	}
 
 }

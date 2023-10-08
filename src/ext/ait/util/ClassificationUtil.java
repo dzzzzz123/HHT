@@ -161,4 +161,25 @@ public class ClassificationUtil implements RemoteAccess {
 		}
 		return result.toString();
 	}
+
+	/**
+	 * 根据部件和部件绑定的分类属性的全局字符属性来得到分类的内部名称
+	 * @param part 部件
+	 * @param bind_attr_name 部件绑定的属性
+	 * @return 部件分类属性的内部名称
+	 */
+	public static String getClassificationInternal(WTPart part, String bind_attr_name) {
+		String bind_attr_value = null;
+		try {
+			if (bind_attr_name != null) {
+				System.out.println("The classification binding attribute on " + part + " is " + bind_attr_name);
+				PersistableAdapter obj = new PersistableAdapter(part, null, Locale.US, null);
+				obj.load(bind_attr_name);
+				bind_attr_value = (String) obj.get(bind_attr_name);
+			}
+		} catch (WTException e) {
+			e.printStackTrace();
+		}
+		return bind_attr_value;
+	}
 }

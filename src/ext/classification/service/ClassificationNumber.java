@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Optional;
 
+import ext.ait.util.ClassificationUtil;
 import ext.ait.util.PartUtil;
 import ext.ait.util.PersistenceUtil;
 import ext.ait.util.PropertiesUtil;
@@ -51,7 +52,8 @@ public class ClassificationNumber {
 	 * @return String 新编号
 	 */
 	private static String getNewNumberForEndItem(WTPart part) {
-		String classInternalName = pUtil.getValueByKey(part, "iba.internal.HHT_Classification");
+		String classInternalName = ClassificationUtil.getClassificationInternal(part,
+				pUtil.getValueByKey("iba.internal.HHT_Classification"));
 		String Brand = pUtil.getValueByKey(part, "iba.internal.Brand");
 		String Producer = pUtil.getValueByKey(part, "iba.internal.Producer");
 		String ProductModel = pUtil.getValueByKey(part, "iba.internal.ProductModel");

@@ -3,8 +3,11 @@ package ext.sap.BOM;
 import java.util.List;
 
 public class BOMEntity {
+
 	private String Number;
 	private String Name;
+	private String HHT_BasicQuantity;
+	private String Unit;
 	private String Version;
 	private String Factory;
 	private String ECNNumber;
@@ -14,11 +17,13 @@ public class BOMEntity {
 	public BOMEntity() {
 	}
 
-	public BOMEntity(String number, String name, String version, String factory, String eCNNumber, String stlan,
-			List<BOMBodyEntity> bOMBody) {
+	public BOMEntity(String number, String name, String hHT_BasicQuantity, String unit, String version, String factory,
+			String eCNNumber, String stlan, List<BOMBodyEntity> bOMBody) {
 		super();
 		Number = number;
 		Name = name;
+		HHT_BasicQuantity = hHT_BasicQuantity;
+		Unit = unit;
 		Version = version;
 		Factory = factory;
 		ECNNumber = eCNNumber;
@@ -82,10 +87,26 @@ public class BOMEntity {
 		BOMBody = bOMBody;
 	}
 
-	@Override
-	public String toString() {
-		return "BOMEntity [Number=" + Number + ", Name=" + Name + ", Version=" + Version + ", Factory=" + Factory
-				+ ", ECNNumber=" + ECNNumber + ", Stlan=" + Stlan + ", BOMBody=" + BOMBody.toString() + "]";
+	public String getUnit() {
+		return Unit;
 	}
 
+	public void setUnit(String unit) {
+		Unit = unit;
+	}
+
+	public String getHHT_BasicQuantity() {
+		return HHT_BasicQuantity;
+	}
+
+	public void setHHT_BasicQuantity(String hHT_BasicQuantity) {
+		HHT_BasicQuantity = hHT_BasicQuantity;
+	}
+
+	@Override
+	public String toString() {
+		return "BOMEntity [Number=" + Number + ", Name=" + Name + ", HHT_BasicQuantity=" + HHT_BasicQuantity + ", Unit="
+				+ Unit + ", Version=" + Version + ", Factory=" + Factory + ", ECNNumber=" + ECNNumber + ", Stlan="
+				+ Stlan + ", BOMBody=" + BOMBody + "]";
+	}
 }

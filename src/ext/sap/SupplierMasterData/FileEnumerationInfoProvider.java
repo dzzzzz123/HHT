@@ -83,7 +83,6 @@ public class FileEnumerationInfoProvider implements EnumerationInfoProvider {
 			for (Locale locale : SUPPORTED_LOCALES) {
 				String value = map.get(key);
 				String[] values = value.split("/");
-				System.out.println("Values:" + values[0] + " : " + values[1]);
 				enumEntryInfo.setLocalizableProperty(EnumerationEntryInfo.DISPLAY_NAME, locale, values[0]);
 				enumEntryInfo.setLocalizableProperty(EnumerationEntryInfo.DESCRIPTION, locale, values[1]);
 				enumEntryInfo.setLocalizableProperty(EnumerationEntryInfo.TOOLTIP, locale, value);

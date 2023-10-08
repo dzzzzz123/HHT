@@ -1,23 +1,13 @@
 package ext.sap.project;
 
-import java.nio.charset.Charset;
 import java.sql.Timestamp;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.support.BasicAuthenticationInterceptor;
-import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ext.ait.util.CommonUtil;
 import ext.ait.util.PropertiesUtil;
 import wt.projmgmt.admin.Project2;
 
@@ -81,32 +71,15 @@ public class SendProject2SAPService {
 	/**
 	 * 使用springframe的模板发送post请求传输数据给sap对应接口
 	 * 
-	 * @param param
-	 * @return String
+	 * @param json 发送给sap的json
+	 * @return String 返回的结果集
 	 */
-	public static String sendProject2SAPUseUrl(String param) {
+	public static String sendProject2SAPUseUrl(String json) {
 		String url = properties.getValueByKey("sap.url");
 		String username = properties.getValueByKey("sap.username");
 		String password = properties.getValueByKey("sap.password");
 
-		// 自定义请求头
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(username, password));
-		restTemplate.getMessageConverters().set(1, new StringHttpMessageConverter(Charset.forName("utf-8")));
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAcceptCharset(Collections.singletonList(Charset.forName("utf-8")));
-		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-
-		// 参数
-		HttpEntity<String> entity = new HttpEntity<String>(param, headers);
-		// POST方式请求
-		ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-		if (responseEntity == null) {
-			return null;
-		}
-
-		return responseEntity.getBody().toString();
+		return CommonUtil.requestInterface(url, username, password, json);
 	}
 
 }

@@ -1,7 +1,10 @@
 package ext.ait.util;
 
+import java.lang.reflect.Field;
+import java.nio.charset.Charset;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
@@ -10,6 +13,14 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.support.BasicAuthenticationInterceptor;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
 import com.ptc.core.lwc.common.view.EnumerationDefinitionReadView;
 import com.ptc.core.lwc.common.view.EnumerationEntryReadView;
@@ -65,6 +76,32 @@ public class CommonUtil implements RemoteAccess {
 		} catch (Exception e) {
 			throw new WTException(e);
 		}
+	}
+
+	/**
+	 * 将一个实体类中的所有字段转换为Map
+	 * @param entity 实体类
+	 * @return 输出的Map
+	 */
+	public static <T> Map<String, Object> entityToMap(T entity) {
+		Map<String, Object> resultMap = new HashMap<>();
+
+		// 使用反射获取类的所有字段
+		Field[] fields = entity.getClass().getDeclaredFields();
+
+		try {
+			for (Field field : fields) {
+				// 设置字段为可访问，以便获取私有字段的值
+				field.setAccessible(true);
+
+				// 将字段名和字段值添加到Map中
+				resultMap.put(field.getName(), field.get(entity));
+			}
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+
+		return resultMap;
 	}
 
 	/**
@@ -420,4 +457,36 @@ public class CommonUtil implements RemoteAccess {
 		}
 		return 0;
 	}
+
+	/**
+	 * 携带信息并用POST请求外部系统（如SAP，OA）中的某个接口
+	 * 存在账户和密码时则设置验证否则不设置
+	 * @param url 外部系统对应的地址
+	 * @param json 需要传输的信息
+	 * @return 返回信息
+	 */
+	public static String requestInterface(String url, String username, String password, String json) {
+
+		// 自定义请求头
+		RestTemplate restTemplate = new RestTemplate();
+		if (StringUtils.isNotBlank(password) && StringUtils.isNotBlank(username)) {
+			restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(username, password));
+		}
+		restTemplate.getMessageConverters().set(1, new StringHttpMessageConverter(Charset.forName("utf-8")));
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setAcceptCharset(Collections.singletonList(Charset.forName("utf-8")));
+		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+		// 参数
+		HttpEntity<String> entity = new HttpEntity<String>(json, headers);
+		// POST方式请求
+		ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+		if (responseEntity == null) {
+			return null;
+		}
+
+		return responseEntity.getBody().toString();
+	}
+
 }
