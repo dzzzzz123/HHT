@@ -4,6 +4,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -143,7 +145,6 @@ public class ClassificationUtil implements RemoteAccess {
 					internalName = null;
 				}
 			}
-
 		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
 		} catch (SecurityException e) {
@@ -181,5 +182,27 @@ public class ClassificationUtil implements RemoteAccess {
 			e.printStackTrace();
 		}
 		return bind_attr_value;
+	}
+
+	/**
+	 * 通过SQL语句来获取某个分类中的所有部件
+	 * @param IBAName 部件绑定的属性
+	 * @param classNode 分类节点内部名称
+	 * @return classNode这个分类节点中的所有部件
+	 */
+	public static List<WTPart> getClassPart(String IBAName, String classNode) {
+		List<WTPart> partList = new ArrayList<>();
+		String sql = "SELECT DISTINCT WM.WTPARTNUMBER FROM WTPART W INNER JOIN STRINGVALUE A1 ON W.IDA2A2 = A1.IDA3A4 INNER JOIN STRINGDEFINITION SD ON A1.IDA3A6 = SD.IDA2A2 INNER JOIN WTPARTMASTER WM ON W.IDA3MASTERREFERENCE = WM.IDA2A2 WHERE SD.NAME LIKE ? AND A1.VALUE = ? ";
+		try {
+			ResultSet resultSet = CommonUtil.excuteSelect(sql, IBAName, classNode);
+			while (resultSet.next()) {
+				String partNumber = resultSet.getString("WTPARTNUMBER");
+				WTPart part = PartUtil.getWTPartByNumber(partNumber);
+				partList.add(part);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return partList;
 	}
 }
