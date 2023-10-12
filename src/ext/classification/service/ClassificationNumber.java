@@ -1,8 +1,8 @@
 package ext.classification.service;
 
-import java.text.DecimalFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 import ext.ait.util.ClassificationUtil;
 import ext.ait.util.PartUtil;
@@ -20,29 +20,28 @@ public class ClassificationNumber {
 	 * @param part
 	 */
 	public static String process(WTPart part) {
-		String result = "";
 		String prefix = pUtil.getValueByKey("temporary.number.prefix");
 		String typeName = PersistenceUtil.getSubTypeInternal(part);
 		String endItemTypeName = pUtil.getValueByKey("subType.internal.endItem");
 		String oldNumber = part.getNumber();
-		String newNumber = "";
 		if (typeName.equals(endItemTypeName)) {
-			newNumber = getNewNumberForEndItem(part);
+			String newNumber = getNewNumberForEndItem(part);
 			// 对部件输出的新编码进行校验
-			if (newNumber.length() != 15) {
-				newNumber = oldNumber;
-				result = oldNumber + " 所生成的新编码不符合规范为 " + newNumber;
+			if (newNumber.length() == 15) {
+				PartUtil.changePartNumber(part, newNumber);
+				return "";
+			} else {
+				return oldNumber + " 所生成的新编码不符合规范为 " + newNumber;
 			}
 		} else {
 			// 对成品部件原编码的前缀进行判断
 			if (oldNumber.startsWith(prefix)) {
-				newNumber = getNewNumberForPart(part);
+				PartUtil.changePartNumber(part, getNewNumberForPart(part));
+				return "";
 			} else {
-				result = oldNumber + " 的前缀不符合规范";
+				return oldNumber + " 的前缀不符合规范";
 			}
 		}
-		PartUtil.changePartNumber(part, newNumber);
-		return result;
 	}
 
 	/**
@@ -78,21 +77,20 @@ public class ClassificationNumber {
 	private static String getNewNumberForPart(WTPart part) {
 		String classInternalName = pUtil.getValueByKey(part, "iba.internal.HHT_Classification");
 		String suffix = pUtil.getValueByKey("formal.number.suffix");
-		int serialNumber = 0;
-		String serialNumberStr = "";
-		List<String> numbers = Util.getPartNumbersByPrefix(classInternalName);
+		String maxNumberStr = "";
+		List<String> numbers = Util.getPartNumbersByPrefix(classInternalName + "%");
 
-		// 流示获取最大值
-		Optional<String> maxSerialNumber = numbers.stream().max(String::compareTo);
-
-		if (maxSerialNumber.isPresent()) {
-			serialNumber = Integer.parseInt(maxSerialNumber.get()) + 1;
-		} else {
-			serialNumber = 1;
-		}
-		// 添加前导0000
-		DecimalFormat decimalFormat = new DecimalFormat("0000");
-		serialNumberStr = decimalFormat.format(serialNumber);
-		return classInternalName + serialNumberStr + suffix;
+		// 使用内部类比较器来比较字符串
+		Comparator<String> comparator = (s1, s2) -> {
+			int num1 = Integer.parseInt(s1.replaceAll("\\D", ""));
+			int num2 = Integer.parseInt(s2.replaceAll("\\D", ""));
+			return Integer.compare(num1, num2);
+		};
+		// 使用自定义的比较器来查找最大值
+		maxNumberStr = Collections.max(numbers, comparator);
+		maxNumberStr = maxNumberStr.substring(maxNumberStr.length() - 5, maxNumberStr.length() - 1);
+		maxNumberStr = maxNumberStr.isEmpty() ? "0" : String.valueOf(Integer.parseInt(maxNumberStr) + 1);
+		maxNumberStr = String.format("%04d", Integer.parseInt(maxNumberStr));
+		return classInternalName + maxNumberStr + suffix;
 	}
 }

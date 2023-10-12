@@ -459,6 +459,35 @@ public class CommonUtil implements RemoteAccess {
 	}
 
 	/**
+	 * 执行插入的SQL语句
+	 * @param sql 被执行的SQL语句
+	 * @param params SQL语句中的参数
+	 * @return 是否执行成功
+	 */
+	public static boolean excuteInsert(String sql, String... params) {
+		try {
+			WTConnection connection = CommonUtil.getWTConnection();
+			PreparedStatement statement = connection.prepareStatement(sql);
+			for (int i = 0; i < params.length; i++) {
+				statement.setString(i + 1, params[i]);
+			}
+
+			// 输出当前执行更新操作的SQL语句
+			String fullSql = sql;
+			for (String param : params) {
+				fullSql = fullSql.replaceFirst("\\?", "'" + param + "'");
+			}
+			System.out.println("--------当前执行插入操作的SQL语句为--------");
+			System.out.println(fullSql);
+
+			return statement.execute();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	/**
 	 * 携带信息并用POST请求外部系统（如SAP，OA）中的某个接口
 	 * 存在账户和密码时则设置验证否则不设置
 	 * @param url 外部系统对应的地址
