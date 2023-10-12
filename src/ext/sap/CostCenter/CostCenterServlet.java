@@ -2,7 +2,6 @@ package ext.sap.CostCenter;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ext.ait.util.PropertiesUtil;
@@ -23,8 +24,7 @@ public class CostCenterServlet implements Controller {
 
 	@Override
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		response.setCharacterEncoding("utf-8");
-		response.setContentType("appliction/json;charset=utf-8");
+
 		// 从请求中获取JSON数据
 		BufferedReader reader = request.getReader();
 		StringBuilder jsonBuilder = new StringBuilder();
@@ -36,11 +36,20 @@ public class CostCenterServlet implements Controller {
 
 		// 使用Jackson库解析JSON数据并存储在List<CostCenterEntity>中
 		ObjectMapper objectMapper = new ObjectMapper();
-		CostCenterEntity[] costCenterEntities = objectMapper.readValue(jsonData, CostCenterEntity[].class);
-		List<CostCenterEntity> costCenterEntityList = Arrays.asList(costCenterEntities);
+
+		// 创建一个包含 "data" 字段的对象
+		JsonNode rootNode = objectMapper.readTree(jsonData);
+		JsonNode dataNode = rootNode.get("data");
+		// 检查是否有 "data" 字段，然后解析它
+		List<CostCenterEntity> costCenterEntityList = objectMapper.readValue(dataNode.toString(),
+				new TypeReference<List<CostCenterEntity>>() {
+				});
+
 		// 写入接收到的数据到properties文件中
 		writeToProperties(costCenterEntityList);
 
+		response.setCharacterEncoding("utf-8");
+		response.setContentType("appliction/json;charset=utf-8");
 		PrintWriter out = response.getWriter();
 		out.print(Result.success().toString());
 		out.close();
