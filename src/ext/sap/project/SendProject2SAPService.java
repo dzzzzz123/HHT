@@ -81,7 +81,7 @@ public class SendProject2SAPService {
 		String username = properties.getValueByKey("sap.username");
 		String password = properties.getValueByKey("sap.password");
 
-		return CommonUtil.requestInterface(url, username, password, json);
+		return CommonUtil.requestInterface(url, username, password, json, "POST");
 	}
 
 	public static String getResultFromJson(String json) {

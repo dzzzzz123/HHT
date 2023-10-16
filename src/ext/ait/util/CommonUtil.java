@@ -464,7 +464,7 @@ public class CommonUtil implements RemoteAccess {
 	 * @param params SQL语句中的参数
 	 * @return 是否执行成功
 	 */
-	public static boolean excuteInsert(String sql, String... params) {
+	public static int excuteInsert(String sql, String... params) {
 		try {
 			WTConnection connection = CommonUtil.getWTConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
@@ -475,16 +475,15 @@ public class CommonUtil implements RemoteAccess {
 			// 输出当前执行更新操作的SQL语句
 			String fullSql = sql;
 			for (String param : params) {
-				fullSql = fullSql.replaceFirst("\\?", "'" + param + "'");
+				fullSql = fullSql.replaceFirst("\\?", "\"" + param + "\"");
 			}
 			System.out.println("--------当前执行插入操作的SQL语句为--------");
 			System.out.println(fullSql);
-
-			return statement.execute();
+			return statement.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return 0;
 	}
 
 	/**
@@ -494,7 +493,8 @@ public class CommonUtil implements RemoteAccess {
 	 * @param json 需要传输的信息
 	 * @return 返回信息
 	 */
-	public static String requestInterface(String url, String username, String password, String json) {
+	public static String requestInterface(String url, String username, String password, String json, String method,
+			HashMap<String, String> map) {
 
 		// 自定义请求头
 		RestTemplate restTemplate = new RestTemplate();
@@ -503,14 +503,19 @@ public class CommonUtil implements RemoteAccess {
 		}
 		restTemplate.getMessageConverters().set(1, new StringHttpMessageConverter(Charset.forName("utf-8")));
 		HttpHeaders headers = new HttpHeaders();
+		for (String set : map) {
+
+		}
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setAcceptCharset(Collections.singletonList(Charset.forName("utf-8")));
 		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
 		// 参数
 		HttpEntity<String> entity = new HttpEntity<String>(json, headers);
-		// POST方式请求
-		ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+		ResponseEntity<String> responseEntity = method.equals("GET")
+				? restTemplate.exchange(url, HttpMethod.GET, entity, String.class)
+				: restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+
 		if (responseEntity == null) {
 			return null;
 		}
