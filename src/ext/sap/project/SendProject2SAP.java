@@ -23,14 +23,20 @@ public class SendProject2SAP {
 	public static List<String> sendProjectList2SAP(WTObject obj) {
 		List<Project2> list = processProjectList(obj);
 		List<String> msg = new ArrayList<>();
-		list.forEach(project -> {
-			ProjectEntity projectEntity = SendProject2SAPService.getProjectEntity(project);
+		for (Project2 project : list) {
+			ProjectEntity projectEntity = null;
+			try {
+				projectEntity = SendProject2SAPService.getProjectEntity(project);
+			} catch (WTException e) {
+				msg.add("预估结束日期未输入，请输入！");
+				return msg;
+			}
 			String json = SendProject2SAPService.getJsonByEntity(projectEntity);
 			System.out.println(json);
 			String result = SendProject2SAPService.sendProject2SAPUseUrl(json);
 			System.out.println(result);
 			msg.add(SendProject2SAPService.getResultFromJson(result));
-		});
+		}
 		return msg;
 	}
 

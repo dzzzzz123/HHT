@@ -12,7 +12,7 @@ import com.ptc.mvc.components.TableConfig;
 
 import wt.util.WTException;
 
-@ComponentBuilder(value = { "sapResult.error.list" }, type = ComponentBuilderType.CONFIG_AND_DATA)
+@ComponentBuilder(value = { "sap.result.list" }, type = ComponentBuilderType.CONFIG_AND_DATA)
 public class SAPResultTableBuilder extends AbstractComponentBuilder {
 
 	@Override

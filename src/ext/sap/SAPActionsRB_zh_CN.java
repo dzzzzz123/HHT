@@ -27,4 +27,10 @@ public class SAPActionsRB_zh_CN extends WTListResourceBundle {
 	public static final String PRIVATE_CONSTANT_9 = "SAPWizard.sendPartSAP.icon";
 	@RBEntry("height=650,width=750")
 	public static final String PRIVATE_CONSTANT_10 = "SAPWizard.sendPartSAP.moreurlinfo";
+	@RBEntry("结果集")
+	public static final String PRIVATE_CONSTANT_11 = "SAPWizard.masterDataReview.title";
+	@RBEntry("结果集")
+	public static final String PRIVATE_CONSTANT_12 = "SAPWizard.masterDataReview.description";
+	@RBEntry("结果集")
+	public static final String PRIVATE_CONSTANT_13 = "SAPWizard.masterDataReview.tooltip";
 }

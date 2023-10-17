@@ -1,6 +1,8 @@
 package ext.sap.project;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ext.ait.util.CommonUtil;
 import ext.ait.util.PropertiesUtil;
 import wt.projmgmt.admin.Project2;
+import wt.util.WTException;
 
 public class SendProject2SAPService {
 	private static PropertiesUtil properties = PropertiesUtil.getInstance("config.properties");
@@ -20,19 +23,22 @@ public class SendProject2SAPService {
 	 * 
 	 * @param WTPart part
 	 * @return BOMEntity
+	 * @throws WTException
 	 */
-	public static ProjectEntity getProjectEntity(Project2 project) {
+	public static ProjectEntity getProjectEntity(Project2 project) throws WTException {
 		ProjectEntity projectEntity = new ProjectEntity();
 		projectEntity.setProjectNumber(project.getProjectNumber());
 		projectEntity.setProjectName(project.getName());
-		projectEntity.setProjectCategory(project.getCategory().getDisplay());
+		projectEntity.setProjectCategory(getCategory(project.getCategory().getDisplay()));
 		projectEntity.setProjectOwner(project.getOwner().getName());
-		projectEntity.setProjectCreateStamp(project.getCreateTimestamp().toString());
+		projectEntity.setProjectCreateStamp(
+				new SimpleDateFormat("yyyyMMdd").format(new Date(project.getCreateTimestamp().getTime())));
+
 		Timestamp endTime = project.getEstimatedEndDate();
 		if (endTime == null) {
-			projectEntity.setProjectEndStamp("无结束日期");
+			throw new WTException();
 		} else {
-			projectEntity.setProjectEndStamp(endTime.toString());
+			projectEntity.setProjectEndStamp(new SimpleDateFormat("yyyyMMdd").format(new Date(endTime.getTime())));
 		}
 		projectEntity.setFactoryCode(project.getBusinessUnit());
 		projectEntity.setProjectDescription(project.getDescription());
@@ -70,6 +76,21 @@ public class SendProject2SAPService {
 		return "";
 	}
 
+	public static String getCategory(String category) {
+		switch (category) {
+		case "A类":
+			return "10";
+		case "B类":
+			return "20";
+		case "C类":
+			return "30";
+		case "D类":
+			return "40";
+		default:
+			return "10";
+		}
+	}
+
 	/**
 	 * 使用springframe的模板发送post请求传输数据给sap对应接口
 	 * 
@@ -81,7 +102,7 @@ public class SendProject2SAPService {
 		String username = properties.getValueByKey("sap.username");
 		String password = properties.getValueByKey("sap.password");
 
-		return CommonUtil.requestInterface(url, username, password, json, "POST");
+		return CommonUtil.requestInterface(url, username, password, json, "POST", null);
 	}
 
 	public static String getResultFromJson(String json) {

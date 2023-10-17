@@ -178,7 +178,7 @@ public class SendBOM2SAPService {
 		String username = properties.getValueByKey("sap.username");
 		String password = properties.getValueByKey("sap.password");
 
-		return CommonUtil.requestInterface(url, username, password, json, "POST");
+		return CommonUtil.requestInterface(url, username, password, json, "POST", null);
 
 	}
 

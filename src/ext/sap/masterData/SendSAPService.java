@@ -256,7 +256,7 @@ public class SendSAPService {
 		String username = pUtil.getValueByKey("sap.username");
 		String password = pUtil.getValueByKey("sap.password");
 
-		return CommonUtil.requestInterface(url, username, password, masterDataJson, "POST");
+		return CommonUtil.requestInterface(url, username, password, masterDataJson, "POST", null);
 	}
 
 	public static String getResultFromJson(String json) {
