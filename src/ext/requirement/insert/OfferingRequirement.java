@@ -6,6 +6,12 @@ public class OfferingRequirement {
 	@JsonProperty("@odata.type")
 	private String odataType;
 
+	@JsonProperty("Context@odata.bind")
+	private String contextOdataBind;
+
+	@JsonProperty("Folder@odata.bind")
+	private String folderOdataBind;
+
 	@JsonProperty("Name")
 	private String name;
 
@@ -14,12 +20,6 @@ public class OfferingRequirement {
 
 	@JsonProperty("HHTRequirementDescription")
 	private String description;
-
-	@JsonProperty("Context@odata.bind")
-	private String contextOdataBind;
-
-	@JsonProperty("Folder@odata.bind")
-	private String folderOdataBind;
 
 	public OfferingRequirement() {
 

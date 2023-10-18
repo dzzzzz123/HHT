@@ -22,6 +22,10 @@ import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ptc.core.lwc.common.view.EnumerationDefinitionReadView;
 import com.ptc.core.lwc.common.view.EnumerationEntryReadView;
 import com.ptc.core.lwc.server.LWCLocalizablePropertyValue;
@@ -80,6 +84,7 @@ public class CommonUtil implements RemoteAccess {
 
 	/**
 	 * 将一个实体类中的所有字段转换为Map
+	 * 
 	 * @param entity 实体类
 	 * @return 输出的Map
 	 */
@@ -398,9 +403,10 @@ public class CommonUtil implements RemoteAccess {
 	}
 
 	/**
-	 * 执行查询的SQL语句并返回结果
-	 * SQL示例：SELECT WTPARTNUMBER FROM WTPARTMASTER WHERE WTPARTNUMBER LIKE ?
-	 * @param sql SQL语句
+	 * 执行查询的SQL语句并返回结果 SQL示例：SELECT WTPARTNUMBER FROM WTPARTMASTER WHERE
+	 * WTPARTNUMBER LIKE ?
+	 * 
+	 * @param sql    SQL语句
 	 * @param params 参数集
 	 * @return ResultSet 返回结果集
 	 */
@@ -429,9 +435,10 @@ public class CommonUtil implements RemoteAccess {
 	}
 
 	/**
-	 * 执行更新的SQL语句并返回被更新的条数
-	 * SQL示例：UPDATE WTPARTMASTER SET WTPARTNUMBER = ? WHERE IDA2A2 = ?
-	 * @param sql SQL语句
+	 * 执行更新的SQL语句并返回被更新的条数 SQL示例：UPDATE WTPARTMASTER SET WTPARTNUMBER = ? WHERE
+	 * IDA2A2 = ?
+	 * 
+	 * @param sql    SQL语句
 	 * @param params 参数集
 	 * @return int 数据库表被影响的行数
 	 */
@@ -460,7 +467,8 @@ public class CommonUtil implements RemoteAccess {
 
 	/**
 	 * 执行插入的SQL语句
-	 * @param sql 被执行的SQL语句
+	 * 
+	 * @param sql    被执行的SQL语句
 	 * @param params SQL语句中的参数
 	 * @return 是否执行成功
 	 */
@@ -487,9 +495,9 @@ public class CommonUtil implements RemoteAccess {
 	}
 
 	/**
-	 * 携带信息并用POST请求外部系统（如SAP，OA）中的某个接口
-	 * 存在账户和密码时则设置验证否则不设置
-	 * @param url 外部系统对应的地址
+	 * 携带信息并用POST请求外部系统（如SAP，OA）中的某个接口 存在账户和密码时则设置验证否则不设置 map为添加到Headers上的内容，无则填null
+	 * 
+	 * @param url  外部系统对应的地址
 	 * @param json 需要传输的信息
 	 * @return 返回信息
 	 */
@@ -503,13 +511,18 @@ public class CommonUtil implements RemoteAccess {
 		}
 		restTemplate.getMessageConverters().set(1, new StringHttpMessageConverter(Charset.forName("utf-8")));
 		HttpHeaders headers = new HttpHeaders();
-		for (String set : map) {
-
-		}
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setAcceptCharset(Collections.singletonList(Charset.forName("utf-8")));
 		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-
+		if (map != null) {
+			Set<String> set = map.keySet();
+			if (set.size() > 0) {
+				for (String key : set) {
+					String value = map.get(key);
+					headers.add(key, value);
+				}
+			}
+		}
 		// 参数
 		HttpEntity<String> entity = new HttpEntity<String>(json, headers);
 		ResponseEntity<String> responseEntity = method.equals("GET")
@@ -523,4 +536,24 @@ public class CommonUtil implements RemoteAccess {
 		return responseEntity.getBody().toString();
 	}
 
+	/**
+	 * 获取CSRF_NONCE（token）
+	 * 
+	 * @return CSRF_NONCE
+	 */
+	public static String getCSRF_NONCE() {
+		String url = "http://tplm.honghe-tech.com/Windchill/servlet/odata/PTC/GetCSRFToken()";
+		String result = CommonUtil.requestInterface(url, "wcadmin", "wcadmin", "", "GET", null);
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			JsonNode rootNode = objectMapper.readTree(result);
+			JsonNode esMessgNode = rootNode.get("NonceValue");
+			return esMessgNode.asText();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
 }
