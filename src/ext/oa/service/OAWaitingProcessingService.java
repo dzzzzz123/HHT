@@ -224,7 +224,7 @@ public class OAWaitingProcessingService {
 
 	public static String sendNewTask(String paramJson, String url) {
 		try {
-			String result = CommonUtil.requestInterface(url, "", "", paramJson);
+			String result = CommonUtil.requestInterface(url, "", "", paramJson, "POST", null);
 			System.out.println(result);
 			ObjectMapper objectMapper = new ObjectMapper();
 			JsonNode rootNode = objectMapper.readTree(result);

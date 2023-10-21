@@ -79,7 +79,10 @@ public class ClassificationNumber {
 		String suffix = pUtil.getValueByKey("formal.number.suffix");
 		String maxNumberStr = "";
 		List<String> numbers = Util.getPartNumbersByPrefix(classInternalName + "%");
-
+		if (numbers.isEmpty()) {
+			// 例如，返回一个默认值
+			return classInternalName + "0001" + suffix;
+		}
 		// 使用内部类比较器来比较字符串
 		Comparator<String> comparator = (s1, s2) -> {
 			int num1 = Integer.parseInt(s1.replaceAll("\\D", ""));
@@ -88,6 +91,7 @@ public class ClassificationNumber {
 		};
 		// 使用自定义的比较器来查找最大值
 		maxNumberStr = Collections.max(numbers, comparator);
+
 		maxNumberStr = maxNumberStr.substring(maxNumberStr.length() - 5, maxNumberStr.length() - 1);
 		maxNumberStr = maxNumberStr.isEmpty() ? "0" : String.valueOf(Integer.parseInt(maxNumberStr) + 1);
 		maxNumberStr = String.format("%04d", Integer.parseInt(maxNumberStr));

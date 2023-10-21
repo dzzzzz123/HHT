@@ -54,7 +54,7 @@ public class SendSAPService {
 		String number = part.getNumber();
 		String name = part.getName();
 		String version = VersionUtil.getVersion(part);
-		String unit = part.getDefaultUnit().getDisplay();
+		String unit = part.getDefaultUnit().toString();
 		String state = part.getState().getState().getDisplay();
 		String defaultTraceCode = part.getDefaultTraceCode().getDisplay();
 
@@ -63,6 +63,9 @@ public class SendSAPService {
 		String PartType = mapClassificationToPartType(HHT_ClassificationCode, HHT_INValueBoolean);
 		String HHT_ClassificationName = ClassificationUtil.getClassificationdDisPlayName(HHT_ClassificationCode);
 		state = getSAPState(state);
+		System.out.println("unit" + unit);
+		unit = pUtil.getValueByKey(unit);
+		System.out.println("unit" + unit);
 		HHT_Bonded = HHT_Bonded.equals("是") ? "Y" : "N";
 
 		sapPartEntity.setPartType(PartType);

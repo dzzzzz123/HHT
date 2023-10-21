@@ -1,7 +1,8 @@
 package ext.HHT.CIS;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.ptc.core.components.beans.ObjectBean;
 import com.ptc.core.components.forms.DefaultObjectFormProcessor;
@@ -19,31 +20,27 @@ public class CISProcessor extends DefaultObjectFormProcessor {
 	@Override
 	public FormResult doOperation(NmCommandBean arg0, List<ObjectBean> arg1) throws WTException {
 		WTObject ref = (WTObject) arg0.getPrimaryOid().getRef();
-		FormResult formResult = null;
-		List<String> errorList = new ArrayList<>();
-		String[] result = new String[] {};
+		FormResult formresult = null;
 
 		try {
-			errorList = CISHelper.process(ref);
-			result = errorList.toArray(new String[errorList.size()]);
+			List<String> msg = CISHelper.process(ref);
+			if (msg.size() == 1 && StringUtils.isNotBlank(msg.get(0))) {
+				formresult = new FormResult(FormProcessingStatus.FAILURE);
+				formresult.addFeedbackMessage(new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(), null,
+						null, new String[] { msg.get(0) }));
+				return formresult;
+			}
 		} catch (Exception e) {
-			formResult = new FormResult(FormProcessingStatus.FAILURE);
-			formResult.addFeedbackMessage(new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(), null,
+			formresult = new FormResult(FormProcessingStatus.FAILURE);
+			formresult.addFeedbackMessage(new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(), null,
 					null, new String[] { "CIS发送失败！", e.getMessage() }));
 			e.printStackTrace();
-			return formResult;
+			return formresult;
 		}
 
-		if (result.length > 0) {
-			formResult = new FormResult(FormProcessingStatus.FAILURE);
-			formResult.addFeedbackMessage(
-					new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(), null, null, result));
-			return formResult;
-		} else {
-			formResult = new FormResult(FormProcessingStatus.SUCCESS);
-			formResult.addFeedbackMessage(new FeedbackMessage(FeedbackType.SUCCESS, SessionHelper.getLocale(), null,
-					null, new String[] { "CIS发送成功！" }));
-			return formResult;
-		}
+		formresult = new FormResult(FormProcessingStatus.SUCCESS);
+		formresult.addFeedbackMessage(new FeedbackMessage(FeedbackType.SUCCESS, SessionHelper.getLocale(), null, null,
+				new String[] { "CIS发送成功！" }));
+		return formresult;
 	}
 }

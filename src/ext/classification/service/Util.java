@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
 import ext.ait.util.ClassificationUtil;
 import ext.ait.util.CommonUtil;
 import ext.ait.util.IBAUtil;
@@ -42,7 +44,7 @@ public class Util {
 	 * 根据从配置文件中读取分类所对应的新名称/描述规则
 	 * 
 	 * @param partten config中获取的规则
-	 * @param part 获取数据源部件
+	 * @param part    获取数据源部件
 	 * @return String 新名称/描述
 	 */
 	public static String processPartten(String partten, WTPart part) {
@@ -58,7 +60,7 @@ public class Util {
 				} else {
 					if (set.contains(word)) {
 						String displayName = ClassificationUtil.getDisplayByInternal(part, word);
-						if (displayName.length() > 0) {
+						if (StringUtils.isNotBlank(displayName)) {
 							newStr += displayName;
 						} else {
 							newStr += ibaUtil.getIBAValue(word);

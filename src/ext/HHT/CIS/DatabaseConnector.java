@@ -13,7 +13,9 @@ public class DatabaseConnector {
 		String JDBC_URL = pUtil.getValueByKey("JDBC_URL");
 		String USERNAME = pUtil.getValueByKey("USERNAME");
 		String PASSWORD = pUtil.getValueByKey("PASSWORD");
+		System.out.println("JDBC_URL=" + JDBC_URL + "USERNAME=" + USERNAME + "PASSWORD=" + PASSWORD);
 		return DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+
 	}
 
 }
