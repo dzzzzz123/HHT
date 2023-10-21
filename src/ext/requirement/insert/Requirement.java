@@ -1,18 +1,32 @@
 package ext.requirement.insert;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Requirement {
 
+	@JsonProperty("Name")
 	private String name;
+	@JsonProperty("Context")
 	private String context;
+	@JsonProperty("Folder")
 	private String folder;
+	@JsonProperty("Description")
 	private String description;
+	@JsonProperty("HHT_Priority")
 	private String HHT_Priority;
+	@JsonProperty("HHT_ReqCategory")
 	private String HHT_ReqCategory;
+	@JsonProperty("HHT_ReqBelong")
 	private String HHT_ReqBelong;
+	@JsonProperty("HHT_ReqGroup")
 	private String HHT_ReqGroup;
+	@JsonProperty("HHT_ReqSource")
 	private String HHT_ReqSource;
+	@JsonProperty("HHT_ipdReq")
 	private String HHT_ipdReq;
+	@JsonProperty("HHT_CustomerComment")
 	private String HHT_CustomerComment;
+	@JsonProperty("HHT_CustomerRole")
 	private String HHT_CustomerRole;
 
 	public Requirement() {

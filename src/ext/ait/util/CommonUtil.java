@@ -503,6 +503,12 @@ public class CommonUtil implements RemoteAccess {
 	 */
 	public static String requestInterface(String url, String username, String password, String json, String method,
 			HashMap<String, String> map) {
+		System.out.println("--------当前执行的请求接口的参数列表--------");
+		System.out.println("URL: " + url);
+		System.out.println("USERNAME: " + username + " PASSWORD:" + password);
+		System.out.println("JSON: " + json);
+		System.out.println("METHOD: " + method);
+		System.out.println("HEADERS: ");
 
 		// 自定义请求头
 		RestTemplate restTemplate = new RestTemplate();
@@ -519,6 +525,7 @@ public class CommonUtil implements RemoteAccess {
 			if (set.size() > 0) {
 				for (String key : set) {
 					String value = map.get(key);
+					System.out.println("key:" + key + " value:" + map.get(key));
 					headers.add(key, value);
 				}
 			}
@@ -532,8 +539,9 @@ public class CommonUtil implements RemoteAccess {
 		if (responseEntity == null) {
 			return null;
 		}
-
-		return responseEntity.getBody().toString();
+		String resultJson = responseEntity.getBody().toString();
+		System.out.println("RESULTJSON: " + resultJson);
+		return resultJson;
 	}
 
 	/**
@@ -541,8 +549,7 @@ public class CommonUtil implements RemoteAccess {
 	 * 
 	 * @return CSRF_NONCE
 	 */
-	public static String getCSRF_NONCE() {
-		String url = "http://tplm.honghe-tech.com/Windchill/servlet/odata/PTC/GetCSRFToken()";
+	public static String getCSRF_NONCE(String url) {
 		String result = CommonUtil.requestInterface(url, "wcadmin", "wcadmin", "", "GET", null);
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {

@@ -2,7 +2,6 @@ package ext.requirement.insert;
 
 import java.io.BufferedReader;
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,12 +32,14 @@ public class InsertRequirementServlet implements Controller {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		JsonNode rootNode = objectMapper.readTree(jsonInput.toString());
-		JsonNode datasNode = rootNode.get("datas");
+		JsonNode datasNode = rootNode.get("data");
 		Requirement requirement = objectMapper.treeToValue(datasNode, Requirement.class);
-
+		System.out.println("requirement: " + requirement);
 		String sql = "INSERT INTO CUSTOMREQUIREMENT (IDA2A2, RICHTEXT) VALUES ( ? , ? )";
 		String partId = createRequirement(requirement);
 		String postsJson = objectMapper.writeValueAsString(requirement.getDescription());
+		System.out.println("partId: " + partId);
+		System.out.println("postsJson: " + postsJson);
 		CommonUtil.excuteInsert(sql, partId, postsJson);
 
 		// 将json转换为实体类
@@ -58,21 +59,33 @@ public class InsertRequirementServlet implements Controller {
 		String username = properties.getValueByKey("windchill.username");
 		String password = properties.getValueByKey("windchill.password");
 		String requirementSoftType = properties.getValueByKey("requirement.softType");
+		String CSRFurl = properties.getValueByKey("CSRF.url");
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		OfferingRequirement offeringRequirement = new OfferingRequirement();
-		offeringRequirement.setNumber("");
 		offeringRequirement.setName(requirement.getName());
 		offeringRequirement.setOdataType(requirementSoftType);
 		offeringRequirement.setContextOdataBind(requirement.getContext());
 		offeringRequirement.setFolderOdataBind(requirement.getFolder());
-		offeringRequirement.setDescription(requirement.getDescription());
+		offeringRequirement.setHHTReqBelong(requirement.getHHT_ReqBelong());
+		HashMap<String, String> map = new HashMap<>();
+		map.put("Value", requirement.getHHT_ReqCategory());
+		offeringRequirement.setHHTReqCategory(map);
+		offeringRequirement.setHHTPriority(requirement.getHHT_Priority());
+		offeringRequirement.setHHTReqSource(requirement.getHHT_ReqSource());
+		offeringRequirement.setHHTipdReq(requirement.getHHT_ipdReq());
+		offeringRequirement.setHHTCustomerRole(requirement.getHHT_CustomerRole());
+		offeringRequirement.setHHTCustomerComment(requirement.getHHT_CustomerComment());
 
 		// 将实体类转换为 JSON
 		String offeringRequirementJson = objectMapper.writeValueAsString(offeringRequirement);
-		System.out.println("offeringRequirementJson" + offeringRequirementJson);
-		String result = CommonUtil.requestInterface(url, username, password, "", "POST",
-				(HashMap<String, String>) Map.of("CSRF_NONCE", CommonUtil.getCSRF_NONCE()));
+		System.out.println("offeringRequirementJson:" + offeringRequirementJson);
+		String result = CommonUtil.requestInterface(url, username, password, offeringRequirementJson, "POST",
+				new HashMap<String, String>() {
+					{
+						put("CSRF_NONCE", CommonUtil.getCSRF_NONCE(CSRFurl));
+					}
+				});
 		System.out.println("result" + result);
 		JsonNode rootNode = objectMapper.readTree(result);
 		JsonNode id = rootNode.get("ID");
