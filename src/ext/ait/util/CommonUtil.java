@@ -1,5 +1,7 @@
 package ext.ait.util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.sql.PreparedStatement;
@@ -7,12 +9,16 @@ import java.sql.ResultSet;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -26,6 +32,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.ptc.core.lwc.common.view.EnumerationDefinitionReadView;
 import com.ptc.core.lwc.common.view.EnumerationEntryReadView;
 import com.ptc.core.lwc.server.LWCLocalizablePropertyValue;
@@ -421,6 +428,7 @@ public class CommonUtil implements RemoteAccess {
 			// 输出当前执行查询操作的SQL语句
 			String fullSql = sql;
 			for (String param : params) {
+				param = param.length() > 250 ? "此属性太长，不显示内容" : param;
 				fullSql = fullSql.replaceFirst("\\?", "'" + param + "'");
 			}
 			System.out.println("--------当前执行查询操作的SQL语句为--------");
@@ -453,6 +461,7 @@ public class CommonUtil implements RemoteAccess {
 			// 输出当前执行更新操作的SQL语句
 			String fullSql = sql;
 			for (String param : params) {
+				param = param.length() > 250 ? "此属性太长，不显示内容" : param;
 				fullSql = fullSql.replaceFirst("\\?", "'" + param + "'");
 			}
 			System.out.println("--------当前执行更新操作的SQL语句为--------");
@@ -483,6 +492,7 @@ public class CommonUtil implements RemoteAccess {
 			// 输出当前执行更新操作的SQL语句
 			String fullSql = sql;
 			for (String param : params) {
+				param = param.length() > 250 ? "此属性太长，不显示内容" : param;
 				fullSql = fullSql.replaceFirst("\\?", "\"" + param + "\"");
 			}
 			System.out.println("--------当前执行插入操作的SQL语句为--------");
@@ -497,16 +507,20 @@ public class CommonUtil implements RemoteAccess {
 	/**
 	 * 携带信息并用POST请求外部系统（如SAP，OA）中的某个接口 存在账户和密码时则设置验证否则不设置 map为添加到Headers上的内容，无则填null
 	 * 
-	 * @param url  外部系统对应的地址
-	 * @param json 需要传输的信息
-	 * @return 返回信息
+	 * @param url      访问目标接口的URL
+	 * @param username 访问目标接口需要验证的用户名
+	 * @param password 访问目标接口需要验证的密码
+	 * @param json     携带的json信息
+	 * @param method   请求的方式 GET/POST
+	 * @param map      请求头中需要添加的信息,没有填null
+	 * @return 返回的json信息
 	 */
 	public static String requestInterface(String url, String username, String password, String json, String method,
 			HashMap<String, String> map) {
 		System.out.println("--------当前执行的请求接口的参数列表--------");
 		System.out.println("URL: " + url);
 		System.out.println("USERNAME: " + username + " PASSWORD:" + password);
-		System.out.println("JSON: " + json);
+		System.out.println("JSON: " + processJson(json));
 		System.out.println("METHOD: " + method);
 		System.out.println("HEADERS: ");
 
@@ -532,7 +546,7 @@ public class CommonUtil implements RemoteAccess {
 		}
 		// 参数
 		HttpEntity<String> entity = new HttpEntity<String>(json, headers);
-		ResponseEntity<String> responseEntity = method.equals("GET")
+		ResponseEntity<String> responseEntity = method.equalsIgnoreCase("GET")
 				? restTemplate.exchange(url, HttpMethod.GET, entity, String.class)
 				: restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
@@ -542,6 +556,45 @@ public class CommonUtil implements RemoteAccess {
 		String resultJson = responseEntity.getBody().toString();
 		System.out.println("RESULTJSON: " + resultJson);
 		return resultJson;
+	}
+
+	private static String processJson(String json) {
+		try {
+			ObjectMapper objectMapper = new ObjectMapper();
+			ObjectNode rootNode = objectMapper.createObjectNode();
+
+			JsonNode originalRootNode = objectMapper.readTree(json);
+			processJsonNode(rootNode, originalRootNode);
+
+			return objectMapper.writeValueAsString(rootNode);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return json; // Return the original JSON in case of an error
+		}
+	}
+
+	private static void processJsonNode(ObjectNode targetNode, JsonNode sourceNode) {
+		if (sourceNode.isObject()) {
+			Iterator<Map.Entry<String, JsonNode>> fields = sourceNode.fields();
+			while (fields.hasNext()) {
+				Map.Entry<String, JsonNode> entry = fields.next();
+				String fieldName = entry.getKey();
+				JsonNode fieldNode = entry.getValue();
+				if (fieldNode.isTextual()) {
+					String fieldValue = fieldNode.asText();
+					if (fieldValue.length() > 250) {
+						targetNode.put(fieldName, "此属性太长，不显示内容");
+					} else {
+						targetNode.set(fieldName, fieldNode);
+					}
+				} else if (fieldNode.isObject() || fieldNode.isArray()) {
+					ObjectNode childTargetNode = targetNode.putObject(fieldName);
+					processJsonNode(childTargetNode, fieldNode);
+				}
+			}
+		} else if (sourceNode.isArray()) {
+			// Handle arrays if necessary
+		}
 	}
 
 	/**
@@ -562,5 +615,62 @@ public class CommonUtil implements RemoteAccess {
 			e.printStackTrace();
 		}
 		return "";
+	}
+
+	/**
+	 * 从request中获取字节流的信息将其中的json转换为实体类
+	 * 
+	 * @param <T>            实体类
+	 * @param request        传递的请求参数
+	 * @param clazz          实体类类型
+	 * @param rootNodeString 是否有根节点
+	 * @return T 实体类
+	 */
+	public static <T> T getEntityFromJson(HttpServletRequest request, Class<T> clazz, String rootNodeString) {
+		try {
+			BufferedReader reader = request.getReader();
+			StringBuilder jsonInput = new StringBuilder();
+			String line;
+			while ((line = reader.readLine()) != null) {
+				jsonInput.append(line);
+			}
+			ObjectMapper objectMapper = new ObjectMapper();
+			JsonNode rootNode = objectMapper.readTree(jsonInput.toString());
+
+			// 如果没有指定根节点字符串，则直接尝试解析为实体对象
+			// 如果指定了根节点字符串，则尝试从根节点中获取指定的节点
+			if (StringUtils.isBlank(rootNodeString)) {
+				T entity = objectMapper.treeToValue(rootNode, clazz);
+				return entity;
+			} else {
+				JsonNode newRootNode = rootNode.get(rootNodeString);
+				if (newRootNode != null) {
+					T entity = objectMapper.treeToValue(newRootNode, clazz);
+					return entity;
+				} else {
+					// 如果无法找到指定的节点，你可以在这里返回默认值或者抛出异常
+					System.out.println("未找到指定的根节点: " + rootNodeString);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * 将实体类转换为json
+	 * 
+	 * @param data 可以为entity，map，Object几乎任何可以转换为json的类型
+	 * @return json
+	 */
+	public static String getJsonFromObject(T data) {
+		try {
+			ObjectMapper objectMapper = new ObjectMapper();
+			return objectMapper.writeValueAsString(data);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

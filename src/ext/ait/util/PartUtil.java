@@ -1,5 +1,6 @@
 package ext.ait.util;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -820,4 +821,25 @@ public class PartUtil implements RemoteAccess {
 		}
 		return null;
 	}
+
+	/**
+	 * 根据部件的VR查找到部件的OR
+	 * 
+	 * @param VR
+	 * @return OR
+	 */
+	public static String getORbyVR(String VR) {
+		String sql = "SELECT IDA2A2 FROM WTPART WHERE BRANCHIDITERATIONINFO = ?";
+		String OR = "";
+		try {
+			ResultSet resultSet = CommonUtil.excuteSelect(sql, VR);
+			while (resultSet.next()) {
+				OR = resultSet.getString("IDA2A2");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return OR;
+	}
+
 }

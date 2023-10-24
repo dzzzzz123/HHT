@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ext.ait.util.CommonUtil;
 import ext.ait.util.PropertiesUtil;
+import ext.ait.util.Result;
 
 public class InsertRequirementServlet implements Controller {
 
@@ -34,22 +35,15 @@ public class InsertRequirementServlet implements Controller {
 		JsonNode rootNode = objectMapper.readTree(jsonInput.toString());
 		JsonNode datasNode = rootNode.get("data");
 		Requirement requirement = objectMapper.treeToValue(datasNode, Requirement.class);
-		System.out.println("requirement: " + requirement);
 		String sql = "INSERT INTO CUSTOMREQUIREMENT (IDA2A2, RICHTEXT) VALUES ( ? , ? )";
 		String partId = createRequirement(requirement);
 		String postsJson = objectMapper.writeValueAsString(requirement.getDescription());
-		System.out.println("partId: " + partId);
-		System.out.println("postsJson: " + postsJson);
 		CommonUtil.excuteInsert(sql, partId, postsJson);
-
-		// 将json转换为实体类
-		// OfferingRequirement offeringRequirement = objectMapper.readValue(jsonData,
-		// OfferingRequirement.class);
 
 		// 在此处添加您的处理逻辑
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(ext.ait.util.Result.success().toString());
+		response.getWriter().write(Result.success().toString());
 		return null;
 	}
 
@@ -79,14 +73,12 @@ public class InsertRequirementServlet implements Controller {
 
 		// 将实体类转换为 JSON
 		String offeringRequirementJson = objectMapper.writeValueAsString(offeringRequirement);
-		System.out.println("offeringRequirementJson:" + offeringRequirementJson);
 		String result = CommonUtil.requestInterface(url, username, password, offeringRequirementJson, "POST",
 				new HashMap<String, String>() {
 					{
 						put("CSRF_NONCE", CommonUtil.getCSRF_NONCE(CSRFurl));
 					}
 				});
-		System.out.println("result" + result);
 		JsonNode rootNode = objectMapper.readTree(result);
 		JsonNode id = rootNode.get("ID");
 		return id.asText();
