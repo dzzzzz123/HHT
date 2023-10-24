@@ -825,16 +825,17 @@ public class PartUtil implements RemoteAccess {
 	/**
 	 * 根据部件的VR查找到部件的OR
 	 * 
-	 * @param VR
-	 * @return OR
+	 * @param VR VR:wt.part.WTPart:569305
+	 * @return OR OR:wt.part.WTPart:569306
 	 */
 	public static String getORbyVR(String VR) {
+		VR = VR.split(":")[2];
 		String sql = "SELECT IDA2A2 FROM WTPART WHERE BRANCHIDITERATIONINFO = ?";
 		String OR = "";
 		try {
 			ResultSet resultSet = CommonUtil.excuteSelect(sql, VR);
 			while (resultSet.next()) {
-				OR = resultSet.getString("IDA2A2");
+				OR = "OR:wt.part.WTPart:" + resultSet.getString("IDA2A2");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

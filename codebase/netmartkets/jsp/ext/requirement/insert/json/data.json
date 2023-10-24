@@ -1,8 +1,8 @@
 {
-"postsd": [
+  "postsd": [
     {
-    "ID": 1,
-    "HHT_ReqBelong": {
+      "ID": 1,
+      "HHT_ReqBelong": {
         "pleacesd": "请选择",
         "slab": "平板",
         "blackboard": "黑板",
@@ -11,19 +11,25 @@
         "booth": "展台",
         "Recorded": "录播",
         "common": "通用"
-    }
+      }
     },
     {
-    "ID": 2,
-    "HHT_PrioritySelet": ["请选择","EVT", "DVT", "PVT", "MP"]
+      "ID": 2,
+      "HHT_PrioritySelet": ["请选择","EVT", "DVT", "PVT", "MP"]
     },
     {
-    "ID": 3,
-    "HHT_ReqCategorySelt": ["请选择","条目", "根", "组", "客户"]
+      "ID": 3,
+      "HHT_ReqCategorySelt":{
+       "R":"请选择",
+        "R0":"根",
+        "R1": "组",
+        "R2": "条目", 
+       "R3":"客户"
+        }
     },
     {
-    "ID": 4,
-    "HHT_CustomerRoleSelt": [
+      "ID": 4,
+      "HHT_CustomerRoleSelt": [
         "请选择",
         "发起者",
         "使用者",
@@ -32,12 +38,12 @@
         "决策者",
         "控制者",
         "批准者"
-    ]
+      ]
     },
     {
-    "ID": 5,
-    "HHT_ipdReqSelet": [
-        "请选择",
+      "ID": 5,
+      "HHT_ipdReqSelet": [
+         "请选择",
         "$价格",
         "A可获得性",
         "P包装",
@@ -46,11 +52,11 @@
         "A保证",
         "L生命周期成本",
         "S社会接收程"
-    ]
+      ]
     },
     {
-    "ID": 6,
-    "HHT_ReqGroupSelet": [
+      "ID": 6,
+      "HHT_ReqGroupSelet": [
         "请选择",
         "外观组",
         "材料组",
@@ -61,12 +67,12 @@
         "接口组",
         "服务组",
         "回收组"
-    ]
+      ]
     },
     {
-    "ID": 7,
-    "HHT_ReqSourceSelet": [
-        "请选择",
+      "ID": 7,
+      "HHT_ReqSourceSelet": [
+         "请选择",
         "客户",
         "行业分析",
         "竞品分析",
@@ -80,7 +86,7 @@
         "服务",
         "供应链",
         "财务"
-    ]
+      ]
     }
-]
+  ]
 }

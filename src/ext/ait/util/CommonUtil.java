@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -664,7 +663,7 @@ public class CommonUtil implements RemoteAccess {
 	 * @param data 可以为entity，map，Object几乎任何可以转换为json的类型
 	 * @return json
 	 */
-	public static String getJsonFromObject(T data) {
+	public static <T> String getJsonFromObject(T data) {
 		try {
 			ObjectMapper objectMapper = new ObjectMapper();
 			return objectMapper.writeValueAsString(data);

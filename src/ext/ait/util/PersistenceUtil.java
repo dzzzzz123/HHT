@@ -43,6 +43,7 @@ import wt.session.SessionServerHelper;
 import wt.type.TypeDefinitionReference;
 import wt.util.WTException;
 import wt.util.WTPropertyVetoException;
+import wt.util.WTRuntimeException;
 import wt.vc.Mastered;
 import wt.vc.VersionControlHelper;
 import wt.vc.VersionIdentifier;
@@ -322,10 +323,16 @@ public class PersistenceUtil implements RemoteAccess {
 	 * @return WTObject
 	 * @throws WTException
 	 */
-	public static WTObject oid2Object(String oid) throws WTException {
+	public static WTObject oid2Object(String oid) {
 		ReferenceFactory factory = new ReferenceFactory();
-		Persistable persistable = factory.getReference(oid).getObject();
-		return (WTObject) persistable;
+		try {
+			return (WTObject) factory.getReference(oid).getObject();
+		} catch (WTRuntimeException e) {
+			e.printStackTrace();
+		} catch (WTException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	/**
