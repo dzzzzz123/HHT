@@ -56,17 +56,16 @@ public class SendSAPService {
 		String version = VersionUtil.getVersion(part);
 		String unit = part.getDefaultUnit().toString();
 		String state = part.getState().getState().getDisplay();
-		String defaultTraceCode = part.getDefaultTraceCode().getDisplay();
+		String defaultTraceCode = part.getDefaultTraceCode().toString();
 
 		boolean HHT_INValueBoolean = HHT_INValue.equals("是") ? true : false;
 		String HHT_Classification = getClassificaiton(HHT_ClassificationCode, source);
 		String PartType = mapClassificationToPartType(HHT_ClassificationCode, HHT_INValueBoolean);
 		String HHT_ClassificationName = ClassificationUtil.getClassificationdDisPlayName(HHT_ClassificationCode);
 		state = getSAPState(state);
-		System.out.println("unit" + unit);
 		unit = pUtil.getValueByKey(unit);
-		System.out.println("unit" + unit);
 		HHT_Bonded = HHT_Bonded.equals("是") ? "Y" : "N";
+		defaultTraceCode = defaultTraceCode.equals("S") ? "0001" : "";
 
 		sapPartEntity.setPartType(PartType);
 		sapPartEntity.setHHT_Classification(HHT_Classification);
@@ -107,8 +106,6 @@ public class SendSAPService {
 		sapPartEntity.setHHT_PriceUnit(HHT_PriceUnit);
 		sapPartEntity.setHHT_INValue(HHT_INValue);
 		sapPartEntity.setHHT_ProductNumber(HHT_ProductNumber);
-
-		System.out.println("sapPartEntity" + sapPartEntity);
 
 		return sapPartEntity;
 	}
@@ -204,7 +201,7 @@ public class SendSAPService {
 		isMatnrMap.put("MATKL", entity.getHHT_Classification());
 		isMatnrMap.put("MATNR", entity.getNumber());
 		isMatnrMap.put("MAKTX", entity.getName());
-		isMatnrMap.put("ZEIVR", entity.getRevision());
+		isMatnrMap.put("AESZN", entity.getRevision());
 		isMatnrMap.put("MEINS", entity.getUnit());
 		isMatnrMap.put("BRGEW", entity.getHHT_GrossWeight());
 		isMatnrMap.put("NTGEW", entity.getHHT_NetWeight());
@@ -236,7 +233,6 @@ public class SendSAPService {
 		isMatnrMap.put("ZZCD", entity.getHHT_Factory());
 		isMatnrMap.put("ZZJG", entity.getHHT_Price());
 		isMatnrMap.put("PEINH", entity.getHHT_PriceUnit());
-		isMatnrMap.put("INValue", entity.getHHT_INValue());
 
 		rootMap.put("IS_MATNR", isMatnrMap);
 		try {

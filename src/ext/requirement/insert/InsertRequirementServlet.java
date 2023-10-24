@@ -1,6 +1,5 @@
 package ext.requirement.insert;
 
-import java.io.BufferedReader;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ext.ait.util.CommonUtil;
 import ext.ait.util.PropertiesUtil;
 import ext.ait.util.Result;
+import wt.pom.Transaction;
 
 public class InsertRequirementServlet implements Controller {
 
@@ -23,26 +23,23 @@ public class InsertRequirementServlet implements Controller {
 
 	@Override
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// 获取传入的JSON数据
-		BufferedReader reader = request.getReader();
-		StringBuilder jsonInput = new StringBuilder();
-		String line;
-		while ((line = reader.readLine()) != null) {
-			jsonInput.append(line);
-		}
-
-		ObjectMapper objectMapper = new ObjectMapper();
-		JsonNode rootNode = objectMapper.readTree(jsonInput.toString());
-		JsonNode datasNode = rootNode.get("data");
-		Requirement requirement = objectMapper.treeToValue(datasNode, Requirement.class);
-		String sql = "INSERT INTO CUSTOMREQUIREMENT (IDA2A2, RICHTEXT) VALUES ( ? , ? )";
-		String partId = createRequirement(requirement);
-		String postsJson = objectMapper.writeValueAsString(requirement.getDescription());
-		CommonUtil.excuteInsert(sql, partId, postsJson);
-
-		// 在此处添加您的处理逻辑
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
+		Transaction t = new Transaction();
+		try {
+			t.start();
+			Requirement requirement = CommonUtil.getEntityFromJson(request, Requirement.class, "data");
+			String sql = "INSERT INTO CUSTOMREQUIREMENT (IDA2A2, RICHTEXT) VALUES ( ? , ? )";
+			String partId = createRequirement(requirement);
+			String postsJson = requirement.getDescription();
+			CommonUtil.excuteInsert(sql, partId, postsJson);
+		} catch (Exception e) {
+			t.rollback();
+			e.printStackTrace();
+		} finally {
+			t.commit();
+		}
+
 		response.getWriter().write(Result.success().toString());
 		return null;
 	}

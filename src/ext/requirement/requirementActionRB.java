@@ -14,4 +14,14 @@ public class requirementActionRB extends WTListResourceBundle {
 	public static final String Requirement_CREATE_DESCRIPTION = "ProjectRequirement.create.description";
 	@RBEntry("add16x16.gif")
 	public static final String Requirement_CREATE_ICON = "ProjectRequirement.create.icon";
+	@RBEntry("ProjectRequirement infoPage")
+	public static final String Requirement_INFO_PAGE = "ProjectRequirement.requirementInfo.description";
+	@RBEntry("Edit ProjectRequirement")
+	public static final String Requirement_EDIT_TITLE = "ProjectRequirement.edit.title";
+	@RBEntry("Edit ProjectRequirement")
+	public static final String Requirement_EDIT_TOOLTIP = "ProjectRequirement.edit.tooltip";
+	@RBEntry("Edit ProjectRequirement")
+	public static final String Requirement_EDIT_DESCRIPTION = "ProjectRequirement.edit.description";
+	@RBEntry("update.png")
+	public static final String Requirement_EDIT_ICON = "ProjectRequirement.edit.icon";
 }
