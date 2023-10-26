@@ -31,7 +31,8 @@ public class ClassificationUtil implements RemoteAccess {
 
 	/**
 	 * 获取部件的分类属性的枚举值属性值的显示名称（在之前调用中出现了一些问题，但是其他程序调用是没有问题的）
-	 * @param part 需要获取属性的部件
+	 * 
+	 * @param part    需要获取属性的部件
 	 * @param ibaName 分类属性值的内部名称
 	 * @return 显示名称
 	 */
@@ -67,7 +68,8 @@ public class ClassificationUtil implements RemoteAccess {
 
 	/**
 	 * 根据数据库的数据分类属性的枚举从内部名称获取到显示名称
-	 * @param part 数据源部件
+	 * 
+	 * @param part     数据源部件
 	 * @param internal 枚举内部名称
 	 * @return 显示名称
 	 */
@@ -95,6 +97,7 @@ public class ClassificationUtil implements RemoteAccess {
 
 	/**
 	 * 根据分类的内部名称获取分类的显示名称
+	 * 
 	 * @param classificationCode 分类内部名称
 	 * @return 分类外部名称
 	 */
@@ -114,6 +117,7 @@ public class ClassificationUtil implements RemoteAccess {
 
 	/**
 	 * 根据分类节点内部名称获取完整分类路径
+	 * 
 	 * @param internalName 内部名称
 	 * @return 分类完整路径
 	 */
@@ -165,7 +169,8 @@ public class ClassificationUtil implements RemoteAccess {
 
 	/**
 	 * 根据部件和部件绑定的分类属性的全局字符属性来得到分类的内部名称
-	 * @param part 部件
+	 * 
+	 * @param part           部件
 	 * @param bind_attr_name 部件绑定的属性
 	 * @return 部件分类属性的内部名称
 	 */
@@ -186,18 +191,20 @@ public class ClassificationUtil implements RemoteAccess {
 
 	/**
 	 * 通过SQL语句来获取某个分类中的所有部件
-	 * @param IBAName 部件绑定的属性
+	 * 
+	 * @param IBAName   部件绑定的属性
 	 * @param classNode 分类节点内部名称
 	 * @return classNode这个分类节点中的所有部件
 	 */
 	public static List<WTPart> getClassPart(String IBAName, String classNode) {
 		List<WTPart> partList = new ArrayList<>();
-		String sql = "SELECT DISTINCT WM.WTPARTNUMBER FROM WTPART W INNER JOIN STRINGVALUE A1 ON W.IDA2A2 = A1.IDA3A4 INNER JOIN STRINGDEFINITION SD ON A1.IDA3A6 = SD.IDA2A2 INNER JOIN WTPARTMASTER WM ON W.IDA3MASTERREFERENCE = WM.IDA2A2 WHERE SD.NAME LIKE ? AND A1.VALUE = ? ";
+//		String sql = "SELECT DISTINCT WM.WTPARTNUMBER FROM WTPART W INNER JOIN STRINGVALUE A1 ON W.IDA2A2 = A1.IDA3A4 INNER JOIN STRINGDEFINITION SD ON A1.IDA3A6 = SD.IDA2A2 INNER JOIN WTPARTMASTER WM ON W.IDA3MASTERREFERENCE = WM.IDA2A2 WHERE SD.NAME LIKE ? AND A1.VALUE = ? ";
+		String sql = "SELECT DISTINCT IDA3A4 FROM STRINGVALUE SV WHERE SV.IDA3A4 IN ( SELECT SV2.IDA3A4 FROM STRINGVALUE SV2 WHERE SV2.IDA3A6 = (SELECT SD2.IDA2A2 FROM STRINGDEFINITION SD2 WHERE SD2.NAME = ? ) AND SV2.VALUE = ?)";
 		try {
 			ResultSet resultSet = CommonUtil.excuteSelect(sql, IBAName, classNode);
 			while (resultSet.next()) {
-				String partNumber = resultSet.getString("WTPARTNUMBER");
-				WTPart part = PartUtil.getWTPartByNumber(partNumber);
+				String oid = resultSet.getString("IDA3A4");
+				WTPart part = (WTPart) PersistenceUtil.oid2Object(oid);
 				partList.add(part);
 			}
 		} catch (Exception e) {
