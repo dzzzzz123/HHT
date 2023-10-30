@@ -33,4 +33,6 @@ public class SAPActionsRB_zh_CN extends WTListResourceBundle {
 	public static final String PRIVATE_CONSTANT_12 = "SAPWizard.masterDataReview.description";
 	@RBEntry("结果集")
 	public static final String PRIVATE_CONSTANT_13 = "SAPWizard.masterDataReview.tooltip";
+	@RBEntry("BOM成本")
+	public static final String PRIVATE_CONSTANT_14 = "SAPWizard.BOMCost.description";
 }

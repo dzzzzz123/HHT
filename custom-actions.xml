@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE listofactions SYSTEM "customActions.dtd">
+<listofactions>
+
+    <objecttype name="classificationWizard" resourceBundle="ext.classification.ClassificationActionsRB">
+		<action name="changeName">
+			<command class="ext.classification.processor.ChangeNameProcessor" method="execute"/> 
+		</action>
+		<action name="changeNumber">
+			<command class="ext.classification.processor.ChangeNumberProcessor" method="execute"/> 
+		</action>
+		<action name="changeDescription">
+			<command class="ext.classification.processor.ChangeDescriptionProcessor" method="execute"/> 
+		</action>
+		<action name="changeAll">
+			<command class="ext.classification.processor.ClassificationProcessor" method="execute"/> 
+		</action>
+	</objecttype>
+
+	<objecttype name="SAPWizard" resourceBundle="ext.sap.SAPActionsRB">
+		<action name="sendBOM2SAP">
+			<command class="ext.sap.BOM.SendBOM2SAPProcessor" method="execute"/> 
+		</action>
+		<action name="sendProject2SAP">
+			<command class="ext.sap.project.SendProject2SAPProcessor" method="execute"/> 
+		</action>
+		<action name="sendPartSAP">
+			<command class="ext.sap.masterData.SendPartSAPProcessor" method="execute"/> 
+		</action>
+		<action name="masterDataReview">
+        	<component name="sap.result.list" windowType="page"/>
+    	</action>
+		<action name="BOMCost" ajax="row">
+			<command url="netmarkets/jsp/ext/SAP/BOMCost/infoPage.jsp" windowType="page"/> 
+		</action>
+	</objecttype>
+
+	<objecttype name="ProjectRequirement" resourceBundle="ext.requirement.requirementActionRB">
+		<action name="create">
+			<command url="netmarkets/jsp/ext/requirement/insert/create.jsp" windowType="popup"/> 
+		</action>
+		<action name="requirementInfo" ajax="row">
+			<command url="netmarkets/jsp/ext/requirement/info/infoPage.jsp" windowType="page"/> 
+		</action>
+		<action name="editRequirement">
+			<command url="netmarkets/jsp/ext/requirement/edit/edit.jsp" windowType="popup"/> 
+		</action>
+	</objecttype>
+
+  	<objecttype name="CISWizard" resourceBundle="ext.HHT.CIS.CISActionsRB">
+  		<action name="send">
+  			<command class="ext.HHT.CIS.CISProcessor" method="execute" /> 
+  		</action>
+  	</objecttype>
+	
+	<!--批量下载-->
+	<objecttype name="part" resourceBundle="ext.signature.ResourceRB">
+		<action name="batchpdf" enabledwhensuspended="true" >
+		    <command url="servlet/Navigation/BatchDownloadZipPDFServlet" windowType="popup"/>
+		</action>
+	</objecttype>
+
+</listofactions>

@@ -129,7 +129,7 @@ public class SendSAPService {
 		case "废弃":
 			return "Z1";
 		default:
-			return state;
+			return "D1";
 		}
 	}
 

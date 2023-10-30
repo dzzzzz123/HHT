@@ -6,10 +6,12 @@ import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -617,15 +619,16 @@ public class CommonUtil implements RemoteAccess {
 	}
 
 	/**
-	 * 从request中获取字节流的信息将其中的json转换为实体类
+	 * 从request中获取字节流的信息将其中的json转换为实体类列表
 	 * 
 	 * @param <T>            实体类
 	 * @param request        传递的请求参数
 	 * @param clazz          实体类类型
 	 * @param rootNodeString 是否有根节点
-	 * @return T 实体类
+	 * @return T 实体类列表
 	 */
-	public static <T> T getEntityFromJson(HttpServletRequest request, Class<T> clazz, String rootNodeString) {
+	public static <T> List<T> getEntitiesFromRequest(HttpServletRequest request, Class<T> clazz,
+			String rootNodeString) {
 		try {
 			BufferedReader reader = request.getReader();
 			StringBuilder jsonInput = new StringBuilder();
@@ -633,28 +636,46 @@ public class CommonUtil implements RemoteAccess {
 			while ((line = reader.readLine()) != null) {
 				jsonInput.append(line);
 			}
-			ObjectMapper objectMapper = new ObjectMapper();
-			JsonNode rootNode = objectMapper.readTree(jsonInput.toString());
 
-			// 如果没有指定根节点字符串，则直接尝试解析为实体对象
-			// 如果指定了根节点字符串，则尝试从根节点中获取指定的节点
-			if (StringUtils.isBlank(rootNodeString)) {
-				T entity = objectMapper.treeToValue(rootNode, clazz);
-				return entity;
-			} else {
-				JsonNode newRootNode = rootNode.get(rootNodeString);
-				if (newRootNode != null) {
-					T entity = objectMapper.treeToValue(newRootNode, clazz);
-					return entity;
-				} else {
-					// 如果无法找到指定的节点，你可以在这里返回默认值或者抛出异常
-					System.out.println("未找到指定的根节点: " + rootNodeString);
-				}
-			}
+			return getEntitiesFromJson(jsonInput.toString(), clazz, rootNodeString);
 		} catch (IOException e) {
 			e.printStackTrace();
+			return Collections.emptyList();
 		}
-		return null;
+	}
+
+	/**
+	 * 将json转换为实体类列表
+	 * 
+	 * @param <T>            实体类
+	 * @param json           需要转换的json
+	 * @param clazz          实体类类型
+	 * @param rootNodeString 是否有根节点
+	 * @return T 实体类列表
+	 */
+	public static <T> List<T> getEntitiesFromJson(String json, Class<T> clazz, String rootNodeString) {
+		try {
+			ObjectMapper objectMapper = new ObjectMapper();
+			JsonNode rootNode = objectMapper.readTree(json.toString());
+			List<T> entities = new ArrayList<>();
+			// 如果没有指定根节点字符串，则直接尝试解析为实体对象
+			// 如果指定了根节点字符串，则尝试从根节点中获取指定的节点
+			rootNode = StringUtils.isNotBlank(rootNodeString) ? rootNode.get(rootNodeString) : rootNode;
+
+			if (rootNode.isArray()) {
+				for (JsonNode node : rootNode) {
+					T entity = objectMapper.treeToValue(node, clazz);
+					entities.add(entity);
+				}
+			} else {
+				T entity = objectMapper.treeToValue(rootNode, clazz);
+				entities.add(entity);
+			}
+			return entities;
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return Collections.emptyList();
 	}
 
 	/**

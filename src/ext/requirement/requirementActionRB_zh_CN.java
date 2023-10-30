@@ -17,11 +17,9 @@ public class requirementActionRB_zh_CN extends WTListResourceBundle {
 	@RBEntry("需求信息")
 	public static final String Requirement_INFO_PAGE = "ProjectRequirement.requirementInfo.description";
 	@RBEntry("编辑需求")
-	public static final String Requirement_EDIT_TITLE = "ProjectRequirement.edit.title";
+	public static final String Requirement_EDIT_TOOLTIP = "ProjectRequirement.editRequirement.tooltip";
 	@RBEntry("编辑需求")
-	public static final String Requirement_EDIT_TOOLTIP = "ProjectRequirement.edit.tooltip";
-	@RBEntry("编辑需求")
-	public static final String Requirement_EDIT_DESCRIPTION = "ProjectRequirement.edit.description";
+	public static final String Requirement_EDIT_DESCRIPTION = "ProjectRequirement.editRequirement.description";
 	@RBEntry("update.png")
-	public static final String Requirement_EDIT_ICON = "ProjectRequirement.edit.icon";
+	public static final String Requirement_EDIT_ICON = "ProjectRequirement.editRequirement.icon";
 }

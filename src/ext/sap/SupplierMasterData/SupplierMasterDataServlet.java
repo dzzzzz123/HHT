@@ -1,6 +1,5 @@
 package ext.sap.SupplierMasterData;
 
-import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
@@ -12,10 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import ext.ait.util.CommonUtil;
 import ext.ait.util.PropertiesUtil;
 import ext.ait.util.Result;
 
@@ -25,25 +21,8 @@ public class SupplierMasterDataServlet implements Controller {
 
 	@Override
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-		// 从请求中获取JSON数据
-		BufferedReader reader = request.getReader();
-		StringBuilder jsonBuilder = new StringBuilder();
-		String line;
-		while ((line = reader.readLine()) != null) {
-			jsonBuilder.append(line);
-		}
-		String jsonData = jsonBuilder.toString();
-
-		// 使用Jackson库解析JSON数据并存储在List<SupplierEntity>中
-		ObjectMapper objectMapper = new ObjectMapper();
-		// 创建一个包含 "data" 字段的对象
-		JsonNode rootNode = objectMapper.readTree(jsonData);
-		JsonNode dataNode = rootNode.get("data");
-		List<SupplierEntity> SupplierEntitiesList = objectMapper.readValue(dataNode.toString(),
-				new TypeReference<List<SupplierEntity>>() {
-				});
-
+		List<SupplierEntity> SupplierEntitiesList = CommonUtil.getEntitiesFromRequest(request, SupplierEntity.class,
+				"");
 		// 写入接收到的数据到properties文件中
 		writeToProperties(SupplierEntitiesList);
 

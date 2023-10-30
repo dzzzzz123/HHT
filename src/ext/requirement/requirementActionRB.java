@@ -17,11 +17,9 @@ public class requirementActionRB extends WTListResourceBundle {
 	@RBEntry("ProjectRequirement infoPage")
 	public static final String Requirement_INFO_PAGE = "ProjectRequirement.requirementInfo.description";
 	@RBEntry("Edit ProjectRequirement")
-	public static final String Requirement_EDIT_TITLE = "ProjectRequirement.edit.title";
+	public static final String Requirement_EDIT_TOOLTIP = "ProjectRequirement.editRequirement.tooltip";
 	@RBEntry("Edit ProjectRequirement")
-	public static final String Requirement_EDIT_TOOLTIP = "ProjectRequirement.edit.tooltip";
-	@RBEntry("Edit ProjectRequirement")
-	public static final String Requirement_EDIT_DESCRIPTION = "ProjectRequirement.edit.description";
+	public static final String Requirement_EDIT_DESCRIPTION = "ProjectRequirement.editRequirement.description";
 	@RBEntry("update.png")
-	public static final String Requirement_EDIT_ICON = "ProjectRequirement.edit.icon";
+	public static final String Requirement_EDIT_ICON = "ProjectRequirement.editRequirement.icon";
 }

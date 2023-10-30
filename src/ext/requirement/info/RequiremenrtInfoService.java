@@ -3,7 +3,6 @@ package ext.requirement.info;
 import java.sql.ResultSet;
 
 import ext.ait.util.CommonUtil;
-import ext.ait.util.PartUtil;
 import ext.ait.util.PersistenceUtil;
 import ext.ait.util.PropertiesUtil;
 import wt.part.WTPart;
@@ -20,8 +19,7 @@ public class RequiremenrtInfoService {
 	 */
 	public static String getRequirementJsonByOid(String oid) {
 		InfoRequirement infoRequirement = new InfoRequirement();
-		oid = oid.startsWith("VR") ? PartUtil.getORbyVR(oid) : oid;
-		WTPart requirement = (WTPart) PersistenceUtil.oid2Object(oid);
+		WTPart requirement = (WTPart) PersistenceUtil.oid2Object(oid.split(":")[2]);
 
 		infoRequirement.setName(requirement.getName());
 		infoRequirement.setNumber(requirement.getNumber());
@@ -30,6 +28,7 @@ public class RequiremenrtInfoService {
 		infoRequirement.setHHTPriority(properties.getValueByKey(requirement, "iba.internal.HHT_Priority"));
 		infoRequirement.setHHTReqSource(properties.getValueByKey(requirement, "iba.internal.HHT_ReqSource"));
 		infoRequirement.setHHTipdReq(properties.getValueByKey(requirement, "iba.internal.HHT_ipdReq"));
+		infoRequirement.setHHTReqGroup(properties.getValueByKey(requirement, "iba.internal.HHT_ReqGroup"));
 		infoRequirement.setHHTCustomerRole(properties.getValueByKey(requirement, "iba.internal.HHT_CustomerRole"));
 		infoRequirement
 				.setHHTCustomerComment(properties.getValueByKey(requirement, "iba.internal.HHT_CustomerComment"));

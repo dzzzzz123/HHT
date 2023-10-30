@@ -9,6 +9,7 @@ import java.io.Serializable;
 
 import ext.oa.service.OAWaitingProcessingService;
 import ext.oa.service.ProcessStatus;
+import ext.oa.service.SendDingTalkService;
 import wt.events.KeyedEvent;
 import wt.events.KeyedEventListener;
 import wt.fc.PersistenceManagerEvent;
@@ -45,10 +46,17 @@ public class WorkItemListenerService extends StandardManager implements Listener
 				PersistenceManagerEvent.generateEventKey(LifeCycleServiceEvent.class, "STATE_CHANGE"));
 		this.getManagerService().addEventListener(this.listener, PersistenceManagerEvent.generateEventKey("UPDATE"));
 		this.getManagerService().addEventListener(this.listener,
+				PersistenceManagerEvent.generateEventKey("POST_STORE"));
+		this.getManagerService().addEventListener(this.listener,
+				PersistenceManagerEvent.generateEventKey("PRE_INSERT"));
+
+		this.getManagerService().addEventListener(this.listener,
 				PersistenceManagerEvent.generateEventKey("PRE_REMOVE"));
-		this.getManagerService().addEventListener(this.listener, "POST_STORE");
+//		this.getManagerService().addEventListener(this.listener, "POST_STORE");
 		this.getManagerService().addEventListener(this.listener,
 				OwnershipServiceEvent.generateEventKey("PRE_CHANGEOWNER"));
+		this.getManagerService().addEventListener(this.listener,
+				OwnershipServiceEvent.generateEventKey("POST_CHANGEOWNER"));
 	}
 
 	class WCListenerEventListener extends ServiceEventListenerAdapter {
@@ -68,9 +76,13 @@ public class WorkItemListenerService extends StandardManager implements Listener
 						if (item.getStatus().toString().equals(ProcessStatus.COMPLETED.toString())) {
 							System.out.println("当前进入" + ProcessStatus.COMPLETED);
 							OAWaitingProcessingService.sendTaskToOA(item, ProcessStatus.COMPLETED);
+							// SendDingTalkService.sendToDingtalk(item);
 						} else {
 							System.out.println("当前进入" + ProcessStatus.UPDATE);
 							OAWaitingProcessingService.sendTaskToOA(item, ProcessStatus.UPDATE);
+							if (SendDingTalkService.isDuplicate(item)) {
+								SendDingTalkService.sendToDingtalk(item);
+							}
 						}
 
 					} else if (eventType.equalsIgnoreCase(ProcessStatus.PRE_REMOVE.toString())) {
@@ -81,6 +93,9 @@ public class WorkItemListenerService extends StandardManager implements Listener
 						System.out.println("进入PRE_CHANGEOWNER");
 						OAWaitingProcessingService.sendTurnToTaskToOA(item);
 
+					} else if (eventType.equalsIgnoreCase(ProcessStatus.POST_CHANGEOWNER.toString())) {
+						System.out.println("进入POST_CHANGEOWNER");
+						SendDingTalkService.sendToDingtalk(item);
 					}
 				}
 

@@ -4,7 +4,6 @@
 <%
   String path = request.getContextPath();
   String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
-  String contextPath=request.getContextPath();
   NmCommandBean nmCommandBean = new NmCommandBean(); 
   nmCommandBean.setInBeginJsp (true);
   nmCommandBean.setOpenerCompContext (request.getParameter("compContext"));
@@ -387,15 +386,16 @@
           method: "POST",
           url: "http://uat.honghe-tech.com/Windchill/servlet/Navigation/requirement/insert",
           data: { data },
-          suncess: function (formation) {
+        }).then( function (formation) {
             console.log(formation);
-            if (formation.msg == 200) {
+            if (formation.data.code == 200) {
               window.close();
             } else {
-              layer.msg("提交失败");
+              layer.msg("提交失败!");
             }
-          },
-        });
+          }).catch(function(error){
+              layer.msg("请求失败:", error);
+          } )
       };
 
       Cancel.onclick = () => {

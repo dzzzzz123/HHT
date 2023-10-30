@@ -1,13 +1,19 @@
 package ext.oa.service;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.eclipse.jetty.util.UrlEncoded;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -17,14 +23,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ext.ait.util.CommonUtil;
 import ext.ait.util.PersistenceUtil;
 import ext.ait.util.PropertiesUtil;
+import ext.ait.util.WorkflowUtil;
 import ext.oa.entity.OADeleteTaskEntity;
 import ext.oa.entity.OAWaitingProcessingEntity;
 import wt.fc.ReferenceFactory;
+import wt.fc.WTObject;
 import wt.httpgw.URLFactory;
 import wt.org.WTPrincipalReference;
 import wt.org.WTUser;
+import wt.workflow.engine.WfProcess;
 import wt.workflow.work.WfAssignedActivity;
 import wt.workflow.work.WorkItem;
+import wt.workflow.worklist.PrimaryBusinessObject;
 
 public class OAWaitingProcessingService {
 	private static PropertiesUtil propertiesUtil = PropertiesUtil.getInstance("OAConfig.properties");

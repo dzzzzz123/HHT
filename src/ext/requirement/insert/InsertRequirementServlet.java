@@ -1,6 +1,7 @@
 package ext.requirement.insert;
 
 import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,7 +29,8 @@ public class InsertRequirementServlet implements Controller {
 		Transaction t = new Transaction();
 		try {
 			t.start();
-			Requirement requirement = CommonUtil.getEntityFromJson(request, Requirement.class, "data");
+			List<Requirement> requirements = CommonUtil.getEntitiesFromRequest(request, Requirement.class, "data");
+			Requirement requirement = requirements.get(0);
 			String sql = "INSERT INTO CUSTOMREQUIREMENT (IDA2A2, RICHTEXT) VALUES ( ? , ? )";
 			String partId = createRequirement(requirement);
 			String postsJson = requirement.getDescription();

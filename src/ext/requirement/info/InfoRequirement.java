@@ -9,6 +9,7 @@ public class InfoRequirement {
 	private String HHTReqCategory;
 	private String HHTPriority;
 	private String HHTReqSource;
+	private String HHTReqGroup;
 	private String HHTipdReq;
 	private String HHTCustomerRole;
 	private String HHTCustomerComment;
@@ -18,7 +19,7 @@ public class InfoRequirement {
 	}
 
 	public InfoRequirement(String name, String number, String description, String hHTReqBelong, String hHTReqCategory,
-			String hHTPriority, String hHTReqSource, String hHTipdReq, String hHTCustomerRole,
+			String hHTPriority, String hHTReqSource, String hHTReqGroup, String hHTipdReq, String hHTCustomerRole,
 			String hHTCustomerComment) {
 		super();
 		this.name = name;
@@ -28,6 +29,7 @@ public class InfoRequirement {
 		HHTReqCategory = hHTReqCategory;
 		HHTPriority = hHTPriority;
 		HHTReqSource = hHTReqSource;
+		HHTReqGroup = hHTReqGroup;
 		HHTipdReq = hHTipdReq;
 		HHTCustomerRole = hHTCustomerRole;
 		HHTCustomerComment = hHTCustomerComment;
@@ -105,6 +107,14 @@ public class InfoRequirement {
 		HHTCustomerRole = hHTCustomerRole;
 	}
 
+	public String getHHTReqGroup() {
+		return HHTReqGroup;
+	}
+
+	public void setHHTReqGroup(String hHTReqGroup) {
+		HHTReqGroup = hHTReqGroup;
+	}
+
 	public String getHHTCustomerComment() {
 		return HHTCustomerComment;
 	}
@@ -117,8 +127,9 @@ public class InfoRequirement {
 	public String toString() {
 		return "InfoRequirement [name=" + name + ", number=" + number + ", description=" + description
 				+ ", HHTReqBelong=" + HHTReqBelong + ", HHTReqCategory=" + HHTReqCategory + ", HHTPriority="
-				+ HHTPriority + ", HHTReqSource=" + HHTReqSource + ", HHTipdReq=" + HHTipdReq + ", HHTCustomerRole="
-				+ HHTCustomerRole + ", HHTCustomerComment=" + HHTCustomerComment + "]";
+				+ HHTPriority + ", HHTReqSource=" + HHTReqSource + ", HHTReqGroup=" + HHTReqGroup + ", HHTipdReq="
+				+ HHTipdReq + ", HHTCustomerRole=" + HHTCustomerRole + ", HHTCustomerComment=" + HHTCustomerComment
+				+ "]";
 	}
 
 }

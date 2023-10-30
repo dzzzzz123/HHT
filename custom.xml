@@ -12,9 +12,9 @@ http://www.ptc.com/schema/mvc http://www.ptc.com/schema/mvc/mvc-10.0.xsd">
 	<bean id="CostCenterServlet" class="ext.sap.CostCenter.CostCenterServlet"/>
 	<bean id="SupplierMasterDataServlet" class="ext.sap.SupplierMasterData.SupplierMasterDataServlet"/>
 	<bean id="InsertRequirementServlet" class="ext.requirement.insert.InsertRequirementServlet"/>
-	<bean class="ext.alpha.budget.mvc.builders.ProjectBudgetTableBuilder"/>
-	<bean id="alpha.budget.projectBudget.SetAttributesPanel" class="ext.alpha.budget.mvc.builders.ProjectBudgetSetAttributesPanelBuilder"/>
-	<bean class="ext.alpha.budget.mvc.builders.ProjectBudgetInfoAttributesBuilder"/>
-	<bean class="ext.alpha.budget.mvc.builders.ProjectBudgetInfoBuilder"/>
+ 	<bean id="editRequirementServlet" class="ext.requirement.edit.editRequirementServlet"/>
 	<bean class="ext.sap.masterData.mvc.SAPResultTableBuilder"/>
+	<bean class="ext.requirement.info.RequirementInfoBuilder"/>
+  <bean class="ext.sap.BOMCost.BOMCostBuilder"/>
+	<bean id="BatchDownloadZipPDFServlet" class="ext.signature.BatchDownloadZipPDFServlet"/>
 </beans>

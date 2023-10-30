@@ -5,39 +5,36 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class EditRequirement {
 	@JsonProperty("ID")
 	private String ID;
-	@JsonProperty("Number")
-	private String Number;
-	@JsonProperty("Name")
+	@JsonProperty("name")
 	private String Name;
-	@JsonProperty("Description")
+	@JsonProperty("description")
 	private String Description;
-	@JsonProperty("HHTPriority")
+	@JsonProperty("hhtpriority")
 	private String HHTPriority;
-	@JsonProperty("HHTReqCategory")
+	@JsonProperty("hhtreqCategory")
 	private String HHTReqCategory;
-	@JsonProperty("HHTReqBelong")
+	@JsonProperty("hhtreqBelong")
 	private String HHTReqBelong;
-	@JsonProperty("HHTReqGroup")
+	@JsonProperty("hhtreqGroup")
 	private String HHTReqGroup;
-	@JsonProperty("HHTReqSource")
+	@JsonProperty("hhtreqSource")
 	private String HHTReqSource;
-	@JsonProperty("HHTipdReq")
+	@JsonProperty("hhtipdReq")
 	private String HHTipdReq;
-	@JsonProperty("HHTCustomerComment")
+	@JsonProperty("hhtcustomerComment")
 	private String HHTCustomerComment;
-	@JsonProperty("HHTCustomerRole")
+	@JsonProperty("hhtcustomerRole")
 	private String HHTCustomerRole;
 
 	public EditRequirement() {
 		super();
 	}
 
-	public EditRequirement(String iD, String number, String name, String description, String hHTPriority,
-			String hHTReqCategory, String hHTReqBelong, String hHTReqGroup, String hHTReqSource, String hHTipdReq,
-			String hHTCustomerComment, String hHTCustomerRole) {
+	public EditRequirement(String iD, String name, String description, String hHTPriority, String hHTReqCategory,
+			String hHTReqBelong, String hHTReqGroup, String hHTReqSource, String hHTipdReq, String hHTCustomerComment,
+			String hHTCustomerRole) {
 		super();
 		ID = iD;
-		Number = number;
 		Name = name;
 		Description = description;
 		HHTPriority = hHTPriority;
@@ -56,14 +53,6 @@ public class EditRequirement {
 
 	public void setID(String iD) {
 		ID = iD;
-	}
-
-	public String getNumber() {
-		return Number;
-	}
-
-	public void setNumber(String number) {
-		Number = number;
 	}
 
 	public String getName() {
@@ -148,10 +137,10 @@ public class EditRequirement {
 
 	@Override
 	public String toString() {
-		return "EditRequirement [ID=" + ID + ", Number=" + Number + ", Name=" + Name + ", Description=" + Description
-				+ ", HHTPriority=" + HHTPriority + ", HHTReqCategory=" + HHTReqCategory + ", HHTReqBelong="
-				+ HHTReqBelong + ", HHTReqGroup=" + HHTReqGroup + ", HHTReqSource=" + HHTReqSource + ", HHTipdReq="
-				+ HHTipdReq + ", HHTCustomerComment=" + HHTCustomerComment + ", HHTCustomerRole=" + HHTCustomerRole
-				+ "]";
+		return "EditRequirement [ID=" + ID + ", Name=" + Name + ", Description=" + Description + ", HHTPriority="
+				+ HHTPriority + ", HHTReqCategory=" + HHTReqCategory + ", HHTReqBelong=" + HHTReqBelong
+				+ ", HHTReqGroup=" + HHTReqGroup + ", HHTReqSource=" + HHTReqSource + ", HHTipdReq=" + HHTipdReq
+				+ ", HHTCustomerComment=" + HHTCustomerComment + ", HHTCustomerRole=" + HHTCustomerRole + "]";
 	}
+
 }

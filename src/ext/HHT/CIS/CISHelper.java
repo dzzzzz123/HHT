@@ -122,79 +122,84 @@ public class CISHelper {
 	private static String sendToDB(CISEntity entity) throws Exception {
 		Connection connection = DatabaseConnector.getConnection();
 		String HHT_Classification = entity.getHHT_Classification();
-		String Classification = HHT_Classification.substring(0, 4);
-		System.out.println("Classification==========" + Classification);
-		String nameSql = "select name from sysobjects where xtype='U'";
-		Statement Statement = connection.createStatement();
-		ResultSet resultSet = Statement.executeQuery(nameSql);
-		String name = "";
-		String msg = "";
-		while (resultSet.next()) {
-			name = resultSet.getString("name");
+		String ClassificationName = HHT_Classification.substring(0, 2);
+		if (ClassificationName.equals("11")) {
+			String Classification = HHT_Classification.substring(0, 4);
+			System.out.println("Classification==========" + Classification);
+			String nameSql = "select name from sysobjects where xtype='U'";
+			Statement Statement = connection.createStatement();
+			ResultSet resultSet = Statement.executeQuery(nameSql);
+			String name = "";
+			String msg = "";
+			while (resultSet.next()) {
+				name = resultSet.getString("name");
+				if (name.subSequence(0, 4).equals(Classification)) {
+					break;
+				}
+			}
 			if (name.subSequence(0, 4).equals(Classification)) {
-				break;
+				String Numbersql = "SELECT * FROM dbo.[" + name + "] WHERE Part_Number = '" + entity.getNumber() + "'";
+
+				System.out.println("entity.getNumber()=====" + entity.getNumber());
+				System.out.println("Numbersql=====" + Numbersql);
+				ResultSet rt = Statement.executeQuery(Numbersql);
+				int rowCount = 0;
+				while (rt.next()) {
+					rowCount++;
+
+				}
+				System.out.println("rt=======" + rt);
+				System.out.println("rowCount=======" + rowCount);
+				if (rowCount == 1) {
+
+					String sql = "UPDATE dbo.[" + name
+							+ "] SET  Description=?, Spec=?, Part_Type=?, Schematic_Part=?, PCB_Footprint=?, Classification=?  WHERE Part_Number= '"
+							+ entity.getNumber() + "'";
+
+					PreparedStatement ps = connection.prepareStatement(sql);
+
+					ps.setString(1, entity.getName());
+					ps.setString(2, entity.getHHT_LongtDescription());
+					ps.setString(3, entity.getPart_Type());
+					ps.setString(4, entity.getSchematic_Part());
+					ps.setString(5, entity.getPCB_Footprint());
+					ps.setString(6, entity.getHHT_Classification());
+
+					ps.addBatch();
+
+					ps.executeUpdate();
+					ps.close();
+					connection.close();
+					System.out.println("sql=====" + sql);
+					return "数据已更新";
+				} else {
+					String sql = "INSERT INTO dbo.[" + name
+							+ "]( Part_Number, Description, Spec, Part_Type, Schematic_Part, PCB_Footprint, Classification ) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+					PreparedStatement ps = connection.prepareStatement(sql);
+					ps.setString(1, entity.getNumber());
+					ps.setString(2, entity.getName());
+					ps.setString(3, entity.getHHT_LongtDescription());
+					ps.setString(4, entity.getPart_Type());
+					ps.setString(5, entity.getSchematic_Part());
+					ps.setString(6, entity.getPCB_Footprint());
+					ps.setString(7, entity.getHHT_Classification());
+
+					ps.addBatch();
+
+					ps.executeBatch(); // insert remaining records
+					ps.close();
+					connection.close();
+
+					return "";
+				}
+			} else
+
+			{
+				return "数据库没有这个表名，请创建该表" + Classification;
 			}
-		}
-		if (name.subSequence(0, 4).equals(Classification)) {
-			String Numbersql = "SELECT * FROM dbo.[" + name + "] WHERE Part_Number = " + entity.getNumber();
-
-			System.out.println("entity.getNumber()=====" + entity.getNumber());
-			System.out.println("Numbersql=====" + Numbersql);
-			ResultSet rt = Statement.executeQuery(Numbersql);
-			int rowCount = 0;
-			while (rt.next()) {
-				rowCount++;
-
-			}
-			System.out.println("rt=======" + rt);
-			System.out.println("rowCount=======" + rowCount);
-			if (rowCount == 1) {
-
-				String sql = "UPDATE dbo.[" + name
-						+ "] SET  Description=?, Spec=?, Part_Type=?, Schematic_Part=?, PCB_Footprint=?, Classification=?  WHERE Part_Number=?";
-
-				PreparedStatement ps = connection.prepareStatement(sql);
-
-				ps.setString(1, entity.getName());
-				ps.setString(2, entity.getHHT_LongtDescription());
-				ps.setString(3, entity.getPart_Type());
-				ps.setString(4, entity.getSchematic_Part());
-				ps.setString(5, entity.getPCB_Footprint());
-				ps.setString(6, entity.getHHT_Classification());
-				ps.setString(7, entity.getNumber());
-
-				ps.addBatch();
-
-				ps.executeUpdate();
-				ps.close();
-				connection.close();
-				System.out.println("sql=====" + sql);
-				return "数据已更新";
-			} else {
-				String sql = "INSERT INTO dbo.[" + name
-						+ "]( Part_Number, Description, Spec, Part_Type, Schematic_Part, PCB_Footprint, Classification ) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-				PreparedStatement ps = connection.prepareStatement(sql);
-				ps.setString(1, entity.getNumber());
-				ps.setString(2, entity.getName());
-				ps.setString(3, entity.getHHT_LongtDescription());
-				ps.setString(4, entity.getPart_Type());
-				ps.setString(5, entity.getSchematic_Part());
-				ps.setString(6, entity.getPCB_Footprint());
-				ps.setString(7, entity.getHHT_Classification());
-
-				ps.addBatch();
-
-				ps.executeBatch(); // insert remaining records
-				ps.close();
-				connection.close();
-
-				return "";
-			}
-		} else
-
-		{
-			return "数据库没有这个表名，请创建该表" + Classification;
+		} else {
+			return "该电子数据不应该发送到CIS";
 		}
 	}
 }

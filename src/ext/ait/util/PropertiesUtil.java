@@ -107,6 +107,24 @@ public class PropertiesUtil implements RemoteAccess {
 	}
 
 	/**
+	 * 读取properties文件中对应的value值 并直接设置对应对象的IBA属性对应值
+	 * 
+	 * @param ibaHolder
+	 * @param key
+	 * @param IBAValue
+	 */
+	public void setValueByKey(IBAHolder ibaHolder, String key, String IBAValue) {
+		String IBAKey = getValueByKey(key);
+		System.out.println("IBAKey: " + IBAKey);
+		try {
+			IBAUtil ibaUtil = new IBAUtil(ibaHolder);
+			ibaUtil.setIBAAttribute4AllType(ibaHolder, IBAKey, IBAValue);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
 	 * 获取properties文件中所有的key/value所对应的map
 	 * 
 	 * @return Map<String, String>
