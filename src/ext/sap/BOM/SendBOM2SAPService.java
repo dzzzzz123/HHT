@@ -15,8 +15,8 @@ import com.ptc.windchill.enterprise.change2.commands.RelatedChangesQueryCommands
 
 import ext.ait.util.CommonUtil;
 import ext.ait.util.PartUtil;
-import ext.ait.util.PropertiesUtil;
 import ext.ait.util.VersionUtil;
+import ext.sap.Config;
 import wt.change2.WTChangeOrder2;
 import wt.fc.collections.WTCollection;
 import wt.part.WTPart;
@@ -24,8 +24,6 @@ import wt.part.WTPartUsageLink;
 import wt.util.WTException;
 
 public class SendBOM2SAPService {
-
-	private static PropertiesUtil properties = PropertiesUtil.getInstance("config.properties");
 
 	/**
 	 * 从WTPart中获取需要的数据并组装为BOMEntity
@@ -39,7 +37,7 @@ public class SendBOM2SAPService {
 		List<BOMBodyEntity> body = getBodyEntitiesByBOM(part);
 		bom.setNumber(part.getNumber());
 		bom.setName(part.getName());
-		bom.setHHT_BasicQuantity(properties.getValueByKey(part, "iba.internal.HHT_BasicQuantity"));
+		bom.setHHT_BasicQuantity(Config.getHHT_BasicQuantity(part));
 		bom.setUnit(part.getDefaultUnit().getDisplay());
 		bom.setVersion(VersionUtil.getVersion(part));
 		bom.setFactory(part.getViewName());
@@ -73,24 +71,18 @@ public class SendBOM2SAPService {
 		for (WTPart part : partList) {
 			SendBOM2SAP.sendListBOM2SAP(part);
 			BOMBodyEntity entity = new BOMBodyEntity();
+			WTPartUsageLink link = PartUtil.getLinkByPart(wtPart, part);
 			entity.setName(part.getName());
 			entity.setNumber(part.getNumber());
 			entity.setVersion(VersionUtil.getVersion(part));
 			entity.setUnit(part.getDefaultUnit().getDisplay());
-			WTPartUsageLink link = PartUtil.getLinkByPart(wtPart, part);
 			entity.setQuantity(String.valueOf(link.getQuantity().getAmount()));
 			entity.setReferenceDesignatorRange(PartUtil.getPartUsesOccurrence(link));
-
-			String HHT_SubstituteGroup = properties.getValueByKey(link, "iba.internal.HHT_SubstituteGroup");
-			String HHT_Priority = properties.getValueByKey(link, "iba.internal.HHT_Priority");
-			String HHT_Strategies = properties.getValueByKey(link, "iba.internal.HHT_Strategies");
-			String HHT_UsagePossibility = properties.getValueByKey(link, "iba.internal.HHT_UsagePossibility");
-			String HHT_MatchGroup = properties.getValueByKey(link, "iba.internal.HHT_MatchGroup");
-			entity.setHHT_SubstituteGroup(HHT_SubstituteGroup);
-			entity.setHHT_Priority(HHT_Priority);
-			entity.setHHT_Strategies(HHT_Strategies);
-			entity.setHHT_UsagePossibility(HHT_UsagePossibility);
-			entity.setHHT_MatchGroup(HHT_MatchGroup);
+			entity.setHHT_SubstituteGroup(Config.getHHT_SubstituteGroup(link));
+			entity.setHHT_Priority(Config.getHHT_Priority(link));
+			entity.setHHT_Strategies(Config.getHHT_Strategies(link));
+			entity.setHHT_UsagePossibility(Config.getHHT_UsagePossibility(link));
+			entity.setHHT_MatchGroup(Config.getHHT_MatchGroup(link));
 			list.add(entity);
 		}
 		return list;
@@ -102,9 +94,8 @@ public class SendBOM2SAPService {
 	 * @param WTPart wtPart
 	 * @return String
 	 */
-	public static String getStlan(WTPart wtPart) {
-		String number = wtPart.getNumber();
-		WTPart designPart = PartUtil.getWTPartByNumberAndView(number, "Design");
+	public static String getStlan(WTPart part) {
+		WTPart designPart = PartUtil.getWTPartByNumberAndView(part.getNumber(), "Design");
 		if (designPart == null) {
 			return "2";
 		} else {
@@ -174,9 +165,9 @@ public class SendBOM2SAPService {
 	 * @return 得到的返回信息
 	 */
 	public static String SendBOM2SAPUseUrl(String json) {
-		String url = properties.getValueByKey("sap.url");
-		String username = properties.getValueByKey("sap.username");
-		String password = properties.getValueByKey("sap.password");
+		String url = Config.getBOMUrl();
+		String username = Config.getUsername();
+		String password = Config.getPassword();
 
 		return CommonUtil.requestInterface(url, username, password, json, "POST", null);
 

@@ -235,6 +235,12 @@ public class PDFSign {
 							+ "_" + part.getLifeCycleState().getDisplay(Locale.CHINA) + ".dxf";
 					foundDXF.setFileName(newFileDXFName);
 					PersistenceHelper.manager.save(foundDXF);
+				} else if (persistable instanceof WTDocument) {
+					WTDocument wtDocument = (WTDocument) persistable;
+					String newFileName = wtDocument.getName() + "_" + wtDocument.getVersionIdentifier().getValue() + "_"
+							+ wtDocument.getLifeCycleState().getDisplay(Locale.CHINA) + ".pdf";
+					foundPDF.setFileName(newFileName);
+					PersistenceHelper.manager.save(foundPDF);
 				}
 				fis.close();
 				// 删除临时文件

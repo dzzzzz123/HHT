@@ -4,9 +4,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import ext.HHT.part.duplicateCheck.DuplicateCheckHelper;
 import ext.ait.util.ClassificationUtil;
 import ext.ait.util.IBAUtil;
+import ext.ait.util.PartUtil;
+import ext.ait.util.PersistenceUtil;
 import ext.ait.util.PropertiesUtil;
+import wt.fc.WTObject;
 import wt.part.WTPart;
 import wt.util.WTException;
 
@@ -64,6 +68,26 @@ public class ClassificationDescription {
 					}
 				}
 				result += flag.length() > 0 ? flag : "";
+			}
+		}
+		return result;
+	}
+
+	public static String process(WTObject obj) {
+		List<WTPart> partList = PartUtil.getPartList(obj);
+		String result = "";
+		for (WTPart part : partList) {
+			String classInternalName = ClassificationUtil.getClassificationInternal(part,
+					pUtil.getValueByKey("iba.internal.HHT_Classification"));
+			String partten = pUtil.getValueByKey(classInternalName);
+			String newDescription = Util.processPartten(partten, part);
+			Map<String, String> map = DuplicateCheckHelper.getDescriptionByClass(classInternalName);
+			for (String key : map.keySet()) {
+				if (key.equals(newDescription)) {
+					String oid = map.get(key);
+					WTPart samePart = (WTPart) PersistenceUtil.oid2Object(oid);
+					result += part.getNumber() + "与当前物料系统中编号为 " + samePart.getNumber() + " 的物料属性值相同！\r\n";
+				}
 			}
 		}
 		return result;

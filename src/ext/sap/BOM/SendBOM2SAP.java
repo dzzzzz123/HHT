@@ -3,16 +3,10 @@ package ext.sap.BOM;
 import java.util.ArrayList;
 import java.util.List;
 
+import ext.ait.util.CommonUtil;
 import ext.ait.util.PartUtil;
-import wt.change2.ChangeException2;
-import wt.change2.ChangeHelper2;
-import wt.change2.WTChangeOrder2;
-import wt.fc.QueryResult;
 import wt.fc.WTObject;
-import wt.maturity.MaturityHelper;
-import wt.maturity.PromotionNotice;
 import wt.part.WTPart;
-import wt.util.WTException;
 
 public class SendBOM2SAP {
 
@@ -22,7 +16,7 @@ public class SendBOM2SAP {
 	 * @param WTObject obj
 	 */
 	public static List<String> sendListBOM2SAP(WTObject obj) {
-		List<WTPart> list = processWTPartList(obj);
+		List<WTPart> list = CommonUtil.getListFromPBO(obj, WTPart.class);
 		List<WTPart> listFiltered = new ArrayList<>();
 		List<String> msg = new ArrayList<>();
 		// 过滤部件，判断是否为BOM
@@ -36,53 +30,9 @@ public class SendBOM2SAP {
 		listFiltered.forEach(part -> {
 			BOMEntity bomEntity = SendBOM2SAPService.getBOMEntity(part);
 			String json = SendBOM2SAPService.getJsonByEntity(bomEntity);
-			System.out.println(json);
 			String result = SendBOM2SAPService.SendBOM2SAPUseUrl(json);
-			System.out.println(result);
 			msg.add(SendBOM2SAPService.getResultFromJson(result));
 		});
 		return msg;
 	}
-
-	/**
-	 * 将传入的WTObject解析为方便处理的List<WTPart>
-	 * 
-	 * @param WTObject obj
-	 * @return List<WTPart>
-	 */
-	private static List<WTPart> processWTPartList(WTObject obj) {
-		List<WTPart> list = new ArrayList<>();
-		try {
-			if (obj instanceof WTPart) {
-				list.add((WTPart) obj);
-			} else if (obj instanceof PromotionNotice) {
-				PromotionNotice pn = (PromotionNotice) obj;
-				QueryResult qr = MaturityHelper.service.getPromotionTargets(pn);
-				while (qr.hasMoreElements()) {
-					Object object = qr.nextElement();
-					if (object instanceof WTPart) {
-						list.add((WTPart) object);
-					}
-				}
-			} else if (obj instanceof WTChangeOrder2) {
-				WTChangeOrder2 co = (WTChangeOrder2) obj;
-				QueryResult qr;
-				qr = ChangeHelper2.service.getChangeablesAfter(co);
-				while (qr.hasMoreElements()) {
-					Object object = qr.nextElement();
-					if (object instanceof WTPart) {
-						list.add((WTPart) object);
-					}
-				}
-			} else {
-				System.out.println("不是BOM，无法发送给SAP");
-			}
-		} catch (ChangeException2 e) {
-			e.printStackTrace();
-		} catch (WTException e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
-
 }

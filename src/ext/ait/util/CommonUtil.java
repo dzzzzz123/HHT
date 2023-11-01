@@ -40,30 +40,24 @@ import com.ptc.core.lwc.server.LWCLocalizablePropertyValue;
 import com.ptc.core.lwc.server.LWCTypeDefinition;
 import com.ptc.core.lwc.server.TypeDefinitionServiceHelper;
 
-import wt.enterprise.RevisionControlled;
+import wt.change2.ChangeException2;
+import wt.change2.ChangeHelper2;
+import wt.change2.WTChangeOrder2;
 import wt.fc.PersistenceHelper;
 import wt.fc.QueryResult;
-import wt.folder.Folder;
-import wt.folder.FolderHelper;
-import wt.folder.FolderingInfo;
-import wt.folder.SubFolder;
-import wt.folder.SubFolderReference;
-import wt.inf.container.OrgContainer;
-import wt.inf.container.WTContainer;
-import wt.inf.container.WTContainerRef;
+import wt.fc.WTObject;
 import wt.log4j.LogR;
+import wt.maturity.MaturityHelper;
+import wt.maturity.PromotionNotice;
 import wt.method.MethodContext;
 import wt.method.RemoteAccess;
 import wt.org.OrganizationServicesHelper;
 import wt.org.WTGroup;
-import wt.org.WTPrincipal;
 import wt.org.WTUser;
 import wt.pds.StatementSpec;
 import wt.pom.WTConnection;
-import wt.query.QueryException;
 import wt.query.QuerySpec;
 import wt.query.SearchCondition;
-import wt.session.SessionHelper;
 import wt.util.WTException;
 
 public class CommonUtil implements RemoteAccess {
@@ -115,59 +109,6 @@ public class CommonUtil implements RemoteAccess {
 		}
 
 		return resultMap;
-	}
-
-	/**
-	 * 获取对象的文件夹路径
-	 * 
-	 * @param obj
-	 * @return
-	 */
-	public static String getPath(RevisionControlled obj) {
-		StringBuffer path = new StringBuffer();
-		SubFolderReference ref = obj.getParentFolder();
-		if (ref != null && ref.getObject() instanceof SubFolder) {
-			SubFolder subFolder = (SubFolder) ref.getObject();
-			getPath(path, subFolder);
-		} else {
-			path = new StringBuffer("/Default");
-		}
-		return path.toString();
-	}
-
-	/**
-	 * 获取对象存储位置
-	 * 
-	 * @param fInfo
-	 * @return
-	 */
-	public static String getFolderStr(FolderingInfo fInfo) {
-		StringBuffer path = new StringBuffer();
-		SubFolderReference ref = fInfo.getParentFolder();
-		if (ref != null && ref.getObject() instanceof SubFolder) {
-			SubFolder subFolder = (SubFolder) ref.getObject();
-			getPath(path, subFolder);
-		} else {
-			path = new StringBuffer("/Default");
-		}
-		return path.toString();
-	}
-
-	/**
-	 * 用来递归获取文件夹完整路径的方法
-	 * 
-	 * @param path
-	 * @param subFolder
-	 */
-	private static void getPath(StringBuffer path, SubFolder subFolder) {
-		path.insert(0, subFolder.getName()).insert(0, "/");
-		SubFolderReference ref = subFolder.getParentFolder();
-		if (ref != null && ref.getObject() instanceof SubFolder) {
-			SubFolder sub = (SubFolder) ref.getObject();
-			getPath(path, sub);
-		} else {
-			path.insert(0, "/Default");
-		}
 	}
 
 	/**
@@ -245,74 +186,6 @@ public class CommonUtil implements RemoteAccess {
 		} catch (Exception e) {
 			throw new WTException(e);
 		}
-	}
-
-	/**
-	 * 得到指定文件夹的对象，如果没有则创建该文件夹（尚不明晰，看上去并不那么好用）
-	 * 
-	 * @param strFolder
-	 * @param wtContainer
-	 * @return
-	 * @throws WTException
-	 */
-	public static Folder getFolder(String strFolder, WTContainer wtContainer) throws WTException {
-		WTPrincipal curUser = SessionHelper.manager.getPrincipal();
-		SessionHelper.manager.setAdministrator();
-		Folder folder = null;
-		String subPath = "Default/" + strFolder;
-		WTContainerRef ref = WTContainerRef.newWTContainerRef(wtContainer);
-		try {
-			folder = FolderHelper.service.getFolder(subPath, ref);
-		} catch (WTException e) {
-			folder = FolderHelper.service.createSubFolder(subPath, ref);
-		} finally {
-			SessionHelper.manager.setPrincipal(curUser.getName());
-		}
-		return folder;
-	}
-
-	/**
-	 * 根据容器的名称获取容器对象
-	 * 
-	 * @param containerName
-	 * @return
-	 * @throws Exception
-	 */
-	@SuppressWarnings("deprecation")
-	public static WTContainer getContainer(String containerName) throws Exception {
-		QuerySpec qs = new QuerySpec(WTContainer.class);
-		SearchCondition sc = new SearchCondition(WTContainer.class, WTContainer.NAME, "=", containerName);
-		qs.appendWhere(sc);
-		QueryResult qr = PersistenceHelper.manager.find(qs);
-		while (qr.hasMoreElements()) {
-			WTContainer container = (WTContainer) qr.nextElement();
-			return container;
-		}
-		return null;
-	}
-
-	/**
-	 * 根据组织名称获取组织对象
-	 * 
-	 * @param orgName
-	 * @return
-	 */
-	public static OrgContainer getOrgContainer(String orgName) {
-		try {
-			QuerySpec queryspec = new QuerySpec(OrgContainer.class);
-			QueryResult qr = PersistenceHelper.manager.find(queryspec);
-			while (qr.hasMoreElements()) {
-				OrgContainer org = (OrgContainer) qr.nextElement();
-				if (StringUtils.equalsIgnoreCase(orgName, org.getName())) {
-					return org;
-				}
-			}
-		} catch (QueryException e) {
-			e.printStackTrace();
-		} catch (WTException e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	/**
@@ -693,4 +566,47 @@ public class CommonUtil implements RemoteAccess {
 		}
 		return null;
 	}
+
+	/**
+	 * 将传入的PBO解析为方便处理的List<T>
+	 * 
+	 * @param <T>        泛型
+	 * @param obj        PBO
+	 * @param targetType 结果的类型
+	 * @return
+	 */
+	public static <T> List<T> getListFromPBO(WTObject obj, Class<T> targetType) {
+		List<T> list = new ArrayList<>();
+		try {
+			if (targetType.isInstance(obj)) {
+				list.add(targetType.cast(obj));
+			} else if (obj instanceof PromotionNotice) {
+				PromotionNotice pn = (PromotionNotice) obj;
+				QueryResult qr = MaturityHelper.service.getPromotionTargets(pn);
+				while (qr.hasMoreElements()) {
+					Object object = qr.nextElement();
+					if (targetType.isInstance(object)) {
+						list.add(targetType.cast(object));
+					}
+				}
+			} else if (obj instanceof WTChangeOrder2) {
+				WTChangeOrder2 co = (WTChangeOrder2) obj;
+				QueryResult qr = ChangeHelper2.service.getChangeablesAfter(co);
+				while (qr.hasMoreElements()) {
+					Object object = qr.nextElement();
+					if (targetType.isInstance(object)) {
+						list.add(targetType.cast(object));
+					}
+				}
+			} else {
+				System.out.println("数据不正确!");
+			}
+		} catch (ChangeException2 e) {
+			e.printStackTrace();
+		} catch (WTException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
 }

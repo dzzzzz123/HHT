@@ -11,12 +11,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ext.ait.util.CommonUtil;
-import ext.ait.util.PropertiesUtil;
+import ext.sap.Config;
 import wt.projmgmt.admin.Project2;
 import wt.util.WTException;
 
 public class SendProject2SAPService {
-	private static PropertiesUtil properties = PropertiesUtil.getInstance("config.properties");
 
 	/**
 	 * 从WTPart中获取需要的数据并组装为BOMEntity
@@ -98,10 +97,9 @@ public class SendProject2SAPService {
 	 * @return String 返回的结果集
 	 */
 	public static String sendProject2SAPUseUrl(String json) {
-		String url = properties.getValueByKey("sap.url");
-		String username = properties.getValueByKey("sap.username");
-		String password = properties.getValueByKey("sap.password");
-
+		String url = Config.getProjectUrl();
+		String username = Config.getUsername();
+		String password = Config.getPassword();
 		return CommonUtil.requestInterface(url, username, password, json, "POST", null);
 	}
 

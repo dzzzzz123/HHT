@@ -11,7 +11,9 @@ import ext.ait.util.CommonUtil;
 import ext.ait.util.PersistenceUtil;
 import ext.ait.util.PropertiesUtil;
 import ext.classification.service.ClassificationDescription;
+import wt.fc.WTObject;
 import wt.part.WTPart;
+import wt.util.WTException;
 
 public class DuplicateCheckHelper {
 
@@ -61,4 +63,18 @@ public class DuplicateCheckHelper {
 		}
 		return map;
 	}
+
+	public static String processInWF(WTObject obj) throws WTException {
+		String result = ClassificationDescription.process(obj);
+		try {
+			if (result.length() > 0) {
+				throw new WTException(result);
+			}
+		} catch (WTException e) {
+			// TODO: handle exception
+		}
+
+		return result;
+	}
+
 }

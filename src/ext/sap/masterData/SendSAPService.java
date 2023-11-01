@@ -9,48 +9,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ext.ait.util.ClassificationUtil;
 import ext.ait.util.CommonUtil;
-import ext.ait.util.PropertiesUtil;
 import ext.ait.util.VersionUtil;
+import ext.sap.Config;
 import wt.part.WTPart;
 
 public class SendSAPService {
 
-	private static PropertiesUtil pUtil = PropertiesUtil.getInstance("config.properties");
-
 	public static SendSAPPartEntity SendSAPPart(WTPart part) {
 		SendSAPPartEntity sapPartEntity = new SendSAPPartEntity();
-		String HHT_Bonded = pUtil.getValueByKey(part, "HHT_Bonded");
-		String HHT_GrossWeight = pUtil.getValueByKey(part, "HHT_GrossWeight");
-		String HHT_NetWeight = pUtil.getValueByKey(part, "HHT_NetWeight");
-		String HHT_WeightUnit = pUtil.getValueByKey(part, "HHT_WeightUnit");
-		String HHT_Traffic = pUtil.getValueByKey(part, "HHT_Traffic");
-		String HHT_VolumeUnit = pUtil.getValueByKey(part, "HHT_VolumeUnit");
-		String HHT_Length = pUtil.getValueByKey(part, "HHT_Length");
-		String HHT_Width = pUtil.getValueByKey(part, "HHT_Width");
-		String HHT_Height = pUtil.getValueByKey(part, "HHT_Height");
-		String HHT_SizeUnits = pUtil.getValueByKey(part, "HHT_SizeUnits");
-		String HHT_ClassificationCode = ClassificationUtil.getClassificationInternal(part,
-				pUtil.getValueByKey("HHT_Classification"));
-		String HHT_ProductLineNumber = pUtil.getValueByKey(part, "HHT_ProductLineNumber");
-		String HHT_ProductLineName = pUtil.getValueByKey(part, "HHT_ProductLineName");
-		String HHT_ProductNumber = pUtil.getValueByKey(part, "HHT_ProductNumber");
-		String HHT_Productdescription = pUtil.getValueByKey(part, "HHT_Productdescription");
-		String HHT_ModelSpecification = pUtil.getValueByKey(part, "HHT_ModelSpecification");
-		String HHT_CommodityName = pUtil.getValueByKey(part, "HHT_CommodityName");
-		String HHT_Brand = pUtil.getValueByKey(part, "HHT_Brand");
-		String HHT_Year = pUtil.getValueByKey(part, "HHT_Year");
-		String HHT_Size = pUtil.getValueByKey(part, "HHT_Size");
-		String HHT_FinishedSeries = pUtil.getValueByKey(part, "HHT_FinishedSeries");
-		String HHT_Industry = pUtil.getValueByKey(part, "HHT_Industry");
-		String HHT_ProductDevelopmentType = pUtil.getValueByKey(part, "HHT_ProductDevelopmentType");
-		String HHT_CustomizedProductIdentifier = pUtil.getValueByKey(part, "HHT_CustomizedProductIdentifier");
-		String HHT_SupplierSku = pUtil.getValueByKey(part, "HHT_SupplierSku");
-		String HHT_Factory = pUtil.getValueByKey(part, "HHT_Factory");
-		String HHT_Price = pUtil.getValueByKey(part, "HHT_Price");
-		String HHT_PriceUnit = pUtil.getValueByKey(part, "HHT_PriceUnit");
-		String HHT_INValue = pUtil.getValueByKey(part, "HHT_INValue");
+		String HHT_Bonded = Config.getHHT_Bonded(part);
+		String HHT_ClassificationCode = Config.getHHT_Classification(part);
+		String HHT_INValue = Config.getHHT_INValue(part);
+		String buy = Config.getSourceBuy();
 
-		String source = part.getSource().getDisplay();
+		String source = part.getSource().toString();
 		String number = part.getNumber();
 		String name = part.getName();
 		String version = VersionUtil.getVersion(part);
@@ -59,53 +31,57 @@ public class SendSAPService {
 		String defaultTraceCode = part.getDefaultTraceCode().toString();
 
 		boolean HHT_INValueBoolean = HHT_INValue.equals("是") ? true : false;
-		String HHT_Classification = getClassificaiton(HHT_ClassificationCode, source);
+		String HHT_Classification = HHT_ClassificationCode;
 		String PartType = mapClassificationToPartType(HHT_ClassificationCode, HHT_INValueBoolean);
 		String HHT_ClassificationName = ClassificationUtil.getClassificationdDisPlayName(HHT_ClassificationCode);
 		state = getSAPState(state);
-		unit = pUtil.getValueByKey(unit);
+		unit = Config.getValue(unit);
 		HHT_Bonded = HHT_Bonded.equals("是") ? "Y" : "N";
 		defaultTraceCode = defaultTraceCode.equals("S") ? "0001" : "";
+		if (source.equalsIgnoreCase(buy)) {
+			number = number.startsWith("5") ? "6" + number.substring(1) : number;
+			HHT_Classification = HHT_Classification.startsWith("5") ? "6" + HHT_Classification.substring(1)
+					: HHT_Classification;
+		}
 
 		sapPartEntity.setPartType(PartType);
 		sapPartEntity.setHHT_Classification(HHT_Classification);
 		sapPartEntity.setNumber(number);
 		sapPartEntity.setName(name);
-		sapPartEntity.setHHT_Length(HHT_Length);
 		sapPartEntity.setRevision(version);
 		sapPartEntity.setUnit(unit);
 		sapPartEntity.setHHT_Bonded(HHT_Bonded);
-		sapPartEntity.setHHT_GrossWeight(HHT_GrossWeight);
-		sapPartEntity.setHHT_NetWeight(HHT_NetWeight);
-		sapPartEntity.setHHT_WeightUnit(HHT_WeightUnit);
-		sapPartEntity.setHHT_Traffic(HHT_Traffic);
-		sapPartEntity.setHHT_VolumeUnit(HHT_VolumeUnit);
-		sapPartEntity.setHHT_Length(HHT_Length);
-		sapPartEntity.setHHT_Width(HHT_Width);
-		sapPartEntity.setHHT_Height(HHT_Height);
-		sapPartEntity.setHHT_SizeUnits(HHT_SizeUnits);
 		sapPartEntity.setState(state);
+		sapPartEntity.setHHT_GrossWeight(Config.getHHT_GrossWeight(part));
+		sapPartEntity.setHHT_NetWeight(Config.getHHT_NetWeight(part));
+		sapPartEntity.setHHT_WeightUnit(Config.getHHT_WeightUnit(part));
+		sapPartEntity.setHHT_Traffic(Config.getHHT_Traffic(part));
+		sapPartEntity.setHHT_VolumeUnit(Config.getHHT_VolumeUnit(part));
+		sapPartEntity.setHHT_Length(Config.getHHT_Length(part));
+		sapPartEntity.setHHT_Width(Config.getHHT_Width(part));
+		sapPartEntity.setHHT_Height(Config.getHHT_Height(part));
+		sapPartEntity.setHHT_SizeUnits(Config.getHHT_SizeUnits(part));
 		sapPartEntity.setHHT_ClassificationCode(HHT_ClassificationCode);
 		sapPartEntity.setHHT_ClassificationName(HHT_ClassificationName);
-		sapPartEntity.setHHT_ProductLineNumber(HHT_ProductLineNumber);
-		sapPartEntity.setHHT_ProductLineName(HHT_ProductLineName);
-		sapPartEntity.setHHT_Productdescription(HHT_Productdescription);
-		sapPartEntity.setHHT_ModelSpecification(HHT_ModelSpecification);
-		sapPartEntity.setHHT_CommodityName(HHT_CommodityName);
-		sapPartEntity.setHHT_Brand(HHT_Brand);
-		sapPartEntity.setHHT_Year(HHT_Year);
-		sapPartEntity.setHHT_Size(HHT_Size);
-		sapPartEntity.setHHT_FinishedSeries(HHT_FinishedSeries);
-		sapPartEntity.setHHT_Industry(HHT_Industry);
-		sapPartEntity.setHHT_ProductDevelopmentType(HHT_ProductDevelopmentType);
-		sapPartEntity.setHHT_CustomizedProductIdentifier(HHT_CustomizedProductIdentifier);
-		sapPartEntity.setHHT_SupplierSku(HHT_SupplierSku);
+		sapPartEntity.setHHT_ProductLineNumber(Config.getHHT_ProductLineNumber(part));
+		sapPartEntity.setHHT_ProductLineName(Config.getHHT_ProductLineName(part));
+		sapPartEntity.setHHT_Productdescription(Config.getHHT_Productdescription(part));
+		sapPartEntity.setHHT_ModelSpecification(Config.getHHT_ModelSpecification(part));
+		sapPartEntity.setHHT_CommodityName(Config.getHHT_CommodityName(part));
+		sapPartEntity.setHHT_Brand(Config.getHHT_Brand(part));
+		sapPartEntity.setHHT_Year(Config.getHHT_Year(part));
+		sapPartEntity.setHHT_Size(Config.getHHT_Size(part));
+		sapPartEntity.setHHT_FinishedSeries(Config.getHHT_FinishedSeries(part));
+		sapPartEntity.setHHT_Industry(Config.getHHT_Industry(part));
+		sapPartEntity.setHHT_ProductDevelopmentType(Config.getHHT_ProductDevelopmentType(part));
+		sapPartEntity.setHHT_CustomizedProductIdentifier(Config.getHHT_CustomizedProductIdentifier(part));
+		sapPartEntity.setHHT_SupplierSku(Config.getHHT_SupplierSku(part));
 		sapPartEntity.setDefaultTraceCode(defaultTraceCode);
-		sapPartEntity.setHHT_Factory(HHT_Factory);
-		sapPartEntity.setHHT_Price(HHT_Price);
-		sapPartEntity.setHHT_PriceUnit(HHT_PriceUnit);
+		sapPartEntity.setHHT_Factory(Config.getHHT_Factory(part));
+		sapPartEntity.setHHT_Price(Config.getHHT_Price(part));
+		sapPartEntity.setHHT_PriceUnit(Config.getHHT_PriceUnit(part));
 		sapPartEntity.setHHT_INValue(HHT_INValue);
-		sapPartEntity.setHHT_ProductNumber(HHT_ProductNumber);
+		sapPartEntity.setHHT_ProductNumber(Config.getHHT_ProductNumber(part));
 
 		return sapPartEntity;
 	}
@@ -131,14 +107,6 @@ public class SendSAPService {
 		default:
 			return "D1";
 		}
-	}
-
-	private static String getClassificaiton(String classificationCode, String source) {
-		String buy = pUtil.getValueByKey("BUY");
-		if (classificationCode.startsWith("5") && source.equals(buy)) {
-			return "6" + classificationCode.substring(1);
-		}
-		return classificationCode;
 	}
 
 	/**
@@ -250,11 +218,9 @@ public class SendSAPService {
 	 * @return
 	 */
 	public static String sendPartSAP(String masterDataJson) {
-
-		String url = pUtil.getValueByKey("sap.url");
-		String username = pUtil.getValueByKey("sap.username");
-		String password = pUtil.getValueByKey("sap.password");
-
+		String url = Config.getMasterDataUrl();
+		String username = Config.getUsername();
+		String password = Config.getPassword();
 		return CommonUtil.requestInterface(url, username, password, masterDataJson, "POST", null);
 	}
 

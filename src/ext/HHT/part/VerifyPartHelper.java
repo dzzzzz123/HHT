@@ -52,10 +52,9 @@ public class VerifyPartHelper implements RemoteAccess {
 			QueryResult qr = ChangeHelper2.service.getChangeables((WTChangeReview) obj);
 			result = findNullAttributeResult(qr, "更改审阅");
 		}
-		System.out.println(result);
+		System.out.println("verifyPart check" + result);
 		if (StringUtils.isNotBlank(result)) {
 			throw new WTException(result);
-
 		}
 	}
 
