@@ -2,6 +2,8 @@ package ext.sap.supply;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,7 +13,14 @@ import org.springframework.web.servlet.mvc.Controller;
 
 import ext.ait.util.CommonUtil;
 import ext.ait.util.Result;
+import ext.ait.util.WorkflowUtil;
 import ext.sap.Config;
+import wt.fc.ReferenceFactory;
+import wt.fc.WTObject;
+import wt.part.WTPart;
+import wt.util.WTException;
+import wt.util.WTRuntimeException;
+import wt.workflow.work.WorkItem;
 
 public class SupplyChainServlet implements Controller {
 
@@ -43,5 +52,24 @@ public class SupplyChainServlet implements Controller {
 		String password = Config.getPassword();
 
 		return CommonUtil.requestInterface(url, username, password, jsonInput.toString(), "POST", null);
+	}
+
+	public static List<String> getPartNumberByWI(String workItemID) {
+		List<String> result = new ArrayList<>();
+
+		try {
+			ReferenceFactory rf = new ReferenceFactory();
+			WorkItem workItem = (WorkItem) rf.getReference(workItemID).getObject();
+			WTObject pbo = WorkflowUtil.getPBOByWorkItem(workItem);
+			ArrayList<WTPart> parts = WorkflowUtil.getTargerObject(pbo, "AffectedObjects", WTPart.class);
+			parts.forEach(part -> {
+				result.add(part.getNumber());
+			});
+		} catch (WTRuntimeException e) {
+			e.printStackTrace();
+		} catch (WTException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 }

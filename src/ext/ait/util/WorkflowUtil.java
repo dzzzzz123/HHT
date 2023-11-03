@@ -8,14 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.logging.log4j.Logger;
-
 import com.ptc.netmarkets.model.NmOid;
 
 import wt.access.AccessControlHelper;
 import wt.access.AccessPermission;
 import wt.access.AdHocAccessKey;
 import wt.access.AdHocControlled;
+import wt.change2.ChangeException2;
 import wt.change2.ChangeHelper2;
 import wt.change2.VersionableChangeItem;
 import wt.change2.WTChangeActivity2;
@@ -28,7 +27,6 @@ import wt.fc.PersistenceHelper;
 import wt.fc.QueryResult;
 import wt.fc.WTObject;
 import wt.httpgw.URLFactory;
-import wt.log4j.LogR;
 import wt.maturity.MaturityHelper;
 import wt.maturity.Promotable;
 import wt.maturity.PromotionNotice;
@@ -38,6 +36,7 @@ import wt.org.WTPrincipalReference;
 import wt.query.QuerySpec;
 import wt.query.SearchCondition;
 import wt.session.SessionHelper;
+import wt.session.SessionServerHelper;
 import wt.util.CollationKeyFactory;
 import wt.util.SortedEnumeration;
 import wt.util.WTException;
@@ -57,7 +56,6 @@ import wt.workflow.work.WorkItem;
 import wt.workflow.work.WorkItemLink;
 
 public class WorkflowUtil implements RemoteAccess {
-	private static Logger LOGGER = LogR.getLogger(WorkflowUtil.class.getName());
 
 	/**
 	 * 获取升级请求中被升级的对象
@@ -112,7 +110,6 @@ public class WorkflowUtil implements RemoteAccess {
 				return null;
 			}
 		} catch (Exception e) {
-			LOGGER.debug("WFHepler.getProcess : error");
 			e.printStackTrace();
 		}
 		return null;
@@ -150,13 +147,11 @@ public class WorkflowUtil implements RemoteAccess {
 				PromotionNotice pn = (PromotionNotice) obj;
 				pboId = "OR:" + obj.getClass().getName() + ":" + pn.getPersistInfo().getObjectIdentifier().getId();
 			} else {
-				LOGGER.error("对象类型不兼容，不能获取流程");
 				return null;
 			}
 			QuerySpec qs = new QuerySpec(WfProcess.class);
 			qs.appendWhere(new SearchCondition(WfProcess.class, WfProcess.BUSINESS_OBJ_REFERENCE, SearchCondition.EQUAL,
 					pboId));
-			// LOGGER.debug("getProcessByPbo sql where -->"+qs.toString());
 			QueryResult qr = PersistenceHelper.manager.find(qs);
 			while (qr != null && qr.hasMoreElements()) {
 				WfProcess tmpProcess = (WfProcess) qr.nextElement();
@@ -168,12 +163,7 @@ public class WorkflowUtil implements RemoteAccess {
 					}
 				}
 			}
-			if (process != null) {
-				LOGGER.debug(
-						"[" + pboId + "]的最新流程为--->" + process.getName() + "|" + PersistenceUtil.object2Oid(process));
-			} else {
-				LOGGER.debug("[" + pboId + "]没有流程记录");
-			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -197,7 +187,6 @@ public class WorkflowUtil implements RemoteAccess {
 			PersistenceHelper.manager.modify(wfObject);
 			PersistenceHelper.manager.refresh(wfObject);
 		} catch (Exception e) {
-			LOGGER.error("设置流程变量" + key + "出错");
 			e.printStackTrace();
 			throw new WTException(e);
 		}
@@ -211,7 +200,7 @@ public class WorkflowUtil implements RemoteAccess {
 	 * @param Object
 	 * @throws WTException
 	 */
-	public static void setActivityValue(ObjectReference self, String key, Object obj) throws WTException {
+	public static void setActivityValue(ObjectReference self, String key, Object obj) {
 		try {
 			WfExecutionObject p = (WfExecutionObject) self.getObject();
 			ProcessData data = p.getContext();
@@ -219,9 +208,7 @@ public class WorkflowUtil implements RemoteAccess {
 			PersistenceHelper.manager.modify(p);
 			PersistenceHelper.manager.refresh(p);
 		} catch (WTException e) {
-			LOGGER.error("设置流程变量" + key + "出错");
 			e.printStackTrace();
-			throw new WTException(e);
 		}
 
 	}
@@ -248,7 +235,6 @@ public class WorkflowUtil implements RemoteAccess {
 			qs.appendAnd();
 			qs.appendWhere(new SearchCondition(WorkItem.class, "source.key.id", WfAssignedActivity.class,
 					"thePersistInfo.theObjectIdentifier.id"), workItemIndex, wfAssignedActivityIndex);
-			// LOGGER.debug("getWorkItemByProcess sql where -->"+qs.getWhere());
 			QueryResult qr = PersistenceHelper.manager.find(qs);
 			while (qr != null && qr.hasMoreElements()) {
 				Object[] objs = (Object[]) qr.nextElement();
@@ -257,7 +243,6 @@ public class WorkflowUtil implements RemoteAccess {
 					list.add((WorkItem) obj);
 				}
 			}
-			// LOGGER.debug("process name :"+process.getName()+"获取的任务个数有---> "+list.size());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -374,10 +359,8 @@ public class WorkflowUtil implements RemoteAccess {
 				url = ref1;
 			}
 		} catch (Exception e) {
-			LOGGER.error("获取任务[" + wi.toString() + "]URL失败");
 			e.printStackTrace();
 		}
-		LOGGER.debug("获取任务[" + wi.toString() + "]URL为---->" + url);
 		return url;
 	}
 
@@ -402,7 +385,6 @@ public class WorkflowUtil implements RemoteAccess {
 			String temp = getWorkItemUrl(workItem);
 			result = result + temp + ";";
 		}
-		LOGGER.debug("获取任务[" + persistable.toString() + "]URL为---->" + result);
 		return result;
 	}
 
@@ -419,7 +401,6 @@ public class WorkflowUtil implements RemoteAccess {
 			QuerySpec qs = new QuerySpec(WfVotingEventAudit.class);
 			qs.appendWhere(new SearchCondition(WfVotingEventAudit.class, "theWorkItemReference.key.id",
 					SearchCondition.EQUAL, wi.getPersistInfo().getObjectIdentifier().getId()));
-			LOGGER.debug("getVoting sql where -->" + qs.toString());
 			QueryResult qr = PersistenceHelper.manager.find(qs);
 			while (qr != null && qr.hasMoreElements()) {
 				wa = (WfVotingEventAudit) qr.nextElement();
@@ -445,7 +426,6 @@ public class WorkflowUtil implements RemoteAccess {
 			AccessControlHelper.manager.addPermissions((AdHocControlled) process, ref, vector,
 					AdHocAccessKey.WNC_ACCESS_CONTROL);
 		} catch (Exception e) {
-			LOGGER.error(">>>>>>>>>>>>>>>>>赋予权限失败");
 			e.printStackTrace();
 		}
 	}
@@ -464,7 +444,6 @@ public class WorkflowUtil implements RemoteAccess {
 			AccessControlHelper.manager.removePermissions((AdHocControlled) process, ref, vector,
 					AdHocAccessKey.WNC_ACCESS_CONTROL);
 		} catch (Exception e) {
-			LOGGER.error(">>>>>>>>>>>>>>>>>收回权限失败");
 			e.printStackTrace();
 		}
 	}
@@ -568,7 +547,6 @@ public class WorkflowUtil implements RemoteAccess {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			LOGGER.debug("getActivityWorkItems根据活动查询任务失败");
 		}
 		return list;
 	}
@@ -634,7 +612,6 @@ public class WorkflowUtil implements RemoteAccess {
 			process = (WfProcess) enProcs.nextElement();
 			// 最新的非子进程（子进程的名称带有$符号
 			if (process.getName().indexOf("$") == -1) {
-				LOGGER.debug(" getRelatedProcess process=" + process.getName() + "  oid=" + process);
 				break;
 			}
 		}
@@ -649,77 +626,76 @@ public class WorkflowUtil implements RemoteAccess {
 	 * @param String   GetTargerObjectUtil.AffectedObjects受影响对象/GetTargerObjectUtil.ResultingObjects产生的对象
 	 * @param clazz    WTPart.class/WTDocument.class
 	 * @return ArrayList<T>
-	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
-	public static <T> ArrayList<T> getTargerObject(WTObject primaryBusinessObject, String type, Class<T> clazz)
-			throws Exception {
+	public static <T> ArrayList<T> getTargerObject(WTObject primaryBusinessObject, String type, Class<T> clazz) {
 		ArrayList<T> list = new ArrayList<T>();
 
 		if (!type.equals("AffectedObjects") && !type.equals("ResultingObjects")) {
-			LOGGER.debug("获取审阅/变更目标对象失败，只能指定为受影响对象或产生的对象");
+			System.out.println("获取审阅/变更目标对象失败，只能指定为受影响对象或产生的对象");
 			return list;
 		}
-		if (primaryBusinessObject instanceof WTChangeReview) {
-			WTChangeReview review = (WTChangeReview) primaryBusinessObject;
-			QueryResult qr = ChangeHelper2.service.getChangeables(review);
-			while (qr.hasMoreElements()) {
-				Object obj = qr.nextElement();
-				if (clazz.getTypeName().equals(obj.getClass().getName())) {
-					LOGGER.debug("当前的受影响对象类型为：" + obj.getClass().getName());
-					T targerObj = (T) obj;
-					list.add(targerObj);
+
+		try {
+			if (primaryBusinessObject instanceof WTChangeReview) {
+				WTChangeReview review = (WTChangeReview) primaryBusinessObject;
+				QueryResult qr = ChangeHelper2.service.getChangeables(review);
+				list = CommonUtil.getListFromQR(qr, clazz);
+			} else if (primaryBusinessObject instanceof PromotionNotice) {
+
+				PromotionNotice pn = (PromotionNotice) primaryBusinessObject;
+				QueryResult qr = MaturityHelper.service.getPromotionTargets(pn);
+				list = CommonUtil.getListFromQR(qr, clazz);
+
+			} else if (primaryBusinessObject instanceof WTChangeOrder2) {
+
+				if (type.equals("AffectedObjects")) {
+					WTChangeOrder2 eco = (WTChangeOrder2) primaryBusinessObject;
+					QueryResult qr = ChangeHelper2.service.getChangeablesBefore(eco);
+					list = CommonUtil.getListFromQR(qr, clazz);
+				} else if (type.equals("ResultingObjects")) {
+					WTChangeOrder2 eco = (WTChangeOrder2) primaryBusinessObject;
+					QueryResult qr = ChangeHelper2.service.getChangeablesAfter(eco);
+					list = CommonUtil.getListFromQR(qr, clazz);
 				}
+
+			} else if (primaryBusinessObject instanceof WTChangeActivity2) {
+
+				if (type.equals("AffectedObjects")) {
+					WTChangeActivity2 eca = (WTChangeActivity2) primaryBusinessObject;
+					QueryResult qr = ChangeHelper2.service.getChangeablesBefore(eca);
+					list = CommonUtil.getListFromQR(qr, clazz);
+				} else if (type.equals("ResultingObjects")) {
+					WTChangeActivity2 eca = (WTChangeActivity2) primaryBusinessObject;
+					QueryResult qr = ChangeHelper2.service.getChangeablesAfter(eca);
+					list = CommonUtil.getListFromQR(qr, clazz);
+				}
+
 			}
-		} else if (primaryBusinessObject instanceof WTChangeOrder2) {
-
-			if (type.equals("AffectedObjects")) {
-				WTChangeOrder2 eco = (WTChangeOrder2) primaryBusinessObject;
-				QueryResult qr = ChangeHelper2.service.getChangeablesBefore(eco);
-				while (qr.hasMoreElements()) {
-					Object obj = qr.nextElement();
-					if (clazz.getTypeName().equals(obj.getClass().getName())) {
-						T targerObj = (T) obj;
-						list.add(targerObj);
-					}
-				}
-			} else if (type.equals("ResultingObjects")) {
-				WTChangeOrder2 eco = (WTChangeOrder2) primaryBusinessObject;
-				QueryResult qr = ChangeHelper2.service.getChangeablesAfter(eco);
-				while (qr.hasMoreElements()) {
-					Object obj = qr.nextElement();
-					if (clazz.getTypeName().equals(obj.getClass().getName())) {
-						T targerObj = (T) obj;
-						list.add(targerObj);
-					}
-				}
-			}
-
-		} else if (primaryBusinessObject instanceof WTChangeActivity2) {
-
-			if (type.equals("AffectedObjects")) {
-				WTChangeActivity2 eca = (WTChangeActivity2) primaryBusinessObject;
-				QueryResult qr = ChangeHelper2.service.getChangeablesBefore(eca);
-				while (qr.hasMoreElements()) {
-					Object obj = qr.nextElement();
-					if (clazz.getTypeName().equals(obj.getClass().getName())) {
-						T targerObj = (T) obj;
-						list.add(targerObj);
-					}
-				}
-			} else if (type.equals("ResultingObjects")) {
-				WTChangeActivity2 eca = (WTChangeActivity2) primaryBusinessObject;
-				QueryResult qr = ChangeHelper2.service.getChangeablesAfter(eca);
-				while (qr.hasMoreElements()) {
-					Object obj = qr.nextElement();
-					if (clazz.getTypeName().equals(obj.getClass().getName())) {
-						T targerObj = (T) obj;
-						list.add(targerObj);
-					}
-				}
-			}
-
+		} catch (ChangeException2 e) {
+			e.printStackTrace();
+		} catch (WTException e) {
+			e.printStackTrace();
 		}
 		return list;
+	}
+
+	/**
+	 * 通过workitem获取pbo
+	 * 
+	 * @param workItem
+	 * @return pbo
+	 */
+	public static WTObject getPBOByWorkItem(WorkItem workItem) {
+		WTObject pbo = null;
+		boolean origEnforce = false;
+		try {
+			origEnforce = SessionServerHelper.manager.setAccessEnforced(false);
+			pbo = (WTObject) workItem.getPrimaryBusinessObject().getObject();
+		} catch (NullPointerException nex) {
+			pbo = null;
+		} finally {
+			SessionServerHelper.manager.setAccessEnforced(origEnforce);
+		}
+		return pbo;
 	}
 }

@@ -19,7 +19,6 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -42,11 +41,11 @@ import com.ptc.core.lwc.server.TypeDefinitionServiceHelper;
 
 import wt.change2.ChangeException2;
 import wt.change2.ChangeHelper2;
+import wt.change2.WTChangeActivity2;
 import wt.change2.WTChangeOrder2;
 import wt.fc.PersistenceHelper;
 import wt.fc.QueryResult;
 import wt.fc.WTObject;
-import wt.log4j.LogR;
 import wt.maturity.MaturityHelper;
 import wt.maturity.PromotionNotice;
 import wt.method.MethodContext;
@@ -61,8 +60,6 @@ import wt.query.SearchCondition;
 import wt.util.WTException;
 
 public class CommonUtil implements RemoteAccess {
-
-	private static Logger LOGGER = LogR.getLogger(CommonUtil.class.getName());
 
 	/**
 	 * 转换中文格式，避免中文乱码
@@ -129,7 +126,6 @@ public class CommonUtil implements RemoteAccess {
 				qs.appendWhere(sc1);
 				qs.appendOr();
 				qs.appendWhere(sc2);
-				LOGGER.debug("searchUsers sql where --->" + qs.getWhere());
 				QueryResult qr = new QueryResult();
 				qr = PersistenceHelper.manager.find(qs);
 				while (qr.hasMoreElements()) {
@@ -269,6 +265,26 @@ public class CommonUtil implements RemoteAccess {
 			e.printStackTrace();
 		}
 		return map;
+	}
+
+	/**
+	 * 从QueryResult中获取需要类型的对象数据
+	 * 
+	 * @param <T>   泛型对象
+	 * @param qr
+	 * @param clazz
+	 * @return
+	 */
+	public static <T> ArrayList<T> getListFromQR(QueryResult qr, Class<T> clazz) {
+		ArrayList<T> list = new ArrayList<T>();
+		while (qr.hasMoreElements()) {
+			Object obj = qr.nextElement();
+			if (clazz.isInstance(obj)) {
+				T castedObj = clazz.cast(obj);
+				list.add(castedObj);
+			}
+		}
+		return list;
 	}
 
 	/**
@@ -583,21 +599,15 @@ public class CommonUtil implements RemoteAccess {
 			} else if (obj instanceof PromotionNotice) {
 				PromotionNotice pn = (PromotionNotice) obj;
 				QueryResult qr = MaturityHelper.service.getPromotionTargets(pn);
-				while (qr.hasMoreElements()) {
-					Object object = qr.nextElement();
-					if (targetType.isInstance(object)) {
-						list.add(targetType.cast(object));
-					}
-				}
+				list = CommonUtil.getListFromQR(qr, targetType);
 			} else if (obj instanceof WTChangeOrder2) {
 				WTChangeOrder2 co = (WTChangeOrder2) obj;
 				QueryResult qr = ChangeHelper2.service.getChangeablesAfter(co);
-				while (qr.hasMoreElements()) {
-					Object object = qr.nextElement();
-					if (targetType.isInstance(object)) {
-						list.add(targetType.cast(object));
-					}
-				}
+				list = CommonUtil.getListFromQR(qr, targetType);
+			} else if (obj instanceof WTChangeActivity2) {
+				WTChangeActivity2 eca = (WTChangeActivity2) obj;
+				QueryResult qr = ChangeHelper2.service.getChangeablesAfter(eca);
+				list = CommonUtil.getListFromQR(qr, targetType);
 			} else {
 				System.out.println("数据不正确!");
 			}

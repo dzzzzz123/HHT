@@ -17,7 +17,7 @@ public class CustomCreatePartAndCADDocFormProcessor extends CreatePartAndCADDocF
 		System.out.println("----------------创建物料查重（长描述）----------------");
 		String result = DuplicateCheckHelper.process(nmCommandBean);
 		if (result.length() > 0) {
-			throw new WTException("当前物料系统中已存在编号为 " + result + " 的物料！");
+			throw new WTException(result);
 		}
 		return super.doOperation(nmCommandBean, list);
 	}

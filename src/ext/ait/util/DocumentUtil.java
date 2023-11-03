@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.Logger;
 
 import com.ptc.core.meta.type.mgmt.server.impl.WTTypeDefinition;
 import com.ptc.core.meta.type.mgmt.server.impl.WTTypeDefinitionMaster;
@@ -24,7 +23,6 @@ import wt.epm.EPMDocument;
 import wt.epm.EPMDocumentType;
 import wt.fc.PersistenceHelper;
 import wt.fc.QueryResult;
-import wt.log4j.LogR;
 import wt.method.RemoteAccess;
 import wt.org.WTPrincipal;
 import wt.part.WTPart;
@@ -37,8 +35,6 @@ import wt.vc.VersionControlHelper;
 import wt.vc.config.LatestConfigSpec;
 
 public class DocumentUtil implements RemoteAccess {
-
-	private static Logger LOGGER = LogR.getLogger(DocumentUtil.class.getName());
 
 	/**
 	 * 获取被参考文档
@@ -315,8 +311,6 @@ public class DocumentUtil implements RemoteAccess {
 		if (typeDef.isLatestIteration()) {
 			id = typeDef.getPersistInfo().getObjectIdentifier().getId();
 		}
-		LOGGER.debug("###[" + id + "] isInheritedDomain --->" + typeDef.isInheritedDomain() + " ;;;isUserAttributeable "
-				+ typeDef.isUserAttributeable() + ";;;; isLatestIteration " + typeDef.isLatestIteration());
 		return id;
 	}
 

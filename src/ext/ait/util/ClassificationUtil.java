@@ -178,7 +178,6 @@ public class ClassificationUtil implements RemoteAccess {
 		String bind_attr_value = null;
 		try {
 			if (bind_attr_name != null) {
-				System.out.println("The classification binding attribute on " + part + " is " + bind_attr_name);
 				PersistableAdapter obj = new PersistableAdapter(part, null, Locale.US, null);
 				obj.load(bind_attr_name);
 				bind_attr_value = (String) obj.get(bind_attr_name);

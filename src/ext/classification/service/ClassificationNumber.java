@@ -28,6 +28,9 @@ public class ClassificationNumber {
 			String newNumber = getNewNumberForEndItem(part);
 			// 对部件输出的新编码进行校验
 			if (newNumber.length() == 15) {
+				if (part.getSource().toString().equals(pUtil.getValueByKey("source.buy"))) {
+					newNumber = "6" + newNumber.substring(1);
+				}
 				PartUtil.changePartNumber(part, newNumber);
 				return "";
 			} else {
@@ -56,7 +59,7 @@ public class ClassificationNumber {
 		String Brand = pUtil.getValueByKey(part, "iba.internal.Brand");
 		String Producer = pUtil.getValueByKey(part, "iba.internal.Producer");
 		String ProductModel = pUtil.getValueByKey(part, "iba.internal.ProductModel");
-		// 添加前导0000
+		// 添加前导00000000
 		if (ProductModel.length() < 7) {
 			StringBuilder paddedProductModel = new StringBuilder(ProductModel);
 			while (paddedProductModel.length() < 7) {

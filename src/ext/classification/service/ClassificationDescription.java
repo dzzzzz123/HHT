@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import ext.HHT.part.duplicateCheck.DuplicateCheckHelper;
 import ext.ait.util.ClassificationUtil;
 import ext.ait.util.IBAUtil;
@@ -52,6 +54,9 @@ public class ClassificationDescription {
 	public static String process(Map<String, Object> map, String classification) {
 		String result = "";
 		String partten = pUtil.getValueByKey(classification);
+		if (StringUtils.isBlank(partten)) {
+			return result;
+		}
 		List<String> parttens = Util.extractParttens(partten);
 		Set<String> keySet = map.keySet(); // 获取键集合一次
 

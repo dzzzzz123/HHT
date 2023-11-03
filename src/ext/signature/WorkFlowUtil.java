@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.ptc.windchill.enterprise.workflow.WfDataUtilitiesHelper;
+
 import wt.change2.WTChangeActivity2;
 import wt.doc.WTDocument;
 import wt.epm.EPMDocument;
@@ -23,7 +25,6 @@ import wt.fc.WTReference;
 import wt.maturity.MaturityHelper;
 import wt.maturity.PromotionNotice;
 import wt.org.WTPrincipal;
-import wt.pom.Transaction;
 import wt.query.CompositeWhereExpression;
 import wt.query.LogicalOperator;
 import wt.query.QuerySpec;
@@ -32,14 +33,10 @@ import wt.query.TableColumn;
 import wt.session.SessionHelper;
 import wt.util.WTException;
 import wt.workflow.engine.ProcessData;
-import wt.workflow.engine.WfEngineServerHelper;
 import wt.workflow.engine.WfProcess;
 import wt.workflow.engine.WfVotingEventAudit;
-import wt.workflow.status.WfProcessAdminHelper;
 import wt.workflow.work.WfAssignedActivity;
 import wt.workflow.work.WorkItem;
-
-import com.ptc.windchill.enterprise.workflow.WfDataUtilitiesHelper;
 
 public class WorkFlowUtil {
 
@@ -47,7 +44,7 @@ public class WorkFlowUtil {
 	 * 流程反签，流程审批人、审批时间、备注等信息写到流程变量中
 	 * 
 	 * @description @param ObjectReference @param primaryBusinessObject @param
-	 * 当前角色名称 @return @throws
+	 *              当前角色名称 @return @throws
 	 */
 	public static String saveReviewToVar(ObjectReference self, WTObject pbo, String roleName) {
 		WTPrincipal currentUser = null;
@@ -90,7 +87,7 @@ public class WorkFlowUtil {
 //			transaction.rollback();
 			e.printStackTrace();
 		} finally {
-			if(currentUser != null) {
+			if (currentUser != null) {
 				try {
 					SessionHelper.manager.setPrincipal(currentUser.getName());
 				} catch (WTException e) {
@@ -105,7 +102,7 @@ public class WorkFlowUtil {
 	 * 获取流程中所有变量
 	 * 
 	 * @description @param ObjectReference @param
-	 * primaryBusinessObject @return @throws
+	 *              primaryBusinessObject @return @throws
 	 */
 	public static String getReview(WfProcess wfprocess) {
 		try {
@@ -113,7 +110,7 @@ public class WorkFlowUtil {
 //			WfProcess wfprocess = (WfProcess) object;
 			Object reviewer = wfprocess.getContext().getValue("reviewer");
 			System.out.println("Reviewer info:" + reviewer);
-			return reviewer!=null ? reviewer.toString():"{}";
+			return reviewer != null ? reviewer.toString() : "{}";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -125,12 +122,12 @@ public class WorkFlowUtil {
 		HashMap<String, Vector<String[]>> signInfo = new HashMap<String, Vector<String[]>>();
 		try {
 			String reviewer = "{}";
-			if(self instanceof ObjectReference) {
-				reviewer = getReview((WfProcess)((ObjectReference)self).getObject());
-			}else if(self instanceof WfProcess) {
-				reviewer = getReview((WfProcess)self);
+			if (self instanceof ObjectReference) {
+				reviewer = getReview((WfProcess) ((ObjectReference) self).getObject());
+			} else if (self instanceof WfProcess) {
+				reviewer = getReview((WfProcess) self);
 			}
-			if(StringUtils.isBlank(reviewer)) {
+			if (StringUtils.isBlank(reviewer)) {
 				return signInfo;
 			}
 //			reviewer="{\"图纸校对\":[\"administrator\",\"2019.1.1\",\"test\",\"test\"]}";
@@ -196,7 +193,7 @@ public class WorkFlowUtil {
 						while (changeables.hasMoreElements()) {
 							Object localObject = changeables.nextElement();
 							if (localObject instanceof WTDocument) {
-								PDFSign.signPDFVisualization((WTDocument)localObject, signInfo, "PDF文档");
+								PDFSign.signPDFVisualization((WTDocument) localObject, signInfo, "PDF文档");
 							}
 						}
 					}
@@ -228,14 +225,14 @@ public class WorkFlowUtil {
 						PDFSign.signPDFVisualization((EPMDocument) obj, signInfo, "PDF图纸");
 					}
 				}
-			}else if (pbo instanceof WTChangeActivity2) {
+			} else if (pbo instanceof WTChangeActivity2) {
 				WTChangeActivity2 eca = (WTChangeActivity2) pbo;
 				wt.fc.QueryResult changeables = wt.change2.ChangeHelper2.service.getChangeablesAfter(eca);
 				if (changeables != null) {
 					while (changeables.hasMoreElements()) {
 						Object localObject = changeables.nextElement();
 						if (localObject instanceof EPMDocument) {
-							PDFSign.signPDFVisualization((EPMDocument)localObject, signInfo, "PDF图纸");
+							PDFSign.signPDFVisualization((EPMDocument) localObject, signInfo, "PDF图纸");
 						}
 					}
 				}
@@ -268,10 +265,14 @@ public class WorkFlowUtil {
 
 					if (wfvoting != null) {
 
-						info[0] = wfvoting.getUserRef() != null ? wfvoting.getUserRef().getName() : "";
+						// info[0] = wfvoting.getUserRef() != null ? wfvoting.getUserRef().getName() :
+						// "";
+						info[0] = wfvoting.getUserRef() != null ? wfvoting.getUserRef().getFullName() : "";
+
 						String date = SignatureHelper.DATEFORMATE.format(wfvoting.getTimestamp());
 						info[1] = date;
-						info[2] = wfvoting.getUserRef().getName();
+						// info[2] = wfvoting.getUserRef().getName();
+						info[2] = wfvoting.getUserRef().getFullName();
 						info[3] = wfvoting.getUserComment();
 					}
 

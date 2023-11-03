@@ -23,21 +23,30 @@ public class DuplicateCheckHelper {
 		Map<String, Object> paramMap = nmCommandBean.getParameterMap();
 		String classification = "";
 		for (String key : paramMap.keySet()) {
+			Object value = paramMap.get(key);
+			String strValue = value instanceof String[] ? ((String[]) value)[0] : value.toString();
+			System.out.println("key:" + key + " value:" + strValue);
 			if (key.contains(pUtil.getValueByKey("iba.paramMap.HHT_Classification")) && key.endsWith("textbox")) {
-				Object value = paramMap.get(key);
-				classification = value instanceof String[] ? ((String[]) value)[0] : value.toString();
-				break;
+				classification = strValue;
 			}
 		}
-		Map<String, String> map = getDescriptionByClass(classification);
-		String result = ClassificationDescription.process(paramMap, classification);
-		for (String key : map.keySet()) {
-			if (key.equals(result)) {
-				String oid = map.get(key);
-				WTPart part = (WTPart) PersistenceUtil.oid2Object(oid);
-				return part.getNumber();
+
+		// 当物料分类存在时,根据物料长描述进行查重
+		if (!classification.equals("")) {
+			Map<String, String> map = getDescriptionByClass(classification);
+			String result = ClassificationDescription.process(paramMap, classification);
+			if (result.isBlank()) {
+				return "当前分类 " + classification + " 在配置文件中不存在!";
+			}
+			for (String key : map.keySet()) {
+				if (key.equals(result)) {
+					String oid = map.get(key);
+					WTPart part = (WTPart) PersistenceUtil.oid2Object(oid);
+					return "当前物料系统中已存在编号为 " + part.getNumber() + " 的物料！";
+				}
 			}
 		}
+
 		return "";
 	}
 
