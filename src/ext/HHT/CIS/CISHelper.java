@@ -7,14 +7,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import ext.ait.util.CommonUtil;
 import ext.ait.util.PropertiesUtil;
-import wt.change2.ChangeException2;
-import wt.change2.ChangeHelper2;
-import wt.change2.WTChangeOrder2;
-import wt.fc.QueryResult;
 import wt.fc.WTObject;
-import wt.maturity.MaturityHelper;
-import wt.maturity.PromotionNotice;
 import wt.part.WTPart;
 import wt.util.WTException;
 
@@ -29,14 +24,13 @@ public class CISHelper {
 	 * @return List<String>
 	 */
 	public static List<String> process(WTObject ref) {
-		List<WTPart> parts = getPartList(ref);
+		List<WTPart> parts = CommonUtil.getListFromPBO(ref, WTPart.class);
 		List<String> result = new ArrayList<>();
 		parts.forEach(part -> {
 			CISEntity entity = null;
 			try {
 				entity = getEntity(part);
 			} catch (WTException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			try {
@@ -48,48 +42,6 @@ public class CISHelper {
 
 		});
 		return result;
-	}
-
-	/**
-	 * 从工作流中获取物料列表
-	 * 
-	 * @param obj
-	 * @return List<WTPart>
-	 */
-	private static List<WTPart> getPartList(WTObject obj) {
-		List<WTPart> list = new ArrayList<>();
-		try {
-			if (obj instanceof WTPart) {
-				list.add((WTPart) obj);
-			} else if (obj instanceof PromotionNotice) {
-				PromotionNotice pn = (PromotionNotice) obj;
-				QueryResult qr = MaturityHelper.service.getPromotionTargets(pn);
-				while (qr.hasMoreElements()) {
-					Object object = qr.nextElement();
-					if (object instanceof WTPart) {
-						list.add((WTPart) object);
-					}
-				}
-			} else if (obj instanceof WTChangeOrder2) {
-				WTChangeOrder2 co = (WTChangeOrder2) obj;
-				QueryResult qr = ChangeHelper2.service.getChangeablesAfter(co);
-				while (qr.hasMoreElements()) {
-					Object object = qr.nextElement();
-					if (object instanceof WTPart) {
-						list.add((WTPart) object);
-					}
-				}
-			} else {
-				System.out.println("不是部件，无法修改其名称/编号/描述");
-			}
-		} catch (ChangeException2 e) {
-			e.printStackTrace();
-		} catch (WTException e) {
-			e.printStackTrace();
-		}
-		System.out.println("list" + list);
-		System.out.println("list.toString()" + list.toString());
-		return list;
 	}
 
 	/**
@@ -130,7 +82,6 @@ public class CISHelper {
 			Statement Statement = connection.createStatement();
 			ResultSet resultSet = Statement.executeQuery(nameSql);
 			String name = "";
-			String msg = "";
 			while (resultSet.next()) {
 				name = resultSet.getString("name");
 				if (name.subSequence(0, 4).equals(Classification)) {

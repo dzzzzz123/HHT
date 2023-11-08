@@ -26,7 +26,9 @@ import wt.fc.QueryResult;
 import wt.method.RemoteAccess;
 import wt.org.WTPrincipal;
 import wt.part.WTPart;
+import wt.part.WTPartDescribeLink;
 import wt.part.WTPartHelper;
+import wt.part.WTPartReferenceLink;
 import wt.query.QuerySpec;
 import wt.query.SearchCondition;
 import wt.session.SessionHelper;
@@ -346,5 +348,37 @@ public class DocumentUtil implements RemoteAccess {
 			}
 		}
 		return type;
+	}
+
+	/**
+	 * 创建部件和文档间的关系 说明方文档/参考文档
+	 * 
+	 * @param part
+	 * @param doc
+	 */
+	public static void createDocPartLink(WTPart part, WTDocument doc, String actionType) {
+		try {
+			switch (actionType) {
+			case "Describe":
+				// 创建说明方文档关联关系
+				part = (WTPart) PersistenceUtil.checkoutObj(part);
+				WTPartDescribeLink describeLink = WTPartDescribeLink.newWTPartDescribeLink(part, doc);
+				PersistenceHelper.manager.save(describeLink);
+				PersistenceUtil.checkinObj(part);
+				break;
+			case "Reference":
+				// 创建参考文档关联关系
+				part = (WTPart) PersistenceUtil.checkoutObj(part);
+				WTPartReferenceLink ref_link = WTPartReferenceLink.newWTPartReferenceLink(part,
+						(WTDocumentMaster) doc.getMaster());
+				ref_link = (WTPartReferenceLink) PersistenceHelper.manager.save(ref_link);
+				PersistenceUtil.checkinObj(part);
+				break;
+			default:
+				break;
+			}
+		} catch (WTException e) {
+			e.printStackTrace();
+		}
 	}
 }

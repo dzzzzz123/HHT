@@ -7,14 +7,11 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 import ext.HHT.part.duplicateCheck.DuplicateCheckHelper;
-import ext.ait.util.ClassificationUtil;
-import ext.ait.util.IBAUtil;
 import ext.ait.util.PartUtil;
 import ext.ait.util.PersistenceUtil;
 import ext.ait.util.PropertiesUtil;
 import wt.fc.WTObject;
 import wt.part.WTPart;
-import wt.util.WTException;
 
 /**
  * 根据部件的分类属性的内部名称来获取新的物料描述并设置值
@@ -28,19 +25,13 @@ public class ClassificationDescription {
 
 	public static String process(WTPart part) {
 		String result = "";
-		String classInternalName = ClassificationUtil.getClassificationInternal(part,
-				pUtil.getValueByKey("iba.internal.HHT_Classification"));
-		String partten = pUtil.getValueByKey(classInternalName);
-		String newDescription = Util.processPartten(partten, part);
-		try {
-			IBAUtil ibaUtil = new IBAUtil(part);
-			ibaUtil.setIBAAttribute4AllType(part, pUtil.getValueByKey("iba.internal.HHT_LongtDescription"),
-					newDescription);
-		} catch (WTException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
+		String classInternalName = pUtil.getValueByKey(part, "iba.internal.HHT_Classification");
+		String pattern = pUtil.getValueByKey(classInternalName);
+		if (StringUtils.isBlank(pattern)) {
+			return "当前分类 " + classInternalName + " 在配置文件中不存在!\r\n";
 		}
+		String newDescription = Util.processPartten(pattern, part);
+		pUtil.setValueByKey(part, "iba.internal.HHT_LongtDescription", newDescription);
 		return result;
 	}
 
@@ -53,11 +44,11 @@ public class ClassificationDescription {
 	 */
 	public static String process(Map<String, Object> map, String classification) {
 		String result = "";
-		String partten = pUtil.getValueByKey(classification);
-		if (StringUtils.isBlank(partten)) {
-			return result;
+		String pattern = pUtil.getValueByKey(classification);
+		if (StringUtils.isBlank(pattern)) {
+			return "当前分类 " + classification + " 在配置文件中不存在!\r\n";
 		}
-		List<String> parttens = Util.extractParttens(partten);
+		List<String> parttens = Util.extractParttens(pattern);
 		Set<String> keySet = map.keySet(); // 获取键集合一次
 
 		for (String str1 : parttens) {
@@ -82,10 +73,12 @@ public class ClassificationDescription {
 		List<WTPart> partList = PartUtil.getPartList(obj);
 		String result = "";
 		for (WTPart part : partList) {
-			String classInternalName = ClassificationUtil.getClassificationInternal(part,
-					pUtil.getValueByKey("iba.internal.HHT_Classification"));
-			String partten = pUtil.getValueByKey(classInternalName);
-			String newDescription = Util.processPartten(partten, part);
+			String classInternalName = pUtil.getValueByKey(part, "iba.internal.HHT_Classification");
+			String pattern = pUtil.getValueByKey(classInternalName);
+			if (StringUtils.isBlank(pattern)) {
+				return "当前分类 " + classInternalName + " 在配置文件中不存在!\r\n";
+			}
+			String newDescription = Util.processPartten(pattern, part);
 			Map<String, String> map = DuplicateCheckHelper.getDescriptionByClass(classInternalName);
 			for (String key : map.keySet()) {
 				if (key.equals(newDescription)) {

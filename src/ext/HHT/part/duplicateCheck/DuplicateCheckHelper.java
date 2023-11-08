@@ -10,6 +10,7 @@ import com.ptc.netmarkets.util.beans.NmCommandBean;
 import ext.ait.util.CommonUtil;
 import ext.ait.util.PersistenceUtil;
 import ext.ait.util.PropertiesUtil;
+import ext.ait.util.VersionUtil;
 import ext.classification.service.ClassificationDescription;
 import wt.fc.WTObject;
 import wt.part.WTPart;
@@ -25,7 +26,6 @@ public class DuplicateCheckHelper {
 		for (String key : paramMap.keySet()) {
 			Object value = paramMap.get(key);
 			String strValue = value instanceof String[] ? ((String[]) value)[0] : value.toString();
-			System.out.println("key:" + key + " value:" + strValue);
 			if (key.contains(pUtil.getValueByKey("iba.paramMap.HHT_Classification")) && key.endsWith("textbox")) {
 				classification = strValue;
 			}
@@ -42,7 +42,9 @@ public class DuplicateCheckHelper {
 				if (key.equals(result)) {
 					String oid = map.get(key);
 					WTPart part = (WTPart) PersistenceUtil.oid2Object(oid);
-					return "当前物料系统中已存在编号为 " + part.getNumber() + " 的物料！";
+					if (VersionUtil.isLatestIterated(part)) {
+						return "当前物料系统中已存在编号为 " + part.getNumber() + " 的物料与其相同！";
+					}
 				}
 			}
 		}

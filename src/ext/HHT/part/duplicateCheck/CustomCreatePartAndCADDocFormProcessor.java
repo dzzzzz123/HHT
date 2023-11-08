@@ -30,8 +30,8 @@ public class CustomCreatePartAndCADDocFormProcessor extends CreatePartAndCADDocF
 		WTPart part = (list.size() > 0)
 				? (list.get(0).getObject() instanceof WTPart ? (WTPart) list.get(0).getObject() : null)
 				: null;
-		System.out.println("----------------成品物料组，对应文件夹处理----------------");
-		String result = FinishClassificationHelper.process(part);
+		System.out.println("----------------物料存放到对应文件夹 处理----------------");
+		String result = DistrbutePartHelper.process(part);
 		if (result.length() > 0) {
 			throw new WTException(result);
 		}

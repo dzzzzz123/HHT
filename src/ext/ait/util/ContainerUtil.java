@@ -24,6 +24,7 @@ import wt.inf.container.WTContainer;
 import wt.inf.container.WTContainerRef;
 import wt.method.RemoteAccess;
 import wt.org.WTPrincipal;
+import wt.part.WTPart;
 import wt.query.QueryException;
 import wt.query.QuerySpec;
 import wt.query.SearchCondition;
@@ -199,6 +200,19 @@ public class ContainerUtil implements RemoteAccess {
 		} catch (WTException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * 将某个持久化对象移动到指定库下的文件夹中
+	 * 
+	 * @param part       持久化对象
+	 * @param library    库名称
+	 * @param folderName 文件夹名称
+	 */
+	public static void moveObj2FolderWithContainer(WTPart part, String library, String folderName) {
+		WTContainer container = ContainerUtil.getContainer(library);
+		Folder toFolder = ContainerUtil.getFolder(folderName, container);
+		ContainerUtil.moveObj2Folder(part, toFolder);
 	}
 
 }

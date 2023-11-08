@@ -54,16 +54,15 @@ public class SupplyChainServlet implements Controller {
 		return CommonUtil.requestInterface(url, username, password, jsonInput.toString(), "POST", null);
 	}
 
-	public static List<String> getPartNumberByWI(String workItemID) {
+	public static List<String> requestSupplyChainList(String workItemID) {
 		List<String> result = new ArrayList<>();
-
 		try {
 			ReferenceFactory rf = new ReferenceFactory();
 			WorkItem workItem = (WorkItem) rf.getReference(workItemID).getObject();
 			WTObject pbo = WorkflowUtil.getPBOByWorkItem(workItem);
 			ArrayList<WTPart> parts = WorkflowUtil.getTargerObject(pbo, "AffectedObjects", WTPart.class);
 			parts.forEach(part -> {
-				result.add(part.getNumber());
+				result.add(requestSupplyChain("{ \"I_MATNR\": \"" + part.getNumber() + "\" }"));
 			});
 		} catch (WTRuntimeException e) {
 			e.printStackTrace();
@@ -72,4 +71,5 @@ public class SupplyChainServlet implements Controller {
 		}
 		return result;
 	}
+
 }

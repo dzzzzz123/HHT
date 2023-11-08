@@ -14,10 +14,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.logging.log4j.Logger;
-
 import wt.iba.value.IBAHolder;
-import wt.log4j.LogR;
 import wt.method.RemoteAccess;
 
 public class PropertiesUtil implements RemoteAccess {
@@ -30,7 +27,6 @@ public class PropertiesUtil implements RemoteAccess {
 	private Class<?> callingClass;
 	// properties文件名称
 	private String configFileName;
-	private static Logger LOGGER = LogR.getLogger(PropertiesUtil.class.getName());
 
 	private PropertiesUtil(Class<?> callingClass, String configFileName) {
 		this.callingClass = callingClass; // 存储调用类
@@ -47,6 +43,10 @@ public class PropertiesUtil implements RemoteAccess {
 	}
 
 	// 获取调用当前方法的方法的class
+	/**
+	 * 
+	 * @return
+	 */
 	private static Class<?> getCallingClass() {
 		// 使用 Thread.currentThread().getStackTrace() 获取调用者的类
 		StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
@@ -55,7 +55,7 @@ public class PropertiesUtil implements RemoteAccess {
 				String className = stackTrace[3].getClassName();
 				return Class.forName(className);
 			} else {
-				LOGGER.error("----->当前文件夹找不到配置文件: ");
+				System.out.println("----->当前文件夹找不到配置文件");
 			}
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -76,7 +76,12 @@ public class PropertiesUtil implements RemoteAccess {
 		}
 	}
 
-	// 读取properties文件中对应的value值
+	/**
+	 * 读取properties文件中对应的value值
+	 * 
+	 * @param key properties文件中对应的key
+	 * @return
+	 */
 	public String getValueByKey(String key) {
 		loadProperties(); // 在每次调用 getStr 时重新加载
 		String strinfo = properties.getProperty(key);
@@ -86,8 +91,13 @@ public class PropertiesUtil implements RemoteAccess {
 		return strinfo;
 	}
 
-	// 读取properties文件中对应的value值
-	// 并直接获取对应对象的IBA属性对应值
+	/**
+	 * 读取properties文件中对应的value值 并直接获取对应对象的IBA属性对应值
+	 * 
+	 * @param ibaHolder 承载IBA属性的对象
+	 * @param key       properties文件中的key
+	 * @return
+	 */
 	public String getValueByKey(IBAHolder ibaHolder, String key) {
 		String IBAKey = getValueByKey(key);
 		String IBAValue = "";

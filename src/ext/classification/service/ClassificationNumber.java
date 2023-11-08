@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import ext.ait.util.ClassificationUtil;
+import ext.ait.util.CommonUtil;
 import ext.ait.util.PartUtil;
 import ext.ait.util.PersistenceUtil;
 import ext.ait.util.PropertiesUtil;
@@ -20,31 +20,31 @@ public class ClassificationNumber {
 	 * @param part
 	 */
 	public static String process(WTPart part) {
-		String prefix = pUtil.getValueByKey("temporary.number.prefix");
-		String typeName = PersistenceUtil.getSubTypeInternal(part);
+		String suffix = pUtil.getValueByKey("formal.number.suffix");
 		String endItemTypeName = pUtil.getValueByKey("subType.internal.endItem");
+		String classInternalName = pUtil.getValueByKey(part, "iba.internal.HHT_Classification");
+		String buy = pUtil.getValueByKey("source.buy");
 		String oldNumber = part.getNumber();
+		String typeName = PersistenceUtil.getSubTypeInternal(part);
+
 		if (typeName.equals(endItemTypeName)) {
-			String newNumber = getNewNumberForEndItem(part);
+			String newNumber = getNewNumberForEndItem(part, classInternalName);
 			// 对部件输出的新编码进行校验
 			if (newNumber.length() == 15) {
-				if (part.getSource().toString().equals(pUtil.getValueByKey("source.buy"))) {
-					newNumber = "6" + newNumber.substring(1);
-				}
+				newNumber = part.getSource().toString().equals(buy) ? "6" + newNumber.substring(1) : newNumber;
 				PartUtil.changePartNumber(part, newNumber);
-				return "";
 			} else {
-				return oldNumber + " 所生成的新编码不符合规范为 " + newNumber;
+				return oldNumber + " 所生成的新编码不符合规范,且新编号为 " + newNumber + "\r\n";
 			}
 		} else {
-			// 对成品部件原编码的前缀进行判断
-			if (oldNumber.startsWith(prefix)) {
-				PartUtil.changePartNumber(part, getNewNumberForPart(part));
-				return "";
+			// 校验物料编号是否是已生成的编号
+			if (oldNumber.startsWith(classInternalName) && oldNumber.endsWith(suffix)) {
+				return "物料编号已经是系统生成的编号\r\n";
 			} else {
-				return oldNumber + " 的前缀不符合规范";
+				PartUtil.changePartNumber(part, getNewNumberForPart(part, classInternalName));
 			}
 		}
+		return "";
 	}
 
 	/**
@@ -53,21 +53,12 @@ public class ClassificationNumber {
 	 * @param part
 	 * @return String 新编号
 	 */
-	private static String getNewNumberForEndItem(WTPart part) {
-		String classInternalName = ClassificationUtil.getClassificationInternal(part,
-				pUtil.getValueByKey("iba.internal.HHT_Classification"));
+	private static String getNewNumberForEndItem(WTPart part, String classInternalName) {
 		String Brand = pUtil.getValueByKey(part, "iba.internal.Brand");
 		String Producer = pUtil.getValueByKey(part, "iba.internal.Producer");
 		String ProductModel = pUtil.getValueByKey(part, "iba.internal.ProductModel");
 		// 添加前导00000000
-		if (ProductModel.length() < 7) {
-			StringBuilder paddedProductModel = new StringBuilder(ProductModel);
-			while (paddedProductModel.length() < 7) {
-				paddedProductModel.insert(0, '0'); // 在前面添加零
-			}
-			ProductModel = paddedProductModel.toString();
-		}
-
+		ProductModel = CommonUtil.addLead0(ProductModel, 7);
 		return classInternalName + Brand + Producer + ProductModel;
 	}
 
@@ -77,8 +68,7 @@ public class ClassificationNumber {
 	 * @param part
 	 * @return String 新编号
 	 */
-	private static String getNewNumberForPart(WTPart part) {
-		String classInternalName = pUtil.getValueByKey(part, "iba.internal.HHT_Classification");
+	private static String getNewNumberForPart(WTPart part, String classInternalName) {
 		String suffix = pUtil.getValueByKey("formal.number.suffix");
 		String maxNumberStr = "";
 		List<String> numbers = Util.getPartNumbersByPrefix(classInternalName + "%");

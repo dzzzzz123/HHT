@@ -28,7 +28,10 @@ public class PartSenderHelper {
 			SendSAPPartEntity entity = SendSAPService.SendSAPPart(part);
 			String json = SendSAPService.entityToJson(entity);
 			String result = SendSAPService.sendPartSAP(json);
-			msg.add(SendSAPService.getResultFromJson(result));
+			String SAPResult = SendSAPService.getResultFromJson(result);
+			if (SAPResult.length() > 0) {
+				msg.add(part.getNumber() + "未发送成功，错误信息为： " + SAPResult);
+			}
 		}
 		return msg;
 	}

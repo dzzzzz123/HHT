@@ -26,6 +26,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -79,6 +81,25 @@ public class CommonUtil implements RemoteAccess {
 		} catch (Exception e) {
 			throw new WTException(e);
 		}
+	}
+
+	/**
+	 * 根据给定的参数来添加指定数量的前导零
+	 * 
+	 * @param attr   传入的数
+	 * @param length 添加0之后的总长度
+	 * @return 添加前导0之后的字符串
+	 */
+	public static String addLead0(String attr, int length) {
+		String result = attr;
+		if (result.length() < length) {
+			StringBuilder resultSB = new StringBuilder(length);
+			while (resultSB.length() < length) {
+				resultSB.insert(0, '0'); // 在前面添加零
+			}
+			result = resultSB.toString();
+		}
+		return result;
 	}
 
 	/**
@@ -407,6 +428,7 @@ public class CommonUtil implements RemoteAccess {
 	 */
 	public static String requestInterface(String url, String username, String password, String json, String method,
 			HashMap<String, String> map) {
+		// 输出日志文件
 		System.out.println("--------当前执行的请求接口的参数列表--------");
 		System.out.println("URL: " + url);
 		System.out.println("USERNAME: " + username + " PASSWORD:" + password);
@@ -414,12 +436,13 @@ public class CommonUtil implements RemoteAccess {
 		System.out.println("METHOD: " + method);
 		System.out.println("HEADERS: ");
 
-		// 自定义请求头
 		RestTemplate restTemplate = new RestTemplate();
+		// 添加BASIC认证
 		if (StringUtils.isNotBlank(password) && StringUtils.isNotBlank(username)) {
 			restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(username, password));
 		}
 		restTemplate.getMessageConverters().set(1, new StringHttpMessageConverter(Charset.forName("utf-8")));
+		// 自定义请求头,添加headers内容
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setAcceptCharset(Collections.singletonList(Charset.forName("utf-8")));
@@ -434,8 +457,68 @@ public class CommonUtil implements RemoteAccess {
 				}
 			}
 		}
-		// 参数
+		// 添加json参数,设置请求的方法并获取返回的json信息
 		HttpEntity<String> entity = new HttpEntity<String>(json, headers);
+		ResponseEntity<String> responseEntity = method.equalsIgnoreCase("GET")
+				? restTemplate.exchange(url, HttpMethod.GET, entity, String.class)
+				: restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+
+		if (responseEntity == null) {
+			return null;
+		}
+		String resultJson = responseEntity.getBody().toString();
+		System.out.println("RESULTJSON: " + resultJson);
+		return resultJson;
+	}
+
+	/**
+	 * 当参数类型为x-www-form-urlencoded时调用接口，大致与上个方法相同
+	 * 
+	 * @param url
+	 * @param username
+	 * @param password
+	 * @param formData
+	 * @param method
+	 * @param map
+	 * @return
+	 */
+	public static String requestInterface(String url, String username, String password, Map<String, String> formData,
+			String method, HashMap<String, String> map) {
+		System.out.println("--------当前执行的请求接口的参数列表--------");
+		System.out.println("URL: " + url);
+		System.out.println("USERNAME: " + username + " PASSWORD:" + password);
+		System.out.println("METHOD: " + method);
+		formData.forEach((key, value) -> {
+			System.out.println("KEY: " + key + " VALUE: " + value);
+		});
+		System.out.println("HEADERS: ");
+
+		RestTemplate restTemplate = new RestTemplate();
+		if (StringUtils.isNotBlank(password) && StringUtils.isNotBlank(username)) {
+			restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(username, password));
+		}
+		restTemplate.getMessageConverters().set(1, new StringHttpMessageConverter(Charset.forName("utf-8")));
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		headers.setAcceptCharset(Collections.singletonList(Charset.forName("utf-8")));
+		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+		if (map != null) {
+			Set<String> set = map.keySet();
+			if (set.size() > 0) {
+				for (String key : set) {
+					String value = map.get(key);
+					System.out.println("key:" + key + " value:" + map.get(key));
+					headers.add(key, value);
+				}
+			}
+		}
+		// 创建 x-www-form-urlencoded 参数
+		MultiValueMap<String, String> formDataMap = new LinkedMultiValueMap<>();
+		if (formData != null) {
+			formDataMap.setAll(formData);
+		}
+		// 参数
+		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(formDataMap, headers);
 		ResponseEntity<String> responseEntity = method.equalsIgnoreCase("GET")
 				? restTemplate.exchange(url, HttpMethod.GET, entity, String.class)
 				: restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
@@ -488,7 +571,7 @@ public class CommonUtil implements RemoteAccess {
 	}
 
 	/**
-	 * 获取CSRF_NONCE（token）
+	 * 获取Windchill系统CSRF_NONCE（token）
 	 * 
 	 * @return CSRF_NONCE
 	 */

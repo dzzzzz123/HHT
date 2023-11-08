@@ -20,9 +20,7 @@ public class SendSAPService {
 		String HHT_Bonded = Config.getHHT_Bonded(part);
 		String HHT_ClassificationCode = Config.getHHT_Classification(part);
 		String HHT_INValue = Config.getHHT_INValue(part);
-		String buy = Config.getSourceBuy();
 
-//		String source = part.getSource().toString();
 		String number = part.getNumber();
 		String name = part.getName();
 		String version = VersionUtil.getVersion(part);
@@ -38,11 +36,6 @@ public class SendSAPService {
 		unit = Config.getValue(unit);
 		HHT_Bonded = HHT_Bonded.equals("是") ? "Y" : "N";
 		defaultTraceCode = defaultTraceCode.equals("S") ? "0001" : "";
-//		if (source.equalsIgnoreCase(buy)) {
-//			number = number.startsWith("5") ? "6" + number.substring(1) : number;
-//			HHT_Classification = HHT_Classification.startsWith("5") ? "6" + HHT_Classification.substring(1)
-//					: HHT_Classification;
-//		}
 
 		sapPartEntity.setPartType(PartType);
 		sapPartEntity.setHHT_Classification(HHT_Classification);

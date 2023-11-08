@@ -1,6 +1,7 @@
 package ext.classification.service;
 
-import ext.ait.util.ClassificationUtil;
+import org.apache.commons.lang3.StringUtils;
+
 import ext.ait.util.PartUtil;
 import ext.ait.util.PropertiesUtil;
 import wt.part.WTPart;
@@ -17,10 +18,12 @@ public class ClassificationName {
 
 	public static String process(WTPart part) {
 		String result = "";
-		String classInternalName = ClassificationUtil.getClassificationInternal(part,
-				pUtil.getValueByKey("iba.internal.HHT_Classification"));
-		String partten = pUtil.getValueByKey(classInternalName);
-		String newName = Util.processPartten(partten, part);
+		String classInternalName = pUtil.getValueByKey(part, "iba.internal.HHT_Classification");
+		String pattern = pUtil.getValueByKey(classInternalName);
+		if (StringUtils.isBlank(pattern)) {
+			return "当前分类 " + classInternalName + " 在配置文件中不存在!\r\n";
+		}
+		String newName = Util.processPartten(pattern, part);
 		PartUtil.changePartName(part, newName);
 		return result;
 	}

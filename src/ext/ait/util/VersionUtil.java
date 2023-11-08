@@ -1,12 +1,10 @@
 package ext.ait.util;
 
-import org.apache.logging.log4j.Logger;
-
 import wt.enterprise.RevisionControlled;
 import wt.fc.QueryResult;
-import wt.log4j.LogR;
 import wt.method.RemoteAccess;
 import wt.part.WTPartMaster;
+import wt.pom.PersistenceException;
 import wt.util.WTException;
 import wt.vc.Iterated;
 import wt.vc.Mastered;
@@ -16,8 +14,6 @@ import wt.vc.config.ConfigSpec;
 import wt.vc.config.LatestConfigSpec;
 
 public class VersionUtil implements RemoteAccess {
-
-	private static Logger LOGGER = LogR.getLogger(CommonUtil.class.getName());
 
 	/**
 	 * 获取对象的版本，如A.1
@@ -38,29 +34,35 @@ public class VersionUtil implements RemoteAccess {
 	 * @throws WTException
 	 */
 	@SuppressWarnings("deprecation")
-	public static boolean isLatestIterated(Iterated interated) throws WTException {
+	public static boolean isLatestIterated(Iterated interated) {
 
 		Iterated localIterated = null;
 		boolean bool = false;
 		LatestConfigSpec localLatestConfigSpec = new LatestConfigSpec();
 
-		QueryResult localQueryResult = ConfigHelper.service.filteredIterationsOf(interated.getMaster(),
-				localLatestConfigSpec);
-		if ((localQueryResult != null) && (localQueryResult.size() <= 0)) {
-			ConfigSpec localConfigSpec = ConfigHelper.service.getDefaultConfigSpecFor(WTPartMaster.class);
-			localQueryResult = ConfigHelper.service.filteredIterationsOf(interated.getMaster(), localConfigSpec);
-		}
+		try {
+			QueryResult localQueryResult = ConfigHelper.service.filteredIterationsOf(interated.getMaster(),
+					localLatestConfigSpec);
+			if ((localQueryResult != null) && (localQueryResult.size() <= 0)) {
+				ConfigSpec localConfigSpec = ConfigHelper.service.getDefaultConfigSpecFor(WTPartMaster.class);
+				localQueryResult = ConfigHelper.service.filteredIterationsOf(interated.getMaster(), localConfigSpec);
+			}
 
-		while ((localQueryResult.hasMoreElements()) && (!bool)) {
-			localIterated = (Iterated) localQueryResult.nextElement();
-			bool = localIterated.isLatestIteration();
+			while ((localQueryResult.hasMoreElements()) && (!bool)) {
+				localIterated = (Iterated) localQueryResult.nextElement();
+				bool = localIterated.isLatestIteration();
+			}
+			if (localIterated.equals(interated)) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (PersistenceException e) {
+			e.printStackTrace();
+		} catch (WTException e) {
+			e.printStackTrace();
 		}
-		LOGGER.debug("    the latest iteration=" + localIterated.getIdentity());
-		if (localIterated.equals(interated)) {
-			return true;
-		} else {
-			return false;
-		}
+		return false;
 	}
 
 	/**
