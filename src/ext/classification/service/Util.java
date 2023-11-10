@@ -57,19 +57,23 @@ public class Util {
 			for (String word : parttens) {
 				if (word.startsWith("[")) {
 					newStr += word.substring(1);
-				} else {
-					if (set.contains(word)) {
-						String displayName = ClassificationUtil.getDisplayByInternal(part, word);
-						if (StringUtils.isNotBlank(displayName)) {
-							newStr += displayName;
-						} else {
-							newStr += ibaUtil.getIBAValue(word);
-						}
-					} else {
-						newStr += "";
+				} else if (set.contains(word)) {
+					String temp = "";
+					temp = ibaUtil.getIBAValue(word);
+					if (temp.matches("[a-zA-Z]+")) {
+						temp = ClassificationUtil.getDisplayByInternal(temp);
 					}
+					newStr += temp;
+				} else {
+					newStr += "";
 				}
 			}
+			// 去除掉多余的属性分隔符____
+			while (newStr.contains("__")) {
+				newStr = newStr.replace("__", "_");
+			}
+			newStr = StringUtils.removeStart(newStr, "_");
+			newStr = StringUtils.removeEnd(newStr, "_");
 		} catch (WTException e) {
 			e.printStackTrace();
 		}

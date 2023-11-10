@@ -41,7 +41,7 @@ public class SendPartSAPProcessor extends DefaultObjectFormProcessor {
 
 		formresult = new FormResult(FormProcessingStatus.SUCCESS);
 		formresult.addFeedbackMessage(new FeedbackMessage(FeedbackType.SUCCESS, SessionHelper.getLocale(), null, null,
-				new String[] { "发送成功！" }));
+				new String[] { "物料发送到SAP成功!" }));
 		return formresult;
 	}
 

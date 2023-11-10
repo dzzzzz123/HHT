@@ -29,7 +29,7 @@ public class SendSAPPartEntity {
 	private String HHT_CommodityName;
 	private String HHT_Brand;
 	private String HHT_Year;
-	private String HHT_Size;
+	private String LargeScreenSize;
 	private String HHT_FinishedSeries;
 	private String HHT_Industry;
 	private String HHT_ProductDevelopmentType;
@@ -50,7 +50,7 @@ public class SendSAPPartEntity {
 			String hHT_SizeUnits, String state, String hHT_ClassificationCode, String hHT_ClassificationName,
 			String hHT_ProductLineNumber, String hHT_ProductLineName, String hHT_ProductNumber,
 			String hHT_Productdescription, String hHT_ModelSpecification, String hHT_CommodityName, String hHT_Brand,
-			String hHT_Year, String hHT_Size, String hHT_FinishedSeries, String hHT_Industry,
+			String hHT_Year, String largeScreenSize, String hHT_FinishedSeries, String hHT_Industry,
 			String hHT_ProductDevelopmentType, String hHT_CustomizedProductIdentifier, String hHT_SupplierSku,
 			String defaultTraceCode, String hHT_Factory, String hHT_Price, String hHT_PriceUnit, String hHT_INValue) {
 		PartType = partType;
@@ -80,7 +80,7 @@ public class SendSAPPartEntity {
 		HHT_CommodityName = hHT_CommodityName;
 		HHT_Brand = hHT_Brand;
 		HHT_Year = hHT_Year;
-		HHT_Size = hHT_Size;
+		LargeScreenSize = largeScreenSize;
 		HHT_FinishedSeries = hHT_FinishedSeries;
 		HHT_Industry = hHT_Industry;
 		HHT_ProductDevelopmentType = hHT_ProductDevelopmentType;
@@ -309,12 +309,12 @@ public class SendSAPPartEntity {
 		HHT_Year = hHT_Year;
 	}
 
-	public String getHHT_Size() {
-		return HHT_Size;
+	public String getLargeScreenSize() {
+		return LargeScreenSize;
 	}
 
-	public void setHHT_Size(String hHT_Size) {
-		HHT_Size = hHT_Size;
+	public void setLargeScreenSize(String largeScreenSize) {
+		LargeScreenSize = largeScreenSize;
 	}
 
 	public String getHHT_FinishedSeries() {
@@ -409,7 +409,7 @@ public class SendSAPPartEntity {
 				+ ", HHT_ProductLineNumber=" + HHT_ProductLineNumber + ", HHT_ProductLineName=" + HHT_ProductLineName
 				+ ", HHT_ProductNumber=" + HHT_ProductNumber + ", HHT_Productdescription=" + HHT_Productdescription
 				+ ", HHT_ModelSpecification=" + HHT_ModelSpecification + ", HHT_CommodityName=" + HHT_CommodityName
-				+ ", HHT_Brand=" + HHT_Brand + ", HHT_Year=" + HHT_Year + ", HHT_Size=" + HHT_Size
+				+ ", HHT_Brand=" + HHT_Brand + ", HHT_Year=" + HHT_Year + ", LargeScreenSize=" + LargeScreenSize
 				+ ", HHT_FinishedSeries=" + HHT_FinishedSeries + ", HHT_Industry=" + HHT_Industry
 				+ ", HHT_ProductDevelopmentType=" + HHT_ProductDevelopmentType + ", HHT_CustomizedProductIdentifier="
 				+ HHT_CustomizedProductIdentifier + ", HHT_SupplierSku=" + HHT_SupplierSku + ", DefaultTraceCode="

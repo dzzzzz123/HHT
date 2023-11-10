@@ -63,7 +63,7 @@ public class SendSAPService {
 		sapPartEntity.setHHT_CommodityName(Config.getHHT_CommodityName(part));
 		sapPartEntity.setHHT_Brand(Config.getHHT_Brand(part));
 		sapPartEntity.setHHT_Year(Config.getHHT_Year(part));
-		sapPartEntity.setHHT_Size(Config.getHHT_Size(part));
+		sapPartEntity.setLargeScreenSize(Config.getLargeScreenSize(part));
 		sapPartEntity.setHHT_FinishedSeries(Config.getHHT_FinishedSeries(part));
 		sapPartEntity.setHHT_Industry(Config.getHHT_Industry(part));
 		sapPartEntity.setHHT_ProductDevelopmentType(Config.getHHT_ProductDevelopmentType(part));
@@ -95,7 +95,7 @@ public class SendSAPService {
 			return "D1";
 		case "MP":
 			return "M1";
-		case "废弃":
+		case "Obsolescence":
 			return "Z1";
 		default:
 			return "D1";
@@ -184,7 +184,7 @@ public class SendSAPService {
 		isMatnrMap.put("ZZHPMC", entity.getHHT_CommodityName());
 		isMatnrMap.put("ZZPP", entity.getHHT_Brand());
 		isMatnrMap.put("ZZNF", entity.getHHT_Year());
-		isMatnrMap.put("ZZCC", entity.getHHT_Size());
+		isMatnrMap.put("ZZCC", entity.getLargeScreenSize());
 		isMatnrMap.put("ZZCPXL", entity.getHHT_FinishedSeries());
 		isMatnrMap.put("ZZHY", entity.getHHT_Industry());
 		isMatnrMap.put("ZZCPKFLX", entity.getHHT_ProductDevelopmentType());

@@ -3,6 +3,8 @@ package ext.classification.processor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.ptc.core.components.beans.ObjectBean;
 import com.ptc.core.components.forms.DefaultObjectFormProcessor;
 import com.ptc.core.components.forms.FormProcessingStatus;
@@ -42,7 +44,7 @@ public class ClassificationProcessor extends DefaultObjectFormProcessor {
 			return formResult;
 		}
 
-		if (result.length > 0) {
+		if (result.length > 0 && StringUtils.isNotBlank(result[0])) {
 			formResult = new FormResult(FormProcessingStatus.FAILURE);
 			formResult.addFeedbackMessage(
 					new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(), null, null, result));

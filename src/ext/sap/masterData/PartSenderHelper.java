@@ -3,6 +3,8 @@ package ext.sap.masterData;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import ext.ait.util.CommonUtil;
 import ext.ait.util.PersistenceUtil;
 import wt.fc.WTObject;
@@ -29,7 +31,7 @@ public class PartSenderHelper {
 			String json = SendSAPService.entityToJson(entity);
 			String result = SendSAPService.sendPartSAP(json);
 			String SAPResult = SendSAPService.getResultFromJson(result);
-			if (SAPResult.length() > 0) {
+			if (StringUtils.isNotBlank(SAPResult)) {
 				msg.add(part.getNumber() + "未发送成功，错误信息为： " + SAPResult);
 			}
 		}

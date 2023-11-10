@@ -23,24 +23,26 @@ public class ClassificationHelper {
 		List<String> result = new ArrayList<>();
 		switch (type) {
 		case "number":
-			result = list.stream().map(ClassificationNumber::process)
-					.filter(processedString -> !processedString.isEmpty()).collect(Collectors.toList());
+			result = list.stream().map(ClassificationNumber::process).filter(
+					processedString -> !processedString.isBlank() && !processedString.startsWith("物料编号已经是系统生成的编号"))
+					.collect(Collectors.toList());
 			break;
 		case "name":
 			result = list.stream().map(ClassificationName::process)
-					.filter(processedString -> !processedString.isEmpty()).collect(Collectors.toList());
+					.filter(processedString -> !processedString.isBlank()).collect(Collectors.toList());
 			break;
 		case "description":
 			result = list.stream().map(ClassificationDescription::process)
-					.filter(processedString -> !processedString.isEmpty()).collect(Collectors.toList());
+					.filter(processedString -> !processedString.isBlank()).collect(Collectors.toList());
 			break;
 		default:
 			List<String> desResult = list.stream().map(ClassificationDescription::process)
-					.filter(processedString -> !processedString.isEmpty()).collect(Collectors.toList());
+					.filter(processedString -> !processedString.isBlank()).collect(Collectors.toList());
 			List<String> nameResult = list.stream().map(ClassificationName::process)
-					.filter(processedString -> !processedString.isEmpty()).collect(Collectors.toList());
-			List<String> numberResult = list.stream().map(ClassificationNumber::process)
-					.filter(processedString -> !processedString.isEmpty()).collect(Collectors.toList());
+					.filter(processedString -> !processedString.isBlank()).collect(Collectors.toList());
+			List<String> numberResult = list.stream().map(ClassificationNumber::process).filter(
+					processedString -> !processedString.isBlank() && !processedString.startsWith("物料编号已经是系统生成的编号"))
+					.collect(Collectors.toList());
 			result.addAll(desResult);
 			result.addAll(nameResult);
 			result.addAll(numberResult);

@@ -7,7 +7,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 import ext.HHT.part.duplicateCheck.DuplicateCheckHelper;
-import ext.ait.util.PartUtil;
+import ext.ait.util.CommonUtil;
 import ext.ait.util.PersistenceUtil;
 import ext.ait.util.PropertiesUtil;
 import wt.fc.WTObject;
@@ -24,7 +24,6 @@ public class ClassificationDescription {
 	private static PropertiesUtil pUtil = PropertiesUtil.getInstance("descriptionConfig.properties");
 
 	public static String process(WTPart part) {
-		String result = "";
 		String classInternalName = pUtil.getValueByKey(part, "iba.internal.HHT_Classification");
 		String pattern = pUtil.getValueByKey(classInternalName);
 		if (StringUtils.isBlank(pattern)) {
@@ -32,7 +31,7 @@ public class ClassificationDescription {
 		}
 		String newDescription = Util.processPartten(pattern, part);
 		pUtil.setValueByKey(part, "iba.internal.HHT_LongtDescription", newDescription);
-		return result;
+		return "";
 	}
 
 	/**
@@ -70,8 +69,7 @@ public class ClassificationDescription {
 	}
 
 	public static String process(WTObject obj) {
-		List<WTPart> partList = PartUtil.getPartList(obj);
-		String result = "";
+		List<WTPart> partList = CommonUtil.getListFromPBO(obj, WTPart.class);
 		for (WTPart part : partList) {
 			String classInternalName = pUtil.getValueByKey(part, "iba.internal.HHT_Classification");
 			String pattern = pUtil.getValueByKey(classInternalName);
@@ -84,10 +82,10 @@ public class ClassificationDescription {
 				if (key.equals(newDescription)) {
 					String oid = map.get(key);
 					WTPart samePart = (WTPart) PersistenceUtil.oid2Object(oid);
-					result += part.getNumber() + "与当前物料系统中编号为 " + samePart.getNumber() + " 的物料属性值相同！\r\n";
+					return part.getNumber() + "与当前物料系统中编号为 " + samePart.getNumber() + " 的物料属性值相同！\r\n";
 				}
 			}
 		}
-		return result;
+		return "";
 	}
 }

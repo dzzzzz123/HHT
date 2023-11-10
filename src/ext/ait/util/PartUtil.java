@@ -15,9 +15,6 @@ import com.ptc.netmarkets.model.NmOid;
 import com.ptc.windchill.cadx.common.WTPartUtilities;
 import com.ptc.windchill.enterprise.workflow.WorkflowCommands;
 
-import wt.change2.ChangeException2;
-import wt.change2.ChangeHelper2;
-import wt.change2.WTChangeOrder2;
 import wt.configuration.TraceCode;
 import wt.doc.WTDocument;
 import wt.epm.EPMDocument;
@@ -28,7 +25,6 @@ import wt.fc.Persistable;
 import wt.fc.PersistenceHelper;
 import wt.fc.PersistenceServerHelper;
 import wt.fc.QueryResult;
-import wt.fc.WTObject;
 import wt.fc.collections.WTCollection;
 import wt.fc.collections.WTHashSet;
 import wt.folder.CabinetBased;
@@ -653,6 +649,35 @@ public class PartUtil implements RemoteAccess {
 	}
 
 	/**
+	 * 通过父部件和子部件获取部件之间使用关系
+	 * 
+	 * @param fatherPart
+	 * @param childPart
+	 * @return
+	 */
+	public static List<WTPartUsageLink> getWtPartUsageLink(WTPart fatherPart, WTPart childPart) {
+		List<WTPartUsageLink> list = new ArrayList<WTPartUsageLink>();
+		try {
+			if (childPart != null) {
+				QuerySpec queryspec = new QuerySpec(WTPartUsageLink.class);
+				queryspec.appendWhere(new SearchCondition(WTPartUsageLink.class, "roleAObjectRef.key", "=",
+						PersistenceHelper.getObjectIdentifier(fatherPart)));
+				queryspec.appendAnd();
+				queryspec.appendWhere(new SearchCondition(WTPartUsageLink.class, "roleBObjectRef.key", "=",
+						PersistenceHelper.getObjectIdentifier((WTPartMaster) childPart.getMaster())));
+				QueryResult qr = PersistenceHelper.manager.find((StatementSpec) queryspec);
+				while (qr.hasMoreElements()) {
+					WTPartUsageLink usageLink = (WTPartUsageLink) qr.nextElement();
+					list.add(usageLink);
+				}
+			}
+		} catch (WTException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	/**
 	 * 复制一个新部件（名称与编号不同）
 	 * 
 	 * @param WTPart
@@ -847,43 +872,4 @@ public class PartUtil implements RemoteAccess {
 		return OR;
 	}
 
-	/**
-	 * 从工作流中获取部件列表
-	 * 
-	 * @param obj primaryBusinessObject
-	 * @return List<WTPart> 部件列表
-	 */
-	public static List<WTPart> getPartList(WTObject obj) {
-		List<WTPart> list = new ArrayList<>();
-		try {
-			if (obj instanceof WTPart) {
-				list.add((WTPart) obj);
-			} else if (obj instanceof PromotionNotice) {
-				PromotionNotice pn = (PromotionNotice) obj;
-				QueryResult qr = MaturityHelper.service.getPromotionTargets(pn);
-				while (qr.hasMoreElements()) {
-					Object object = qr.nextElement();
-					if (object instanceof WTPart) {
-						list.add((WTPart) object);
-					}
-				}
-			} else if (obj instanceof WTChangeOrder2) {
-				WTChangeOrder2 co = (WTChangeOrder2) obj;
-				QueryResult qr = ChangeHelper2.service.getChangeablesAfter(co);
-				while (qr.hasMoreElements()) {
-					Object object = qr.nextElement();
-					if (object instanceof WTPart) {
-						list.add((WTPart) object);
-					}
-				}
-			} else {
-				System.out.println("不是部件，无法修改其名称/编号/描述");
-			}
-		} catch (ChangeException2 e) {
-			e.printStackTrace();
-		} catch (WTException e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
 }

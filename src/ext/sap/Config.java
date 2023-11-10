@@ -146,8 +146,8 @@ public class Config {
 		return properties.getValueByKey(part, "iba.internal.HHT_Year");
 	}
 
-	public static String getHHT_Size(WTPart part) {
-		return properties.getValueByKey(part, "iba.internal.HHT_Size");
+	public static String getLargeScreenSize(WTPart part) {
+		return properties.getValueByKey(part, "iba.internal.LargeScreenSize");
 	}
 
 	public static String getHHT_FinishedSeries(WTPart part) {

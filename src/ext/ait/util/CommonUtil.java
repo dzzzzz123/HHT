@@ -91,15 +91,14 @@ public class CommonUtil implements RemoteAccess {
 	 * @return 添加前导0之后的字符串
 	 */
 	public static String addLead0(String attr, int length) {
-		String result = attr;
-		if (result.length() < length) {
-			StringBuilder resultSB = new StringBuilder(length);
+		if (attr.length() < length) {
+			StringBuilder resultSB = new StringBuilder(attr);
 			while (resultSB.length() < length) {
 				resultSB.insert(0, '0'); // 在前面添加零
 			}
-			result = resultSB.toString();
+			return resultSB.toString();
 		}
-		return result;
+		return attr;
 	}
 
 	/**
@@ -474,13 +473,13 @@ public class CommonUtil implements RemoteAccess {
 	/**
 	 * 当参数类型为x-www-form-urlencoded时调用接口，大致与上个方法相同
 	 * 
-	 * @param url
-	 * @param username
-	 * @param password
-	 * @param formData
-	 * @param method
-	 * @param map
-	 * @return
+	 * @param url      访问目标接口的URL
+	 * @param username 访问目标接口需要验证的用户名
+	 * @param password 访问目标接口需要验证的密码
+	 * @param formData 访问目标接口携带的formdata信息
+	 * @param method   请求的方式 GET/POST
+	 * @param map      请求头中需要添加的信息,没有填null
+	 * @return 返回的json信息
 	 */
 	public static String requestInterface(String url, String username, String password, Map<String, String> formData,
 			String method, HashMap<String, String> map) {
@@ -580,8 +579,8 @@ public class CommonUtil implements RemoteAccess {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
 			JsonNode rootNode = objectMapper.readTree(result);
-			JsonNode esMessgNode = rootNode.get("NonceValue");
-			return esMessgNode.asText();
+			JsonNode NonceValue = rootNode.get("NonceValue");
+			return NonceValue.asText();
 		} catch (JsonMappingException e) {
 			e.printStackTrace();
 		} catch (JsonProcessingException e) {

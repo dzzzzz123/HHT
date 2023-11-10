@@ -67,15 +67,14 @@ public class ClassificationUtil implements RemoteAccess {
 	}
 
 	/**
-	 * 根据数据库的数据分类属性的枚举从内部名称获取到显示名称
+	 * 根据查询数据库从的内部名称获取到部件对应枚举值的显示名称 Manufacturing->ZeroStickers->零贴
 	 * 
 	 * @param part     数据源部件
-	 * @param internal 枚举内部名称
+	 * @param internal 分类属性
 	 * @return 显示名称
 	 */
 	public static String getDisplayByInternal(WTPart part, String internal) {
 		String display = "";
-		String sql = "SELECT VALUE FROM LWCLOCALIZABLEPROPERTYVALUE WHERE IDA3B4 IN ( SELECT IDA2A2 FROM LWCENUMERATIONENTRY WHERE NAME= ? )";
 		try {
 			Locale loc = SessionHelper.manager.getLocale();
 			PersistableAdapter adapter = new PersistableAdapter(part, null, loc,
@@ -83,13 +82,28 @@ public class ClassificationUtil implements RemoteAccess {
 			SessionHelper.manager.setAdministrator();
 			adapter.load(new String[] { "HHT_Classification", internal });
 			Object obj = (String) adapter.get(internal);
-			ResultSet resultSet = CommonUtil.excuteSelect(sql, obj.toString());
+			display = getDisplayByInternal(obj.toString());
+		} catch (WTException e) {
+			e.printStackTrace();
+		}
+		return display;
+	}
+
+	/**
+	 * 根据查询数据库从全局枚举的内部名称获取显示名称 ZeroStickers->零贴
+	 * 
+	 * @param internal 内部名称
+	 * @return display 显示名称
+	 */
+	public static String getDisplayByInternal(String internal) {
+		String display = "";
+		String sql = "SELECT VALUE FROM LWCLOCALIZABLEPROPERTYVALUE WHERE IDA3B4 IN ( SELECT IDA2A2 FROM LWCENUMERATIONENTRY WHERE NAME= ? )";
+		try {
+			ResultSet resultSet = CommonUtil.excuteSelect(sql, internal.toString());
 			while (resultSet.next()) {
 				display = resultSet.getString("VALUE");
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (WTException e) {
 			e.printStackTrace();
 		}
 		return display;
