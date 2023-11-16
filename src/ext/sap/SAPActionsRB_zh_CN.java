@@ -35,4 +35,32 @@ public class SAPActionsRB_zh_CN extends WTListResourceBundle {
 	public static final String PRIVATE_CONSTANT_13 = "SAPWizard.masterDataReview.tooltip";
 	@RBEntry("BOM成本")
 	public static final String PRIVATE_CONSTANT_14 = "SAPWizard.BOMCost.description";
+	@RBEntry("成本分析")
+	public static final String PRIVATE_CONSTANT_15 = "SAPWizard.Custing.description";
+	@RBEntry("供应链信息")
+	public static final String PRIVATE_CONSTANT_16 = "SAPWizard.supplyInfoPage.title";
+	@RBEntry("供应链信息")
+	public static final String PRIVATE_CONSTANT_17 = "SAPWizard.supplyInfoPage.description";
+	@RBEntry("供应链信息")
+	public static final String PRIVATE_CONSTANT_18 = "SAPWizard.supplyInfoPage.tooltip";
+	@RBEntry("维护价格属性")
+	public static final String PRIVATE_CONSTANT_19 = "SAPWizard.alterPropertiesWizard.title";
+	@RBEntry("维护价格属性")
+	public static final String PRIVATE_CONSTANT_20 = "SAPWizard.alterPropertiesWizard.description";
+	@RBEntry("维护价格属性")
+	public static final String PRIVATE_CONSTANT_21 = "SAPWizard.alterPropertiesWizard.tooltip";
+	@RBEntry("build_part_all.gif")
+	public static final String PRIVATE_CONSTANT_22 = "SAPWizard.alterPropertiesWizard.icon";
+	@RBEntry("维护价格属性")
+	public static final String PRIVATE_CONSTANT_23 = "SAPWizard.alterProperties.title";
+	@RBEntry("维护价格属性")
+	public static final String PRIVATE_CONSTANT_24 = "SAPWizard.alterProperties.description";
+	@RBEntry("维护价格属性")
+	public static final String PRIVATE_CONSTANT_25 = "SAPWizard.alterProperties.tooltip";
+	@RBEntry("修改采购属性")
+	public static final String PRIVATE_CONSTANT_26 = "SAPWizard.alterPropertiesTable.title";
+	@RBEntry("修改采购属性")
+	public static final String PRIVATE_CONSTANT_27 = "SAPWizard.alterPropertiesTable.description";
+	@RBEntry("修改采购属性")
+	public static final String PRIVATE_CONSTANT_28 = "SAPWizard.alterPropertiesTable.tooltip";
 }

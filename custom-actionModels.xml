@@ -1,112 +1,110 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE actionmodels SYSTEM "customActionmodels.dtd">
 <actionmodels>
-  
-     <!-- Part information page Actions list -->
-     <model name="more parts actions" menufor="wt.part.WTPart">
-         <action name="view" type="object"/>                             <!-- View Information -->
-         <action name="separator" type="separator"/>                   <!-- ===================================== -->
-         <action name="send" type="CISWizard"/>
-		 <action name="batchpdf" type="part"/>
-         <action name="editRequirement" type="ProjectRequirement"/>
-         <action name="sendPartSAP" type="SAPWizard"/>
-         <action name="sendBOM2SAP" type="SAPWizard"/>
-     	   <submodel name="classification"/>
-         <submodel name="thingworxActionsMenu"/>
-         <action name="separator" type="separator"/>                     <!-- ===================================== -->
-         <submodel name="more parts toolbar actions open"/>
-         <action name="separator" type="separator"/>                     <!-- ===================================== -->
-         <action name="checkin" type="wip"/>                             <!-- Check In -->
-         <action name="WFCHECKIN" type="pdmObject"/>                     <!-- Check In for new objects in workspace or objects checked out to workspace-->
-         <action name="checkout" type="wip"/>                            <!-- Check Out -->
-         <action name="WFRMBCHECKOUT" type="pdmObject" />                <!-- checkout for rmb menu on workspace listing page -->
-         <action name="checkoutAndEdit" type="part"/>                    <!-- Check Out and Edit -->
-         <action name="undocheckout" type="object"/>                     <!-- Undo Checkout -->
-         <action name="WFCANCELCHECKOUT" type="pdmObject"/>              <!-- Undo Checkout for objects checked out to workspace-->
-         <action name="edit" type="part"/>                               <!-- Edit -->
-         <action name="editNewPartInWorkspace" type="part"/>             <!-- Edit newly created part in a workspace -->
-         <action name="editCheckedOutPartInWorkspace" type="part"/>      <!-- Edit part checked out to a workspace -->
-         <action name="editPartCommonAttrsWizard" type="part"/>          <!-- Edit Common Attributes -->
-         <action name="REVISEITEMS" type="pdmObject"/>                   <!-- Revise -->
-         <action name="separator" type="separator"/>
-         <action name="fulfillChangeActions" type="effectivity"/>        <!-- FulfillChangeActions -->
-         <action name="undoFulfillDesignSolutionInfoPage" type="effectivity"/>      <!-- Undo Fulfill Change Action -->
-         <action name="GenerateChangeActions" type="effectivity"/>       <!-- Generate Change Actions for CI -->
-         <action name="displayEffectivityLog" type="effectivity"/>       <!-- Display Effectivity Log -->
-         <action name="separator" type="separator"/>                     <!-- ===================================== -->
-         <submodel name="more parts toolbar actions new"/>                       <!-- New ==> -->
-         <action name="separator" type="separator"/>                     <!-- ===================================== -->
-         <action name="traceability" type="traceable"/>
-         <action name="separator" type="separator"/>                     <!-- ===================================== -->
-         <action name="assignItemOptionality" type="optionality"/>       <!-- Assign Expression -->
-         <action name="viewAssignedExpression" type="expressionAssignable"/> <!-- View Assign Expression -->
-         <action name="copyAssignedExpression" type="expressionAssignable"/>              <!-- Copy Independent Expression -->
-         <action name="configure" type="variantspec"/>                   <!-- Configure -->
-         <submodel name="advanced logic actions"/>                        <!-- Advanced Logic -->
-         <action name="findVariants" type="variant"/>                    <!-- Find Variants -->
-         <action name="mergeOptionsSets" type="part" />                  <!-- ato merge option sets -->
-         <action name="separator" type="separator"/>                     <!-- ===================================== -->
-         <action name="copy" type="object"/>                             <!-- Copy -->
-         <action name="WFSAVEAS" type="pdmObject"/>                      <!-- Save As -->
-  	   <action name="findSimilar" type="partslink"/>         		   <!-- Find similar parts -->
-         <action name="createSupersedeWithExistingWizard"
-                 type="supersede"/>                                      <!-- Supersede with Existing -->
-         <action name="createSupersedeWithNew" type="supersede"/>        <!-- Supersede with New -->
-         <action name="MULTIRENAME" type="pdmObject"/>               <!-- Rename -->
-         <action name="route" type="workflow"/>                          <!-- Route -->
-         <action name="CONTAINERMOVE" type="pdmObject"/>                 <!-- Move -->
-         <action name="SETSTATE" type="pdmObject"/>                      <!-- Set State -->
-         <action name="EXPORT" type="pdmObject"/>                        <!-- Export (PDMLink) -->
-         <action name="export" type="object"/>                           <!-- Export (ProjectLink) -->
-         <action name="spreadsheetExport" type="ixb"/>                   <!-- Export List to Importable Spreadsheet -->
-         <action name="MULTI_OBJ_DELETE" type="pdmObject"/>              <!-- Delete (Non-Information page) -->
-         <action name="MULTI_OBJ_DELETE_DETAILS" type="pdmObject"/>      <!-- Delete (Information page) -->
-         <action name="deleteIterations" type="object"/>                 <!-- Delete Non-latest Iterations -->
-         <action name="reassignLC" type="lifecycle"/>                    <!-- Reassign Life Cycle -->
-         <action name="resetTeam" type="team"/>                          <!-- Reset Team -->
-         <action name="assignView" type="part"/>                         <!-- Reassign View -->
-         <action name="publishToCAD" type="part"/>                       <!-- Publish to CAD -->
-         <action name="publishARExperience" type="arpublish" />          <!-- Publish AR Experience -->			
-         <action name="separator" type="separator"/>                     <!-- ===================================== -->
-         <action name="WFDOWNLOAD" type="epmdocument"/>                           <!-- Add to Workspace -->
-         <submodel name="more parts toolbar actions add"/>               <!-- Add ==> -->
-         <action name="separator" type="separator"/>                     <!-- ===================================== -->
-         <action name="SBSendToPdm" type="sandbox"/>                     <!-- Send to PDM -->
-         <action name="sandboxCheckoutShare" type="object"/>             <!-- Convert to PDM Checkout -->
-         <action name="sandboxUndoCheckoutDetails" type="object"/>       <!-- Undo PDM Checkout (Information Page) -->
-         <action name="removeShare" type="object"/>                      <!-- Remove Share -->
-         <action name="convertToShare" type="sandbox"/>                  <!-- Convert to Share -->
-         <action name="updateShare" type="sandbox"/>                     <!-- Update Selected Shares -->
-         <action name="separator" type="separator"/>                     <!-- ===================================== -->
-         <action name="markLinkAsSuspect" type="requirement"/>           <!-- Mark Link As Suspect -->
-         <action name="separator" type="separator"/>                     <!-- ===================================== -->
-         <action name="associateDistributionTarget" type="tgt"/>         <!-- ESI Associate distribution Targets (JCA action) -->
-         <action name="sendToDistributionTarget" type="tgt"/>            <!-- ESI Send to Distribution Target -->
-         <action name="sendEnterpriseDataToDistributionTarget"
-                 type="tgt"/>                                            <!-- ESI Send Enterprise Data to Distribution Target -->
-         <action name="erpInfo" type="esi"/>                             <!-- ERP Part Details -->
-         <action name="viewShopOrdersInfo" type="esi"/>                  <!-- ESI View Shop Order Count -->
-         <action name="separator" type="separator"/>                     <!-- ===================================== -->
-         <submodel name="more parts actions compare"/>                   <!-- Compare ==> -->
-         <action name="ConfigLinksCollectorDialog" type="pdmObject"/>    <!-- Config Links Collector Dialog -->
-         <action name="separator" type="separator"/>                     <!-- ===================================== -->
-         <action name="batchPrint" type="wvs"/>                          <!-- Severside batchprint using WVS -->
-         <action name="separator" type="separator"/>                     <!-- ===================================== -->
-         <action name="DISPLAYRELATEDMANUFACTURINGITEMS" type="object"/> <!-- MPMLink Display Related Manufacturing items report -->
-         <action name="launchFromInfoPage" type="massUpdate"/>           <!-- Manufacturing Mass Update Action -->
-         <action name="separator" type="separator"/>                     <!-- ===================================== -->
-         <!-- Add "Edit Localizable Properties (M020)-->                 <!-- Edit Localizable Properties (M020)-->
-         <submodel name="wsl_submenu" />
-         <action name="ManageSecurity" type="accessPermission"/>         <!-- Edit Access Control-->
-         <action name="EDITSECURITYLABELS" type="object"/>               <!-- Edit Security Labels-->
-         <action name="createSubscription" type="subscription"/>         <!-- Subscribe -->
-         <action name="separator" type="separator" />                    <!-- ===================================== -->
-         <action name="manageApplicabilityGWT" type="corestruct"/>       <!-- Manage Applicability Dialog -->
-         <action name="separator" type="separator"/>
-         <action name="track_new_work" type="resourceAssignment" /><!-- Track new Work against subject of deliverable-->
-         <action name="new_plan_activity" type="planActivity" /><!-- New Plan Activity against subject -->
-         <includeFilter name="hideAdhocVersionFilter" />
-     </model>
+
+    <!-- Part information page Actions list -->
+    <model name="more parts actions" menufor="wt.part.WTPart">
+        <action name="view" type="object"/>                             <!-- View Information -->
+        <action name="separator" type="separator"/>                   <!-- ===================================== -->
+        <action name="send" type="CISWizard"/>
+        <action name="batchpdf" type="part"/>
+        <action name="editRequirement" type="ProjectRequirement"/>
+        <action name="sendPartSAP" type="SAPWizard"/>
+        <action name="sendBOM2SAP" type="SAPWizard"/>
+        <submodel name="classification"/>
+        <submodel name="thingworxActionsMenu"/>
+        <action name="separator" type="separator"/>                     <!-- ===================================== -->
+        <submodel name="more parts toolbar actions open"/>
+        <action name="separator" type="separator"/>                     <!-- ===================================== -->
+        <action name="checkin" type="wip"/>                             <!-- Check In -->
+        <action name="WFCHECKIN" type="pdmObject"/>                     <!-- Check In for new objects in workspace or objects checked out to workspace-->
+        <action name="checkout" type="wip"/>                            <!-- Check Out -->
+        <action name="WFRMBCHECKOUT" type="pdmObject" />                <!-- checkout for rmb menu on workspace listing page -->
+        <action name="checkoutAndEdit" type="part"/>                    <!-- Check Out and Edit -->
+        <action name="undocheckout" type="object"/>                     <!-- Undo Checkout -->
+        <action name="WFCANCELCHECKOUT" type="pdmObject"/>              <!-- Undo Checkout for objects checked out to workspace-->
+        <action name="edit" type="part"/>                               <!-- Edit -->
+        <action name="editNewPartInWorkspace" type="part"/>             <!-- Edit newly created part in a workspace -->
+        <action name="editCheckedOutPartInWorkspace" type="part"/>      <!-- Edit part checked out to a workspace -->
+        <action name="editPartCommonAttrsWizard" type="part"/>          <!-- Edit Common Attributes -->
+        <action name="REVISEITEMS" type="pdmObject"/>                   <!-- Revise -->
+        <action name="separator" type="separator"/>
+        <action name="fulfillChangeActions" type="effectivity"/>        <!-- FulfillChangeActions -->
+        <action name="undoFulfillDesignSolutionInfoPage" type="effectivity"/>      <!-- Undo Fulfill Change Action -->
+        <action name="GenerateChangeActions" type="effectivity"/>       <!-- Generate Change Actions for CI -->
+        <action name="displayEffectivityLog" type="effectivity"/>       <!-- Display Effectivity Log -->
+        <action name="separator" type="separator"/>                     <!-- ===================================== -->
+        <submodel name="more parts toolbar actions new"/>                       <!-- New ==> -->
+        <action name="separator" type="separator"/>                     <!-- ===================================== -->
+        <action name="traceability" type="traceable"/>
+        <action name="separator" type="separator"/>                     <!-- ===================================== -->
+        <action name="assignItemOptionality" type="optionality"/>       <!-- Assign Expression -->
+        <action name="viewAssignedExpression" type="expressionAssignable"/> <!-- View Assign Expression -->
+        <action name="copyAssignedExpression" type="expressionAssignable"/>              <!-- Copy Independent Expression -->
+        <action name="configure" type="variantspec"/>                   <!-- Configure -->
+        <submodel name="advanced logic actions"/>                        <!-- Advanced Logic -->
+        <action name="findVariants" type="variant"/>                    <!-- Find Variants -->
+        <action name="mergeOptionsSets" type="part" />                  <!-- ato merge option sets -->
+        <action name="separator" type="separator"/>                     <!-- ===================================== -->
+        <action name="copy" type="object"/>                             <!-- Copy -->
+        <action name="WFSAVEAS" type="pdmObject"/>                      <!-- Save As -->
+        <action name="findSimilar" type="partslink"/>         		   <!-- Find similar parts -->
+        <action name="createSupersedeWithExistingWizard" type="supersede"/> <!-- Supersede with Existing -->
+        <action name="createSupersedeWithNew" type="supersede"/>        <!-- Supersede with New -->
+        <action name="MULTIRENAME" type="pdmObject"/>               <!-- Rename -->
+        <action name="route" type="workflow"/>                          <!-- Route -->
+        <action name="CONTAINERMOVE" type="pdmObject"/>                 <!-- Move -->
+        <action name="SETSTATE" type="pdmObject"/>                      <!-- Set State -->
+        <action name="EXPORT" type="pdmObject"/>                        <!-- Export (PDMLink) -->
+        <action name="export" type="object"/>                           <!-- Export (ProjectLink) -->
+        <action name="spreadsheetExport" type="ixb"/>                   <!-- Export List to Importable Spreadsheet -->
+        <action name="MULTI_OBJ_DELETE" type="pdmObject"/>              <!-- Delete (Non-Information page) -->
+        <action name="MULTI_OBJ_DELETE_DETAILS" type="pdmObject"/>      <!-- Delete (Information page) -->
+        <action name="deleteIterations" type="object"/>                 <!-- Delete Non-latest Iterations -->
+        <action name="reassignLC" type="lifecycle"/>                    <!-- Reassign Life Cycle -->
+        <action name="resetTeam" type="team"/>                          <!-- Reset Team -->
+        <action name="assignView" type="part"/>                         <!-- Reassign View -->
+        <action name="publishToCAD" type="part"/>                       <!-- Publish to CAD -->
+        <action name="publishARExperience" type="arpublish" />          <!-- Publish AR Experience -->			
+        <action name="separator" type="separator"/>                     <!-- ===================================== -->
+        <action name="WFDOWNLOAD" type="epmdocument"/>                           <!-- Add to Workspace -->
+        <submodel name="more parts toolbar actions add"/>               <!-- Add ==> -->
+        <action name="separator" type="separator"/>                     <!-- ===================================== -->
+        <action name="SBSendToPdm" type="sandbox"/>                     <!-- Send to PDM -->
+        <action name="sandboxCheckoutShare" type="object"/>             <!-- Convert to PDM Checkout -->
+        <action name="sandboxUndoCheckoutDetails" type="object"/>       <!-- Undo PDM Checkout (Information Page) -->
+        <action name="removeShare" type="object"/>                      <!-- Remove Share -->
+        <action name="convertToShare" type="sandbox"/>                  <!-- Convert to Share -->
+        <action name="updateShare" type="sandbox"/>                     <!-- Update Selected Shares -->
+        <action name="separator" type="separator"/>                     <!-- ===================================== -->
+        <action name="markLinkAsSuspect" type="requirement"/>           <!-- Mark Link As Suspect -->
+        <action name="separator" type="separator"/>                     <!-- ===================================== -->
+        <action name="associateDistributionTarget" type="tgt"/>         <!-- ESI Associate distribution Targets (JCA action) -->
+        <action name="sendToDistributionTarget" type="tgt"/>            <!-- ESI Send to Distribution Target -->
+        <action name="sendEnterpriseDataToDistributionTarget" type="tgt"/><!-- ESI Send Enterprise Data to Distribution Target -->
+        <action name="erpInfo" type="esi"/>                             <!-- ERP Part Details -->
+        <action name="viewShopOrdersInfo" type="esi"/>                  <!-- ESI View Shop Order Count -->
+        <action name="separator" type="separator"/>                     <!-- ===================================== -->
+        <submodel name="more parts actions compare"/>                   <!-- Compare ==> -->
+        <action name="ConfigLinksCollectorDialog" type="pdmObject"/>    <!-- Config Links Collector Dialog -->
+        <action name="separator" type="separator"/>                     <!-- ===================================== -->
+        <action name="batchPrint" type="wvs"/>                          <!-- Severside batchprint using WVS -->
+        <action name="separator" type="separator"/>                     <!-- ===================================== -->
+        <action name="DISPLAYRELATEDMANUFACTURINGITEMS" type="object"/> <!-- MPMLink Display Related Manufacturing items report -->
+        <action name="launchFromInfoPage" type="massUpdate"/>           <!-- Manufacturing Mass Update Action -->
+        <action name="separator" type="separator"/>                     <!-- ===================================== -->
+        <!-- Add "Edit Localizable Properties (M020)-->                 <!-- Edit Localizable Properties (M020)-->
+        <submodel name="wsl_submenu" />
+        <action name="ManageSecurity" type="accessPermission"/>         <!-- Edit Access Control-->
+        <action name="EDITSECURITYLABELS" type="object"/>               <!-- Edit Security Labels-->
+        <action name="createSubscription" type="subscription"/>         <!-- Subscribe -->
+        <action name="separator" type="separator" />                    <!-- ===================================== -->
+        <action name="manageApplicabilityGWT" type="corestruct"/>       <!-- Manage Applicability Dialog -->
+        <action name="separator" type="separator"/>
+        <action name="track_new_work" type="resourceAssignment" /><!-- Track new Work against subject of deliverable-->
+        <action name="new_plan_activity" type="planActivity" /><!-- New Plan Activity against subject -->
+        <includeFilter name="hideAdhocVersionFilter" />
+    </model>
     
     <model name="classification" resourceBundle="ext.classification.ClassificationActionsRB">
         <action name="changeName" type="classificationWizard"/>
@@ -143,9 +141,9 @@
         <action   name="create"                                     type="problemReport" />                                          <!-- New Problem Report -->
         <action   name="create"                                     type="softwareIssue" />                                          <!-- New Software Issue -->
         <action   name="create"                                     type="variance" />                                               <!-- New Variance -->
-        <action   name="create"                                     type="promotionRequest" />                       <!-- New Promotion Request -->
+        <action   name="create"                                     type="promotionRequest"  shortcut="true"/>                       <!-- New Promotion Request -->
         <action   name="separator"                                  type="separator" />
-        <action   name="create"                                     type="changeReview" shortcut="true" />       <!-- New Change Review -->
+        <action   name="create"                                     type="changeReview" />       <!-- New Change Review -->
         <action   name="separator"                                  type="separator" />
         <action   name="create_request"                             type="npi"/>                                                     <!-- New Part Request -->
         <action   name="separator"                                  type="separator" />
@@ -173,7 +171,6 @@
         <action   name="createUDI"                                  type="udi"/>                                                     <!-- New UDI Submission -->
     </model>
 
-
     <model name="project row actions toolbar" menufor="wt.projmgmt.admin.Project2">
         <action name="view" type="object"/>
         <action name="separator" type="separator"/>
@@ -190,7 +187,6 @@
         <action name="updateProgram" type="project"/>
         <action name="updateProgramPROPL" type="project"/>
         <action name="sendProject2SAP" type="SAPWizard"/>
-
         <action name="separator" type="separator"/>
         <action name="createPartWizard" type="part"/>
         <action name="createMultiPart" type="part"/>
@@ -274,87 +270,138 @@
         <action name="BOMCost" type="SAPWizard"/>
     </model>
 
-    <model name="third_level_nav_changeNotice" defaultActionName="implementationPlanTable" defaultActionType="changeNotice">
-        <description>Third level nav for change notices with default action implementation plan table</description>
-        <submodel name="general"/>
-        <submodel name="relatedItems"/>
-        <submodel name="changes"/>
-        <submodel name="history"/>
-        <submodel name="collaboration"/>
-        <submodel name="implementationPlan"/>
-        <submodel name="configLinks" />               
-        <submodel name="thingworxCustomizeMenu"/>
-        <action name="masterDataReview" type="SAPWizard" />
+    <model name="docs row actions toolbar" menufor="wt.doc.WTDocument">
+        <action name="testSRM" type="SRMWizard"/>
+        <action name="view" type="object"/>    <!-- Info page -->
+        <action name="separator" type="separator"/>
+        <submodel name="thingworxActionsMenu"/>
+        <action name="separator" type="separator"/>
+        <action name="download_primary_attachment" type="attachments"/>
+        <action name="redirect_primary_attachment" type="attachments"/>
+        <action name="separator" type="separator"/>
+        <submodel name="docs row actions open"/>
+        <action name="separator" type="separator"/>
+        <action name="checkin" type="wip"/>       <!-- Check In -->
+        <action name="checkin" type="clashDefinition"/> <!-- Enabled only if Clash Definition (replaces wip version) -->
+        <action name="checkout" type="object"/>    <!-- Check Out -->
+        <action name="checkout_and_download" type="wip"/>       <!-- Check Out and Download -->
+        <action name="checkoutAndEdit" type="document"/>  <!-- Check Out and Edit -->
+        <action name="checkoutAndEditClashJobDefinition" type="clashDefinition"/>  <!-- Check Out and Edit a Clash -->
+        <action name="undocheckout" type="object"/>    <!-- Undo Checkout -->
+        <action name="edit" type="document"/> <!-- Edit -->
+        <action name="editClashJobDefinition" type="clashDefinition"/>  <!-- Edit a Clash -->
+        <action name="viewClashJobDefinition" type="clashDefinition"/>  <!-- View a Clash -->
+        <action name="submitClashJobDefinition" type="clashDefinition"/>
+        <action name="replace_content" type="wip"/>       <!-- Replace Content -->
+        <action name="REVISEITEMS" type="pdmObject"/> <!-- Revise -->
+        <action name="separator" type="separator"/>
+        <submodel name="docs row actions new"/>
+        <action name="separator" type="separator"/>
+        <action name="copy" type="object"/>       <!-- Copy -->
+        <action name="WFSAVEAS" type="pdmObject"/> <!-- Save As -->
+        <action name="findSimilar" type="partslink" /><!-- Find Similar objects -->
+        <action name="renameDocumentWizard" type="document"/>  <!-- doc specific Rename -->
+        <action name="route" type="workflow"/>  <!-- Route ProjectLink -->
+        <action name="CONTAINERMOVE" type="pdmObject"/> <!-- Move -->
+        <action name="SETSTATE" type="pdmObject"/> <!-- Set State -->
+        <action name="emailPage" type="document"/> <!-- email Page -->
+        <action name="export" type="object"/>    <!-- Export ProjectLink -->
+        <action name="EXPORT" type="pdmObject"/> <!-- Export PDMLink -->
+        <action name="spreadsheetExport" type="ixb"/> <!-- Export List to Importable Spreadsheet -->
+        <action name="MULTI_OBJ_DELETE" type="pdmObject"/> <!-- Delete -->
+        <action name="MULTI_OBJ_DELETE_DETAILS" type="pdmObject"/>  <!-- Delete -->
+        <action name="deleteIterations" type="object"/>  <!-- Delete all old iterations -->
+        <action name="reassignLC" type="lifecycle"/>    <!-- Reassign Life Cycle -->
+        <action name="resetTeam" type="team"/>      <!-- Reset Team -->
+        <action name="disable" type="document"/>  <!-- Disable template -->
+        <action name="enable" type="document"/>  <!-- Enable template -->
+        <action name="userInitiatedReplication" type="replication"/>    <!-- Use Initiated Replication -->
+        <action name="separator" type="separator"/>
+        <submodel name="docs row actions add"/>
+        <action name="separator" type="separator"/>
+        <action name="SBSendToPdm" type="sandbox"/>      <!-- Send to PDM -->
+        <action name="sandboxUndoCheckoutDetails" type="object"/>  <!-- Undo PDM Checkout Details -->
+        <action name="sandboxCheckoutShare" type="object"/>    <!-- PDM Checkout when shared -->
+        <action name="convertToShare" type="sandbox"/>   <!-- Convert to Share -->
+        <action name="removeShare" type="object"/>    <!-- Remove Share -->
+        <action name="separator" type="separator"/>
+        <submodel name="docs row actions compare"/>
+        <action name="ConfigLinksCollectorDialog" type="pdmObject"/>      <!-- Config Links Collector Dialog -->
+        <action name="separator" type="separator"/>
+        <action name="DISPLAYRELATEDMANUFACTURINGITEMS" type="object"/>            <!-- MPMLink Display Related Manufacturing items report -->
+        <action name="launchFromInfoPage" type="massUpdate"/>                      <!-- Manufacturing Mass Update Action -->
+        <action name="batchPrint" type="wvs"/>
+        <action name="separator" type="separator"/>
+        <action name="markLinkAsSuspect" type="requirement"/>
+        <action name="separator" type="separator"/>
+        <action name="RefreshAssociationsDB" type="SoftwareBuild"/>    <!-- Update Defect Associations -->
+        <action name="separator" type="separator"/>                 <!-- ===================================== -->
+        <action name="associateDistributionTarget" type="tgt"/>     <!-- ESI Associate Distribution Targets (JCA action) -->
+        <action name="sendToDistributionTarget" type="tgt"/> <!-- ESI Send to Distribution Target -->
+        <action name="separator" type="separator"/>                 <!-- ===================================== -->
+        <includeFilter name="ActionFilterOnProject2State"/>
+        <action name="ManageSecurity"     type="accessPermission"/> <!-- Edit Access Control -->
+        <action name="EDITSECURITYLABELS" type="object"/>           <!-- Edit Security Labels -->                
+        <action name="createSubscription" type="subscription"/>     <!-- Subscribe -->
+        <action name="separator" type="separator" />                <!-- ===================================== -->
+        <action name="manageApplicabilityGWT" type="corestruct"/>   <!-- Manage Applicability Dialog -->
+        <action name="separator" type="separator"/>
+        <action name="track_new_work" type="resourceAssignment" /><!-- Track new Work against subject of deliverable-->
+        <action name="new_plan_activity" type="planActivity" /><!-- New Plan Activity against subject -->                  
     </model>
 
-    <model name="third_level_nav_changeTask" defaultActionName="affectedAndResultingItems" defaultActionType="changeTask">
-        <description>Third level nav for change task  with default action affected and resulting tables</description>
-        <submodel name="general"/>
-        <submodel name="relatedItems"/>
-        <submodel name="changes"/>
-        <submodel name="history"/>
-        <submodel name="collaboration"/>
-        <submodel name="thingworxCustomizeMenu"/>
-        <action name="masterDataReview" type="SAPWizard" />
-    </model>
-
-    <model name="workitem third nav">
-        <action name="attributes" type="workitem"/>
-        <action name="routingStatus" type="workitem"/>
-        <action name="notebook" type="workitem"/>
-        <action name="discussions" type="workitem"/>
-        <action name="setupParticipant" type="workitem"/>
-        <action name="adhocActivities" type="workitem"/>
-        <action name="masterDataReview" type="SAPWizard" />
-    </model>
-
-    <model name="third_level_nav_promotionRequest" defaultActionName="promotionItemsTable" defaultActionType="promotionRequest" >
-        <description>Third level nav for promotion request with default action promotion items table</description>
-        <submodel name="general"/>
-        <submodel name="relatedItems"/>
-        <submodel name="history"/>
-        <submodel name="collaboration"/>
-        <action name="masterDataReview" type="SAPWizard" />
-    </model>
 
     <model name="workitem third nav configurable">
-        <action name="attributes" type="workitem"/>
-        <action name="routingStatus" type="workitem"/>
-        <action name="notebook" type="workitem"/>
-        <action name="discussions" type="workitem"/>
-        <action name="setupParticipant" type="workitem"/>
-        <action name="adhocActivities" type="workitem"/>
-        <action name="workflowTaskPboAttributes" type="object"/>
-        <action name="workItemActivityVariables" type="workitem"/>
-        <action name="workItemSignOffComponent" type="workitem"/>
-        <action name="tableDataDetails" type="udi"/>
-        <action name="subjects" type="udi"/>
-        <action name="packagingConfiguration" type="udi"/>
-        <action name="regulatoryContent" type="regmstr_info"/>
-        <action name="saveComplete" type="workitem"/>
-        <action name="regSubSubjects" type="regmstr_info" />
-        <action name="regSubDrivers" type="regmstr_info" />
-        <action name="consolidatedAssociatedChanges" type="change"/>
-        <action name="workflowTaskPboAction" type="workitem"/>
-        <action name="reviewTask_ResultingDataTable" type="changeTask"/>
-        <action name="reviewApproveTask_PromotionObjectsTable" type="promotionRequest"/>
-        <action name="completeTask_ResultingDataTable" type="changeTask"/>
-        <action name="workItem_ChangeSummary" type="changeNotice"/>
-        <action name="auditTask_changeSummary" type="changeNotice"/>
-        <action name="workItem_attachments" type="attachments"/>
-        <action name="workItem_AffectedDataTable" type="changeRequest"/>
-        <action name="workItem_AssociatedChangeIssues" type="changeRequest"/>
-        <action name="workItem_RelatedChangeNoticesTable" type="changeRequest"/>
-        <action name="workItem_AffectedDataTable" type="changeTask"/>
-        <action name="workItem_ResultingDataTable" type="changeTask"/>
-        <action name="workItem_implementationPlanTable" type="changeNotice"/>
-        <action name="workItem_RelatedChangeRequestsTable" type="change"/>
-        <action name="workItem_associatedChangeItemTable" type="change"/>
-        <action name="workItem_associatedReferenceItemTable" type="change"/>
-        <action name="workItem_changeWorkItemsTable" type="change"/>
+		<action name="attributes" type="workitem"/>
+		<action name="routingStatus" type="workitem"/>
+		<action name="notebook" type="workitem"/>
+		<action name="discussions" type="workitem"/>
+		<action name="setupParticipant" type="workitem"/>
+		<action name="adhocActivities" type="workitem"/>
+		<action name="workflowTaskPboAttributes" type="object"/>
+		<action name="workItemActivityVariables" type="workitem"/>
+		<action name="workItemSignOffComponent" type="workitem"/>
+		<action name="tableDataDetails" type="udi"/>
+		<action name="subjects" type="udi"/>
+		<action name="packagingConfiguration" type="udi"/>
+		<action name="regulatoryContent" type="regmstr_info"/>
+		<action name="saveComplete" type="workitem"/>
+		<action name="regSubSubjects" type="regmstr_info" />
+		<action name="regSubDrivers" type="regmstr_info" />
+		<action name="consolidatedAssociatedChanges" type="change"/>
+		<action name="workflowTaskPboAction" type="workitem"/>
+		<action name="reviewTask_ResultingDataTable" type="changeTask"/>
+		<action name="reviewApproveTask_PromotionObjectsTable" type="promotionRequest"/>
+		<action name="completeTask_ResultingDataTable" type="changeTask"/>
+		<action name="workItem_ChangeSummary" type="changeNotice"/>
+		<action name="auditTask_changeSummary" type="changeNotice"/>
+		<action name="workItem_attachments" type="attachments"/>
+		<action name="workItem_AffectedDataTable" type="changeRequest"/>
+		<action name="workItem_AssociatedChangeIssues" type="changeRequest"/>
+		<action name="workItem_RelatedChangeNoticesTable" type="changeRequest"/>
+		<action name="workItem_AffectedDataTable" type="changeTask"/>
+		<action name="workItem_ResultingDataTable" type="changeTask"/>
+		<action name="workItem_implementationPlanTable" type="changeNotice"/>
+		<action name="workItem_RelatedChangeRequestsTable" type="change"/>
+		<action name="workItem_associatedChangeItemTable" type="change"/>
+		<action name="workItem_associatedReferenceItemTable" type="change"/>
+		<action name="workItem_changeWorkItemsTable" type="change"/>
         <action name="workItem_AffectedDataTable" type="changeReview"/>
         <action name="workItem_ActionItemsTable" type="changeReview"/>
         <action name="workItem_impactedObjectsTable" type="impacted"/>
+        <action name="supplyInfoPage" type="SAPWizard"/>
+        <action name="alterPropertiesTable" type="SAPWizard"/>
         <action name="masterDataReview" type="SAPWizard" />
     </model>
-<actionmodels/>
+
+    <model name="mvc_purchasAlter_tables_toolbar">
+        <action name="alterPropertiesWizard" type="SAPWizard" shortcut="true" />
+        <action name="workItem_attachments" type="attachments"/>
+        <action name="sortByState" type="carambola"/>
+        <action name="reloadTable" type="carambola"/>
+        <action name="strikeThroughRows" type="carambola"/>
+        <action name="clearStrikeThrough" type="carambola"/>
+        <submodel name="CustEx_exportlisttofile_submenu" />
+    </model>
+
+</actionmodels>

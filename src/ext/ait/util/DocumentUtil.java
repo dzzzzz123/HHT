@@ -356,22 +356,26 @@ public class DocumentUtil implements RemoteAccess {
 	 * @param part
 	 * @param doc
 	 */
-	public static void createDocPartLink(WTPart part, WTDocument doc, String actionType) {
+	public static void createDocPartLink(WTPart part, List<WTDocument> docList, String actionType) {
 		try {
 			switch (actionType) {
 			case "Describe":
 				// 创建说明方文档关联关系
 				part = (WTPart) PersistenceUtil.checkoutObj(part);
-				WTPartDescribeLink describeLink = WTPartDescribeLink.newWTPartDescribeLink(part, doc);
-				PersistenceHelper.manager.save(describeLink);
+				for (WTDocument doc : docList) {
+					WTPartDescribeLink describeLink = WTPartDescribeLink.newWTPartDescribeLink(part, doc);
+					PersistenceHelper.manager.save(describeLink);
+				}
 				PersistenceUtil.checkinObj(part);
 				break;
 			case "Reference":
 				// 创建参考文档关联关系
 				part = (WTPart) PersistenceUtil.checkoutObj(part);
-				WTPartReferenceLink ref_link = WTPartReferenceLink.newWTPartReferenceLink(part,
-						(WTDocumentMaster) doc.getMaster());
-				ref_link = (WTPartReferenceLink) PersistenceHelper.manager.save(ref_link);
+				for (WTDocument doc : docList) {
+					WTPartReferenceLink ref_link = WTPartReferenceLink.newWTPartReferenceLink(part,
+							(WTDocumentMaster) doc.getMaster());
+					ref_link = (WTPartReferenceLink) PersistenceHelper.manager.save(ref_link);
+				}
 				PersistenceUtil.checkinObj(part);
 				break;
 			default:

@@ -33,6 +33,22 @@
 		<action name="BOMCost" ajax="row">
 			<command url="netmarkets/jsp/ext/SAP/BOMCost/infoPage.jsp" windowType="page"/> 
 		</action>
+		<action name="alterPropertiesWizard" ajax="row">
+			<command class="ext.sap.purchase.AlterAttrProcessor" method="execute" url="netmarkets/jsp/ext/SAP/purchase/alterWizard.jsp" windowType="popup"/>
+		</action>
+		<action name="alterProperties" ajax="row">
+			<command url="netmarkets/jsp/ext/SAP/purchase/alter.jsp" windowType="popup"/>
+		</action>
+		<action name="alterPropertiesTable">
+			<component name="purchase.alter.table" windowType="page"/>
+		</action>
+	</objecttype>
+
+	<objecttype name="SRMWizard" resourceBundle="ext.srm.SRMActionsRB">
+		<action name="testSRM" ajax="row">
+			<command class="ext.HHT.SRM.insert.Processor" method="execute"/> 
+		</action>
+	
 	</objecttype>
 
 	<objecttype name="ProjectRequirement" resourceBundle="ext.requirement.requirementActionRB">

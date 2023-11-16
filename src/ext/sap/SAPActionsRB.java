@@ -35,4 +35,33 @@ public class SAPActionsRB extends WTListResourceBundle {
 	public static final String PRIVATE_CONSTANT_13 = "SAPWizard.masterDataReview.tooltip";
 	@RBEntry("BOMCost infoPage")
 	public static final String PRIVATE_CONSTANT_14 = "SAPWizard.BOMCost.description";
+	@RBEntry("Custing infoPage")
+	public static final String PRIVATE_CONSTANT_15 = "SAPWizard.Costing.description";
+	@RBEntry("Supply infoPage")
+	public static final String PRIVATE_CONSTANT_16 = "SAPWizard.supplyInfoPage.title";
+	@RBEntry("Supply infoPage")
+	public static final String PRIVATE_CONSTANT_17 = "SAPWizard.supplyInfoPage.description";
+	@RBEntry("Supply infoPage")
+	public static final String PRIVATE_CONSTANT_18 = "SAPWizard.supplyInfoPage.tooltip";
+	@RBEntry("Alter Price Properties Wizard")
+	public static final String PRIVATE_CONSTANT_19 = "SAPWizard.alterPropertiesWizard.title";
+	@RBEntry("Alter Price Properties Wizard")
+	public static final String PRIVATE_CONSTANT_20 = "SAPWizard.alterPropertiesWizard.description";
+	@RBEntry("Alter Price Properties Wizard")
+	public static final String PRIVATE_CONSTANT_21 = "SAPWizard.alterPropertiesWizard.tooltip";
+	@RBEntry("build_part_all.gif")
+	public static final String PRIVATE_CONSTANT_22 = "SAPWizard.alterPropertiesWizard.icon";
+	@RBEntry("Alter Price Properties")
+	public static final String PRIVATE_CONSTANT_23 = "SAPWizard.alterProperties.title";
+	@RBEntry("Alter Price Properties")
+	public static final String PRIVATE_CONSTANT_24 = "SAPWizard.alterProperties.description";
+	@RBEntry("Alter Price Properties")
+	public static final String PRIVATE_CONSTANT_25 = "SAPWizard.alterProperties.tooltip";
+	@RBEntry("Alter Price Properties Table")
+	public static final String PRIVATE_CONSTANT_26 = "SAPWizard.alterPropertiesTable.title";
+	@RBEntry("Alter Price Properties Table")
+	public static final String PRIVATE_CONSTANT_27 = "SAPWizard.alterPropertiesTable.description";
+	@RBEntry("Alter Price Properties Table")
+	public static final String PRIVATE_CONSTANT_28 = "SAPWizard.alterPropertiesTable.tooltip";
+
 }

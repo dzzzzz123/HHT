@@ -5,10 +5,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
 import com.ptc.netmarkets.model.NmOid;
+import com.ptc.windchill.enterprise.change2.commands.RelatedChangesQueryCommands;
 
 import wt.access.AccessControlHelper;
 import wt.access.AccessPermission;
@@ -21,11 +23,13 @@ import wt.change2.WTChangeActivity2;
 import wt.change2.WTChangeOrder2;
 import wt.change2.WTChangeReview;
 import wt.enterprise.RevisionControlled;
+import wt.fc.ObjectIdentifier;
 import wt.fc.ObjectReference;
 import wt.fc.Persistable;
 import wt.fc.PersistenceHelper;
 import wt.fc.QueryResult;
 import wt.fc.WTObject;
+import wt.fc.collections.WTCollection;
 import wt.httpgw.URLFactory;
 import wt.maturity.MaturityHelper;
 import wt.maturity.Promotable;
@@ -33,6 +37,7 @@ import wt.maturity.PromotionNotice;
 import wt.maturity.PromotionTarget;
 import wt.method.RemoteAccess;
 import wt.org.WTPrincipalReference;
+import wt.part.WTPart;
 import wt.query.QuerySpec;
 import wt.query.SearchCondition;
 import wt.session.SessionHelper;
@@ -697,6 +702,30 @@ public class WorkflowUtil implements RemoteAccess {
 			SessionServerHelper.manager.setAccessEnforced(origEnforce);
 		}
 		return pbo;
+	}
+
+	/**
+	 * 获取部件所关联的ECN对象 WTPart->WTChangeOrder2
+	 * 
+	 * @param part
+	 * @return WTChangeOrder2
+	 */
+	public static WTChangeOrder2 getECNByPart(WTPart part) {
+		try {
+			WTCollection collection = RelatedChangesQueryCommands.getRelatedResultingChangeNotices(part);
+			Iterator itr = collection.iterator();
+			while (itr.hasNext()) {
+				Object object = itr.next();
+				if (object.toString().contains("WTChangeOrder2")) {
+					ObjectIdentifier mpoid = ObjectIdentifier.newObjectIdentifier(object.toString());
+					WTChangeOrder2 wtChangeOrder2 = (WTChangeOrder2) PersistenceHelper.manager.refresh(mpoid);
+					return wtChangeOrder2;
+				}
+			}
+		} catch (WTException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

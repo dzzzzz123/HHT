@@ -194,4 +194,12 @@ public class Config {
 		return properties.getValueByKey("source.buy");
 	}
 
+	public static void setHHT_Price(WTPart part, String IBAValue) {
+		properties.setValueByKey(part, "iba.internal.HHT_Price", IBAValue);
+	}
+
+	public static void setHHT_PriceUnit(WTPart part, String IBAValue) {
+		properties.setValueByKey(part, "iba.internal.HHT_PriceUnit", IBAValue);
+	}
+
 }
