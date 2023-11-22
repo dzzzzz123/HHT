@@ -14,7 +14,7 @@ import wt.util.WTException;
 
 @TypeBased(value = "wt.part.WTPart")
 @ComponentBuilder(value = ComponentId.INFOPAGE_ID)
-public class CustingBuilder extends AbstractInfoConfigBuilder implements ComponentDataBuilder{
+public class CustingBuilder extends AbstractInfoConfigBuilder implements ComponentDataBuilder {
 
 	@Override
 	public Object buildComponentData(ComponentConfig arg0, ComponentParams arg1) throws Exception {
@@ -25,9 +25,8 @@ public class CustingBuilder extends AbstractInfoConfigBuilder implements Compone
 	protected InfoConfig buildInfoConfig(ComponentParams arg0) throws WTException {
 		InfoComponentConfigFactory factory = getComponentConfigFactory();
 		InfoConfig result = factory.newInfoConfig();
-		result.setNavBarName("wtpart_custing_menu");
 		result.setTabSet("CustingInfoPageTabSet");
 		return result;
 	}
-	
+
 }

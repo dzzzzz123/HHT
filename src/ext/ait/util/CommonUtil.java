@@ -474,28 +474,19 @@ public class CommonUtil implements RemoteAccess {
 	 * 当参数类型为x-www-form-urlencoded时调用接口，大致与上个方法相同
 	 * 
 	 * @param url      访问目标接口的URL
-	 * @param username 访问目标接口需要验证的用户名
-	 * @param password 访问目标接口需要验证的密码
 	 * @param formData 访问目标接口携带的formdata信息
 	 * @param method   请求的方式 GET/POST
 	 * @param map      请求头中需要添加的信息,没有填null
 	 * @return 返回的json信息
 	 */
-	public static String requestInterface(String url, String username, String password, Map<String, String> formData,
-			String method, HashMap<String, String> map) {
+	public static String requestInterface(String url, String method, HashMap<String, Object> formData,
+			HashMap<String, String> map) {
 		System.out.println("--------当前执行的请求接口的参数列表--------");
 		System.out.println("URL: " + url);
-		System.out.println("USERNAME: " + username + " PASSWORD:" + password);
 		System.out.println("METHOD: " + method);
-		formData.forEach((key, value) -> {
-			System.out.println("KEY: " + key + " VALUE: " + value);
-		});
 		System.out.println("HEADERS: ");
 
 		RestTemplate restTemplate = new RestTemplate();
-		if (StringUtils.isNotBlank(password) && StringUtils.isNotBlank(username)) {
-			restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(username, password));
-		}
 		restTemplate.getMessageConverters().set(1, new StringHttpMessageConverter(Charset.forName("utf-8")));
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -512,12 +503,15 @@ public class CommonUtil implements RemoteAccess {
 			}
 		}
 		// 创建 x-www-form-urlencoded 参数
-		MultiValueMap<String, String> formDataMap = new LinkedMultiValueMap<>();
+		MultiValueMap<String, Object> formDataMap = new LinkedMultiValueMap<>();
 		if (formData != null) {
+			formData.forEach((key, value) -> {
+				System.out.println("KEY: " + key + " VALUE: " + value);
+			});
 			formDataMap.setAll(formData);
 		}
 		// 参数
-		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(formDataMap, headers);
+		HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(formDataMap, headers);
 		ResponseEntity<String> responseEntity = method.equalsIgnoreCase("GET")
 				? restTemplate.exchange(url, HttpMethod.GET, entity, String.class)
 				: restTemplate.exchange(url, HttpMethod.POST, entity, String.class);

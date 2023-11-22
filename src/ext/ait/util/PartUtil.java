@@ -872,4 +872,31 @@ public class PartUtil implements RemoteAccess {
 		return OR;
 	}
 
+	/**
+	 * 通过递归找到部件的BOM最上层部件
+	 * 
+	 * @param part
+	 * @return List<WTPart>
+	 */
+	public static List<WTPart> getTopParentParts(WTPart part) {
+		List<WTPart> list = new ArrayList<WTPart>();
+		try {
+			if (part != null) {
+				QueryResult qr = WTPartHelper.service.getUsedByWTParts(part.getMaster());
+
+				if (!qr.hasMoreElements()) {
+					list.add(part);
+				} else {
+					while (qr.hasMoreElements()) {
+						WTPart childPart = (WTPart) qr.nextElement();
+						list.addAll(getTopParentParts(childPart));
+					}
+				}
+			}
+		} catch (WTException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
 }

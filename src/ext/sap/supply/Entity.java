@@ -1,14 +1,15 @@
 package ext.sap.supply;
 
-import java.util.Arrays;
+import java.io.Serializable;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class SupplyEntity {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Entity implements Serializable {
 	@JsonProperty("MATNR")
 	private String PartNumber;
-	@JsonProperty("MAKTX")
-	private String PartDescription;
 	@JsonProperty("BALANCE")
 	private String MRPBalanceQuantity;
 	@JsonProperty("VERPR")
@@ -30,18 +31,17 @@ public class SupplyEntity {
 	@JsonProperty("VMISL")
 	private String VMIInventory;
 	@JsonProperty("IT_MRP2")
-	private MRPItem[] IT_MRP2;
+	private List<IT_MRP2> IT_MRP2;
 
-	public SupplyEntity() {
+	public Entity() {
 		super();
 	}
 
-	public SupplyEntity(String partNumber, String partDescription, String mRPBalanceQuantity, String unitPrice,
-			String requiredQuantity, String sTOCK, String pRQuantity, String openPOQuantity, String redundantInventory,
-			String redundantPO, String redundantPR, String vMIInventory, MRPItem[] iT_MRP2) {
+	public Entity(String partNumber, String mRPBalanceQuantity, String unitPrice, String requiredQuantity, String sTOCK,
+			String pRQuantity, String openPOQuantity, String redundantInventory, String redundantPO, String redundantPR,
+			String vMIInventory, List<Entity.IT_MRP2> iT_MRP2) {
 		super();
 		PartNumber = partNumber;
-		PartDescription = partDescription;
 		MRPBalanceQuantity = mRPBalanceQuantity;
 		UnitPrice = unitPrice;
 		RequiredQuantity = requiredQuantity;
@@ -61,14 +61,6 @@ public class SupplyEntity {
 
 	public void setPartNumber(String partNumber) {
 		PartNumber = partNumber;
-	}
-
-	public String getPartDescription() {
-		return PartDescription;
-	}
-
-	public void setPartDescription(String partDescription) {
-		PartDescription = partDescription;
 	}
 
 	public String getMRPBalanceQuantity() {
@@ -151,25 +143,24 @@ public class SupplyEntity {
 		VMIInventory = vMIInventory;
 	}
 
-	public MRPItem[] getIT_MRP2() {
+	public List<IT_MRP2> getIT_MRP2() {
 		return IT_MRP2;
 	}
 
-	public void setIT_MRP2(MRPItem[] iT_MRP2) {
+	public void setIT_MRP2(List<IT_MRP2> iT_MRP2) {
 		IT_MRP2 = iT_MRP2;
 	}
 
 	@Override
 	public String toString() {
-		return "SupplyEntity [PartNumber=" + PartNumber + ", PartDescription=" + PartDescription
-				+ ", MRPBalanceQuantity=" + MRPBalanceQuantity + ", UnitPrice=" + UnitPrice + ", RequiredQuantity="
-				+ RequiredQuantity + ", STOCK=" + STOCK + ", PRQuantity=" + PRQuantity + ", OpenPOQuantity="
-				+ OpenPOQuantity + ", RedundantInventory=" + RedundantInventory + ", RedundantPO=" + RedundantPO
-				+ ", RedundantPR=" + RedundantPR + ", VMIInventory=" + VMIInventory + ", IT_MRP2="
-				+ Arrays.toString(IT_MRP2) + "]";
+		return "Entity [PartNumber=" + PartNumber + ", MRPBalanceQuantity=" + MRPBalanceQuantity + ", UnitPrice="
+				+ UnitPrice + ", RequiredQuantity=" + RequiredQuantity + ", STOCK=" + STOCK + ", PRQuantity="
+				+ PRQuantity + ", OpenPOQuantity=" + OpenPOQuantity + ", RedundantInventory=" + RedundantInventory
+				+ ", RedundantPO=" + RedundantPO + ", RedundantPR=" + RedundantPR + ", VMIInventory=" + VMIInventory
+				+ ", IT_MRP2=" + IT_MRP2 + "]";
 	}
 
-	class MRPItem {
+	public static class IT_MRP2 implements Serializable {
 		@JsonProperty("MATNR")
 		private String PartNumber;
 		@JsonProperty("MAKTX")
@@ -185,7 +176,7 @@ public class SupplyEntity {
 		@JsonProperty("ZPRM1")
 		private String RedundantPR;
 		@JsonProperty("STOCK")
-		private String Stock;
+		private String STOCK;
 		@JsonProperty("PURMRK")
 		private String FixedPurchaseRequisition;
 		@JsonProperty("PURRQS")
@@ -217,12 +208,12 @@ public class SupplyEntity {
 		@JsonProperty("GRNUM")
 		private String OutDeliveryRequirement;
 
-		public MRPItem() {
+		public IT_MRP2() {
 			super();
 		}
 
-		public MRPItem(String partNumber, String partDescription, String factory, String mRPBalancingQuantity,
-				String redundantPO, String redundantInventory, String redundantPR, String stock,
+		public IT_MRP2(String partNumber, String partDescription, String factory, String mRPBalancingQuantity,
+				String redundantPO, String redundantInventory, String redundantPR, String sTOCK,
 				String fixedPurchaseRequisition, String purchaseRequisition, String plannedOrder,
 				String fixedPlannedOrder, String purchaseOrder, String productionOrder, String planIndependentReq,
 				String relatedRequirement, String orderReservation, String reservation, String safetyStock,
@@ -236,7 +227,7 @@ public class SupplyEntity {
 			RedundantPO = redundantPO;
 			RedundantInventory = redundantInventory;
 			RedundantPR = redundantPR;
-			Stock = stock;
+			STOCK = sTOCK;
 			FixedPurchaseRequisition = fixedPurchaseRequisition;
 			PurchaseRequisition = purchaseRequisition;
 			PlannedOrder = plannedOrder;
@@ -310,12 +301,12 @@ public class SupplyEntity {
 			RedundantPR = redundantPR;
 		}
 
-		public String getStock() {
-			return Stock;
+		public String getSTOCK() {
+			return STOCK;
 		}
 
-		public void setStock(String stock) {
-			Stock = stock;
+		public void setSTOCK(String sTOCK) {
+			STOCK = sTOCK;
 		}
 
 		public String getFixedPurchaseRequisition() {
@@ -440,9 +431,9 @@ public class SupplyEntity {
 
 		@Override
 		public String toString() {
-			return "MRPItem [PartNumber=" + PartNumber + ", PartDescription=" + PartDescription + ", Factory=" + Factory
+			return "IT_MRP2 [PartNumber=" + PartNumber + ", PartDescription=" + PartDescription + ", Factory=" + Factory
 					+ ", MRPBalancingQuantity=" + MRPBalancingQuantity + ", RedundantPO=" + RedundantPO
-					+ ", RedundantInventory=" + RedundantInventory + ", RedundantPR=" + RedundantPR + ", Stock=" + Stock
+					+ ", RedundantInventory=" + RedundantInventory + ", RedundantPR=" + RedundantPR + ", STOCK=" + STOCK
 					+ ", FixedPurchaseRequisition=" + FixedPurchaseRequisition + ", PurchaseRequisition="
 					+ PurchaseRequisition + ", PlannedOrder=" + PlannedOrder + ", FixedPlannedOrder="
 					+ FixedPlannedOrder + ", PurchaseOrder=" + PurchaseOrder + ", ProductionOrder=" + ProductionOrder
@@ -452,5 +443,6 @@ public class SupplyEntity {
 					+ ", TransOrderRequirement=" + TransOrderRequirement + ", SalesOrderRequirement="
 					+ SalesOrderRequirement + ", OutDeliveryRequirement=" + OutDeliveryRequirement + "]";
 		}
+
 	}
 }

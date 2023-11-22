@@ -15,10 +15,14 @@ http://www.ptc.com/schema/mvc http://www.ptc.com/schema/mvc/mvc-10.0.xsd">
 	<bean id="editRequirementServlet" class="ext.requirement.edit.editRequirementServlet"/>
 	<bean id="SupplyChainServlet" class="ext.sap.supply.SupplyChainServlet"/>
 	<bean id="BatchDownloadZipPDFServlet" class="ext.signature.BatchDownloadZipPDFServlet"/>
-		
+	<bean id="CustingServlet" class="ext.sap.Custing.CustingServlet"/>
+  	<bean id="CustingPdfServlet" class="ext.sap.Custing.CustingPdfServlet"/>
+
 	<bean class="ext.sap.masterData.mvc.SAPResultTableBuilder"/>
 	<bean class="ext.requirement.info.RequirementInfoBuilder"/>
-	<bean class="ext.sap.BOMCost.BOMCostBuilder"/>
 
+	<bean class="ext.sap.Custing.CustingBuilder"/>
+	
 	<bean class="ext.sap.purchase.PurchaseAlterTable"/>
+
 </beans>

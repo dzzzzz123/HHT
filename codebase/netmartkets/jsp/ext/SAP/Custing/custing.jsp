@@ -72,6 +72,10 @@ width:100%;
 
 	</table>
 	</div>
+
+  <h1>BOM成本的表格最好按照Windchill展示逻辑显示出来<h1>
+  <h1>显示所有部件的成本，只计算上层的成本，不无限向下计算所有部件的成本<h1>
+
 	  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
 

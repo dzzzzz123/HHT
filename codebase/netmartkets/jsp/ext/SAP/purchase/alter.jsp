@@ -5,7 +5,7 @@
 <%@page import="java.util.Map"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="ext.sap.supply.AlterAttrProcessorContrller"%>
+<%@page import="ext.sap.purchase.AlterAttrProcessorContrller"%>
 <%@page import="ext.sap.Config"%>
 
 <%
@@ -27,8 +27,6 @@
     Map<String, String[]> paramMap = request.getParameterMap();
     String oid = NmCommandBean.convert(request.getParameter("oid"));
     String[] soid = new String[] {};
-    String priceTest = "abc";
-    String priceUnitTest = "cba";
 
     for (Map.Entry<String, String[]> entry : paramMap.entrySet()) {
         String key = entry.getKey();
@@ -57,7 +55,6 @@
         </style>
     </head>
     <body>
-    <%-- <div> <%= soid[0] %> </div> --%>
     <%
         if (partList.size() > 0) {
     %>

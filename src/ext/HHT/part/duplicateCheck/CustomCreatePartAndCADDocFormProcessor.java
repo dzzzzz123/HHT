@@ -7,6 +7,9 @@ import com.ptc.core.components.forms.FormResult;
 import com.ptc.netmarkets.util.beans.NmCommandBean;
 import com.ptc.windchill.enterprise.part.forms.CreatePartAndCADDocFormProcessor;
 
+import ext.HHT.part.duplicateCheck.service.BondedCheckService;
+import ext.HHT.part.duplicateCheck.service.DistrbutePartService;
+import ext.HHT.part.duplicateCheck.service.DuplicateCheckService;
 import wt.part.WTPart;
 import wt.util.WTException;
 
@@ -14,16 +17,22 @@ public class CustomCreatePartAndCADDocFormProcessor extends CreatePartAndCADDocF
 
 	@Override
 	public FormResult doOperation(NmCommandBean nmCommandBean, List<ObjectBean> list) throws WTException {
-		System.out.println("----------------创建物料查重（长描述）----------------");
-		String result = DuplicateCheckHelper.process(nmCommandBean);
+		System.out.println("----------------创建物料保税校验----------------");
+		String result = BondedCheckService.process(nmCommandBean);
 		if (result.length() > 0) {
 			throw new WTException(result);
+		}
+		System.out.println("----------------创建物料查重（长描述）----------------");
+		String result2 = DuplicateCheckService.process(nmCommandBean);
+		if (result2.length() > 0) {
+			throw new WTException(result2);
 		}
 		return super.doOperation(nmCommandBean, list);
 	}
 
 	@Override
 	public FormResult postProcess(NmCommandBean nmCommandBean, List<ObjectBean> list) throws WTException {
+		// 怕有人看不懂
 		// ObjectBean obean = list.size() > 0 ? list.get(0) : null;
 		// Object obj = obean != null ? obean.getObject() : null;
 		// WTPart part = obj instanceof WTPart ? (WTPart) obj : null;
@@ -31,7 +40,7 @@ public class CustomCreatePartAndCADDocFormProcessor extends CreatePartAndCADDocF
 				? (list.get(0).getObject() instanceof WTPart ? (WTPart) list.get(0).getObject() : null)
 				: null;
 		System.out.println("----------------物料存放到对应文件夹 处理----------------");
-		String result = DistrbutePartHelper.process(part);
+		String result = DistrbutePartService.process(part);
 		if (result.length() > 0) {
 			throw new WTException(result);
 		}

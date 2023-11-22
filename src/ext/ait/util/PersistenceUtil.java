@@ -59,21 +59,19 @@ import wt.vc.wip.Workable;
 public class PersistenceUtil implements RemoteAccess {
 
 	/**
-	 * @description 得到对象的自定义/显示名称？
+	 * @description 得到对象的自定义/显示名称 如:com.ptc.ElectricalPart
 	 * @param WTObject
 	 * @return String
 	 * @throws WTException
 	 */
 	public static String getTypeName(WTObject obj) {
 		String typeDisplayName = null;
-		TypeDefinitionReference ref = null;
-		WTTypeDefinition definition = null;
 		if (obj instanceof WTPart) {
-			ref = ((WTPart) obj).getTypeDefinitionReference();
+			TypeDefinitionReference ref = ((WTPart) obj).getTypeDefinitionReference();
 			try {
 				@SuppressWarnings("deprecation")
 				TypeDefinitionDefaultView view = EPMSoftTypeServerUtilities.getTypeDefinition(ref);
-				definition = (WTTypeDefinition) PersistenceHelper.manager.refresh(view.getObjectID());
+				WTTypeDefinition definition = (WTTypeDefinition) PersistenceHelper.manager.refresh(view.getObjectID());
 				typeDisplayName = definition.getDisplayNameKey(); // 类型的key
 			} catch (WTException e) {
 				e.printStackTrace();

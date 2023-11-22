@@ -5,12 +5,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
 import com.ptc.netmarkets.model.NmOid;
-import com.ptc.windchill.enterprise.change2.commands.RelatedChangesQueryCommands;
 
 import wt.access.AccessControlHelper;
 import wt.access.AccessPermission;
@@ -23,13 +21,11 @@ import wt.change2.WTChangeActivity2;
 import wt.change2.WTChangeOrder2;
 import wt.change2.WTChangeReview;
 import wt.enterprise.RevisionControlled;
-import wt.fc.ObjectIdentifier;
 import wt.fc.ObjectReference;
 import wt.fc.Persistable;
 import wt.fc.PersistenceHelper;
 import wt.fc.QueryResult;
 import wt.fc.WTObject;
-import wt.fc.collections.WTCollection;
 import wt.httpgw.URLFactory;
 import wt.maturity.MaturityHelper;
 import wt.maturity.Promotable;
@@ -37,7 +33,6 @@ import wt.maturity.PromotionNotice;
 import wt.maturity.PromotionTarget;
 import wt.method.RemoteAccess;
 import wt.org.WTPrincipalReference;
-import wt.part.WTPart;
 import wt.query.QuerySpec;
 import wt.query.SearchCondition;
 import wt.session.SessionHelper;
@@ -51,9 +46,11 @@ import wt.workflow.engine.ProcessData;
 import wt.workflow.engine.WfActivity;
 import wt.workflow.engine.WfBlock;
 import wt.workflow.engine.WfConnector;
+import wt.workflow.engine.WfContainer;
 import wt.workflow.engine.WfEngineHelper;
 import wt.workflow.engine.WfExecutionObject;
 import wt.workflow.engine.WfProcess;
+import wt.workflow.engine.WfVariable;
 import wt.workflow.engine.WfVotingEventAudit;
 import wt.workflow.work.WfAssignedActivity;
 import wt.workflow.work.WfAssignment;
@@ -215,7 +212,6 @@ public class WorkflowUtil implements RemoteAccess {
 		} catch (WTException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	/**
@@ -705,27 +701,37 @@ public class WorkflowUtil implements RemoteAccess {
 	}
 
 	/**
-	 * 获取部件所关联的ECN对象 WTPart->WTChangeOrder2
+	 * 通过WfProcess来获取流程中特性中的变量列表
 	 * 
-	 * @param part
-	 * @return WTChangeOrder2
+	 * @param process
 	 */
-	public static WTChangeOrder2 getECNByPart(WTPart part) {
+	public static WfVariable[] getVarsByWf(WfProcess process) {
 		try {
-			WTCollection collection = RelatedChangesQueryCommands.getRelatedResultingChangeNotices(part);
-			Iterator itr = collection.iterator();
-			while (itr.hasNext()) {
-				Object object = itr.next();
-				if (object.toString().contains("WTChangeOrder2")) {
-					ObjectIdentifier mpoid = ObjectIdentifier.newObjectIdentifier(object.toString());
-					WTChangeOrder2 wtChangeOrder2 = (WTChangeOrder2) PersistenceHelper.manager.refresh(mpoid);
-					return wtChangeOrder2;
-				}
+			Enumeration activityList = WfEngineHelper.service.getProcessSteps((WfContainer) process, null);
+			while (activityList.hasMoreElements()) {
+				WfActivity activity = (WfActivity) activityList.nextElement();
+				ProcessData data = activity.getContext();
+				WfVariable[] vars = data.getVariableList();
+				return vars;
 			}
 		} catch (WTException e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	/**
+	 * 通过WfProcess来获取流程中特性中处理好的变量列表所组成的HashMap
+	 * 
+	 * @param process
+	 */
+	public static HashMap<String, Object> getRefinedVarsByWf(WfProcess process) {
+		HashMap<String, Object> map = new HashMap<>();
+		WfVariable[] vars = getVarsByWf(process);
+		for (WfVariable wfVar : vars) {
+			map.put(wfVar.getDisplayName(), wfVar.getValue());
+		}
+		return map;
 	}
 
 }

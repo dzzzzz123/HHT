@@ -30,8 +30,11 @@
 		<action name="masterDataReview">
         	<component name="sap.result.list" windowType="page"/>
     	</action>
-		<action name="BOMCost" ajax="row">
-			<command url="netmarkets/jsp/ext/SAP/BOMCost/infoPage.jsp" windowType="page"/> 
+    	<action name="Custing" ajax="row">
+			<command url="netmarkets/jsp/ext/SAP/Custing/custing.jsp" windowType="page"/>
+		</action>
+		<action name="supplyInfoPage" ajax="row">
+			<command url="netmarkets/jsp/ext/SAP/supply/infoPage.jsp" windowType="page"/>
 		</action>
 		<action name="alterPropertiesWizard" ajax="row">
 			<command class="ext.sap.purchase.AlterAttrProcessor" method="execute" url="netmarkets/jsp/ext/SAP/purchase/alterWizard.jsp" windowType="popup"/>

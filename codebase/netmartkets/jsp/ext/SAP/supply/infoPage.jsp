@@ -1,8 +1,11 @@
 <%@page import="com.ptc.netmarkets.util.beans.NmContextBean"%>
 <%@page import="com.ptc.netmarkets.util.beans.NmCommandBean"%>
-<%@page import="wt.part.WTPart"%>
-<%@page import="ext.ait.util.PartUtil"%>
-<%@page import="ext.ait.util.PersistenceUtil"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="ext.sap.supply.SupplyChainService"%>
+<%@page import="ext.sap.supply.Entity"%>
+<%@page import="ext.sap.supply.Entity.IT_MRP2"%>
 <%@page language="java" session="true" pageEncoding="UTF-8"%>
 <%
     String path = request.getContextPath();
@@ -19,42 +22,190 @@
     nmCommandBean.setContextBean (new NmContextBean());
 
     String oid = NmCommandBean.convert(request.getParameter("oid"));
-    oid = oid.startsWith("VR") ? PartUtil.getORbyVR(oid) : oid;
-    WTPart part = PersistenceUtil.oid2Object(oid);
-    String number = part.getNumber();
-%>
+    String jsonInput = "{ \"I_MATNR\": \"230820014A\" }";
+    Entity supplyInfo = SupplyChainService.requestSupplyChain(jsonInput);
+    List<Entity> supplyChainList = new ArrayList<>();
+    supplyChainList = SupplyChainService.getVar(oid);
+
+    supplyChainList.add(supplyInfo);
+    supplyChainList.add(supplyInfo);
+
+    List<IT_MRP2> factory2000 = SupplyChainService.getIT_MRP2(supplyChainList,"2000");
+    List<IT_MRP2> factory2100 = SupplyChainService.getIT_MRP2(supplyChainList,"2100");
+    // Map<String, String[]> paramMap = request.getParameterMap();
+    // for (Map.Entry<String, String[]> entry : paramMap.entrySet()) {
+    //    String key = entry.getKey();
+    //    String[] values = entry.getValue();
+    //    out.println("<p>Key: " + key + "</p>");
+    //    out.println("<ul>");
+    //    for (String value : values) {
+    //        out.println("<li>value: " + value + "</li>");
+    //    }
+    //   out.println("</ul>");
+    // }
+    %>
 
 <!DOCTYPE html>
 <html>
     <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>需求信息</title>
-    <link rel="stylesheet" href="<%= basePath %>/netmarkets/jsp/ext/SAP/layui/css/layui.css" />
     <style>
+        #priceTable th,#priceTable td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        #priceTable th {
+            background-color: #f2f2f2;
+        }
+
+        #priceTable {
+            border-collapse: collapse;
+            width: 95%;
+            margin-bottom: 30px;
+        }
     </style>
     </head>
     <body>
-    <div><%= oid %></div>
-    <div><%= number %></div>
-    <div class="layui-input-block rightsd">
-        <button id="submit">立即提交</button>
-    </div>
-    <table class="layui-hide" id="ID-table-demo-data"></table>
-    <script type="text/javascript" src="<%= basePath %>/netmarkets/jsp/ext/SAP/layui/layui.js"></script>
-    <script type="text/javascript">
-        let submit = document.querySelector("#submit");
-        submit.onclick = () => {
-            let I_MATNR = name.value
-            axios({
-                method: "POST",
-                url: "http://uat.honghe-tech.com/Windchill/servlet/Navigation/sap/supplyChain",
-                data: { I_MATNR },
-            }).then( function (formation) {
-                console.log(formation);
-            }).catch(function(error){
-                console.log("请求失败:", error);
-            })
-      };
-    </script>
+        <% if (supplyChainList.size() > 0) { %>
+            <table id="priceTable">
+                <tr>
+                    <th>部件编号</th>
+                    <th>MRP平衡数量</th>
+                    <th>单价</th>
+                    <th>需求数量</th>
+                    <th>库存</th>
+                    <th>PR数量</th>
+                    <th>未清PO数量</th>
+                    <th>多余库存</th>
+                    <th>多余PO</th>
+                    <th>多余PR</th>
+                    <th>VMI库存</th>
+                </tr>
+        <% for (Entity entity : supplyChainList) { %>
+            <tr>
+                <td name="PartNumber"  value="<%= entity.getPartNumber() %>"><%= entity.getPartNumber() %></td>
+                <td name="MRPBalanceQuantity"  value="<%= entity.getMRPBalanceQuantity() %>"><%= entity.getMRPBalanceQuantity() %></td>
+                <td name="UnitPrice"  value="<%=  entity.getUnitPrice() %>"><%=  entity.getUnitPrice() %></td>
+                <td name="RequiredQuantity"  value="<%= entity.getRequiredQuantity() %>"><%= entity.getRequiredQuantity() %></td>
+                <td name="STOCK"  value="<%= entity.getSTOCK() %>"><%= entity.getSTOCK() %></td>
+                <td name="PRQuantity"  value="<%= entity.getPRQuantity() %>"><%= entity.getPRQuantity() %></td>
+                <td name="OpenPOQuantity"  value="<%= entity.getOpenPOQuantity() %>"><%= entity.getOpenPOQuantity() %></td>
+                <td name="RedundantInventory"  value="<%= entity.getRedundantInventory() %>"><%= entity.getRedundantInventory() %></td>
+                <td name="RedundantPO"  value="<%= entity.getRedundantPO() %>"><%= entity.getRedundantPO() %></td>
+                <td name="RedundantPR"  value="<%= entity.getRedundantPR() %>"><%= entity.getRedundantPR() %></td>
+                <td name="VMIInventory"  value="<%= entity.getVMIInventory() %>"><%= entity.getVMIInventory() %></td>
+            </tr>
+        <% } %>
+            </table>
+            <table id="priceTable">
+            <tr>
+                <th>物料编码</th>
+                <th>工厂</th>
+                <th>MRP平衡数量</th>
+                <th>多余PO</th>
+                <th>多余库存</th>
+                <th>多余PR</th>
+                <th>库存</th>
+                <th>固定采购申请</th>
+                <th>采购申请</th>
+                <th>计划订单</th>
+                <th>固定计划订单</th>
+                <th>采购订单</th>
+                <th>生产订单</th>
+                <th>计划独立需求</th>
+                <th>相关需求</th>
+                <th>订单预留</th>
+                <th>预留</th>
+                <th>安全库存</th>
+                <th>转储采购申请</th>
+                <th>转储订单需求</th>
+                <th>销售订单需求</th>
+                <th>外向交货需求</th>
+            </tr>
+            <% for (IT_MRP2 entity : factory2000) { %>
+                <tr>
+                    <td name="PartNumber"  value="<%= entity.getPartNumber() %>"><%= entity.getPartNumber() %></td>
+                    <td name="Factory"  value="<%= entity.getFactory() %>"><%= entity.getFactory() %></td>
+                    <td name="MRPBalancingQuantity"  value="<%= entity.getMRPBalancingQuantity() %>"><%= entity.getMRPBalancingQuantity() %></td>
+                    <td name="RedundantPO"  value="<%= entity.getRedundantPO() %>"><%= entity.getRedundantPO() %></td>
+                    <td name="RedundantInventory"  value="<%= entity.getRedundantInventory() %>"><%= entity.getRedundantInventory() %></td>
+                    <td name="RedundantPR"  value="<%= entity.getRedundantPR() %>"><%= entity.getRedundantPR() %></td>
+                    <td name="STOCK"  value="<%= entity.getSTOCK() %>"><%= entity.getSTOCK() %></td>
+                    <td name="FixedPurchaseRequisition"  value="<%= entity.getFixedPurchaseRequisition() %>"><%= entity.getFixedPurchaseRequisition() %></td>
+                    <td name="PurchaseRequisition"  value="<%= entity.getPurchaseRequisition() %>"><%= entity.getPurchaseRequisition() %></td>
+                    <td name="PlannedOrder"  value="<%= entity.getPlannedOrder() %>"><%= entity.getPlannedOrder() %></td>
+                    <td name="FixedPlannedOrder"  value="<%= entity.getFixedPlannedOrder() %>"><%= entity.getFixedPlannedOrder() %></td>
+                    <td name="PurchaseOrder"  value="<%= entity.getPurchaseOrder() %>"><%= entity.getPurchaseOrder() %></td>
+                    <td name="ProductionOrder"  value="<%= entity.getProductionOrder() %>"><%= entity.getProductionOrder() %></td>
+                    <td name="PlanIndependentReq"  value="<%= entity.getPlanIndependentReq() %>"><%= entity.getPlanIndependentReq() %></td>
+                    <td name="RelatedRequirement"  value="<%= entity.getRelatedRequirement() %>"><%= entity.getRelatedRequirement() %></td>
+                    <td name="OrderReservation"  value="<%= entity.getOrderReservation() %>"><%= entity.getOrderReservation() %></td>
+                    <td name="Reservation"  value="<%= entity.getReservation() %>"><%= entity.getReservation() %></td>
+                    <td name="SafetyStock"  value="<%= entity.getSafetyStock() %>"><%= entity.getSafetyStock() %></td>
+                    <td name="TransPurchaseRequisition"  value="<%= entity.getTransPurchaseRequisition() %>"><%= entity.getTransPurchaseRequisition() %></td>
+                    <td name="TransOrderRequirement"  value="<%= entity.getTransOrderRequirement() %>"><%= entity.getTransOrderRequirement() %></td>
+                    <td name="SalesOrderRequirement"  value="<%= entity.getSalesOrderRequirement() %>"><%= entity.getSalesOrderRequirement() %></td>
+                    <td name="OutDeliveryRequirement"  value="<%= entity.getOutDeliveryRequirement() %>"><%= entity.getOutDeliveryRequirement() %></td>
+                </tr>
+            <% } %>
+            </table>
+            <table id="priceTable">
+            <tr>
+                <th>物料编码</th>
+                <th>工厂</th>
+                <th>MRP平衡数量</th>
+                <th>多余PO</th>
+                <th>多余库存</th>
+                <th>多余PR</th>
+                <th>库存</th>
+                <th>固定采购申请</th>
+                <th>采购申请</th>
+                <th>计划订单</th>
+                <th>固定计划订单</th>
+                <th>采购订单</th>
+                <th>生产订单</th>
+                <th>计划独立需求</th>
+                <th>相关需求</th>
+                <th>订单预留</th>
+                <th>预留</th>
+                <th>安全库存</th>
+                <th>转储采购申请</th>
+                <th>转储订单需求</th>
+                <th>销售订单需求</th>
+                <th>外向交货需求</th>
+            </tr>
+            <% for (IT_MRP2 entity : factory2100) { %>
+                <tr>
+                    <td name="PartNumber"  value="<%= entity.getPartNumber() %>"><%= entity.getPartNumber() %></td>
+                    <td name="Factory"  value="<%= entity.getFactory() %>"><%= entity.getFactory() %></td>
+                    <td name="MRPBalancingQuantity"  value="<%= entity.getMRPBalancingQuantity() %>"><%= entity.getMRPBalancingQuantity() %></td>
+                    <td name="RedundantPO"  value="<%= entity.getRedundantPO() %>"><%= entity.getRedundantPO() %></td>
+                    <td name="RedundantInventory"  value="<%= entity.getRedundantInventory() %>"><%= entity.getRedundantInventory() %></td>
+                    <td name="RedundantPR"  value="<%= entity.getRedundantPR() %>"><%= entity.getRedundantPR() %></td>
+                    <td name="STOCK"  value="<%= entity.getSTOCK() %>"><%= entity.getSTOCK() %></td>
+                    <td name="FixedPurchaseRequisition"  value="<%= entity.getFixedPurchaseRequisition() %>"><%= entity.getFixedPurchaseRequisition() %></td>
+                    <td name="PurchaseRequisition"  value="<%= entity.getPurchaseRequisition() %>"><%= entity.getPurchaseRequisition() %></td>
+                    <td name="PlannedOrder"  value="<%= entity.getPlannedOrder() %>"><%= entity.getPlannedOrder() %></td>
+                    <td name="FixedPlannedOrder"  value="<%= entity.getFixedPlannedOrder() %>"><%= entity.getFixedPlannedOrder() %></td>
+                    <td name="PurchaseOrder"  value="<%= entity.getPurchaseOrder() %>"><%= entity.getPurchaseOrder() %></td>
+                    <td name="ProductionOrder"  value="<%= entity.getProductionOrder() %>"><%= entity.getProductionOrder() %></td>
+                    <td name="PlanIndependentReq"  value="<%= entity.getPlanIndependentReq() %>"><%= entity.getPlanIndependentReq() %></td>
+                    <td name="RelatedRequirement"  value="<%= entity.getRelatedRequirement() %>"><%= entity.getRelatedRequirement() %></td>
+                    <td name="OrderReservation"  value="<%= entity.getOrderReservation() %>"><%= entity.getOrderReservation() %></td>
+                    <td name="Reservation"  value="<%= entity.getReservation() %>"><%= entity.getReservation() %></td>
+                    <td name="SafetyStock"  value="<%= entity.getSafetyStock() %>"><%= entity.getSafetyStock() %></td>
+                    <td name="TransPurchaseRequisition"  value="<%= entity.getTransPurchaseRequisition() %>"><%= entity.getTransPurchaseRequisition() %></td>
+                    <td name="TransOrderRequirement"  value="<%= entity.getTransOrderRequirement() %>"><%= entity.getTransOrderRequirement() %></td>
+                    <td name="SalesOrderRequirement"  value="<%= entity.getSalesOrderRequirement() %>"><%= entity.getSalesOrderRequirement() %></td>
+                    <td name="OutDeliveryRequirement"  value="<%= entity.getOutDeliveryRequirement() %>"><%= entity.getOutDeliveryRequirement() %></td>
+                </tr>
+            <% } %>
+            </table>
+        <% }  else { %>
+            <p>没有符合条件的部件。</p>
+        <% } %>
     </body>
 </html>

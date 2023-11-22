@@ -1,19 +1,15 @@
-package ext.HHT.part.duplicateCheck;
+package ext.HHT.part.duplicateCheck.service;
 
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
+import ext.HHT.part.duplicateCheck.Config;
 import ext.ait.util.ClassificationUtil;
 import ext.ait.util.ContainerUtil;
-import ext.ait.util.PropertiesUtil;
-import wt.folder.Folder;
-import wt.inf.container.WTContainer;
 import wt.part.WTPart;
 
-public class DistrbutePartHelper {
-
-	private static PropertiesUtil pUtil = PropertiesUtil.getInstance("config.properties");
+public class DistrbutePartService {
 
 	/**
 	 * 电子/结构/外购成品部件创建时放置到指定的部件库中
@@ -26,8 +22,8 @@ public class DistrbutePartHelper {
 			return "";
 		}
 		String source = part.getSource().toString();
-		String classification = pUtil.getValueByKey(part, "iba.internal.HHT_Classification");
-		String buy = pUtil.getValueByKey("source.buy");
+		String classification = Config.getHHT_Classification(part);
+		String buy = Config.getBuy();
 		if (StringUtils.isNotBlank(classification) && source.equals(buy) && classification.startsWith("5")) {
 			distrbuteFinished(part, classification);
 		} else if (StringUtils.isNotBlank(classification)) {
@@ -35,6 +31,8 @@ public class DistrbutePartHelper {
 				distrbuteParts(part, classification, "electrical");
 			} else if (classification.startsWith("2")) {
 				distrbuteParts(part, classification, "structure");
+			} else if (classification.startsWith("3")) {
+				distrbuteParts(part, classification, "packaging");
 			}
 		}
 		return "";
@@ -47,8 +45,8 @@ public class DistrbutePartHelper {
 	 * @param classification
 	 */
 	private static void distrbuteFinished(WTPart part, String classification) {
-		String finishLibrary = pUtil.getValueByKey("finish.library.name");
-		pUtil.setValueByKey(part, "iba.internal.HHT_MaterialGroup", "6" + classification.substring(1));
+		String finishLibrary = Config.getFinishLibrary();
+		Config.setHHT_MaterialGroup(part, "6" + classification.substring(1));
 		Set<String> folderSet = ContainerUtil.getContainerFolders(finishLibrary);
 		boolean flag = true;
 		for (String folder : folderSet) {
@@ -76,10 +74,13 @@ public class DistrbutePartHelper {
 		String library = "";
 		switch (sign) {
 		case "electrical":
-			library = pUtil.getValueByKey("electrical.library.name");
+			library = Config.getElectricalLibrary();
 			break;
 		case "structure":
-			library = pUtil.getValueByKey("structure.library.name");
+			library = Config.getStructureLibrary();
+			break;
+		case "packaging":
+			library = Config.getPackagingLibrary();
 			break;
 		default:
 			library = "";
@@ -98,18 +99,4 @@ public class DistrbutePartHelper {
 			ContainerUtil.moveObj2FolderWithContainer(part, library, folderName);
 		}
 	}
-
-	/**
-	 * 将新创建的物料移动到指定库下的文件夹中
-	 * 
-	 * @param part
-	 * @param library
-	 * @param folderName
-	 */
-	private static void distributePartToFolder(WTPart part, String library, String folderName) {
-		WTContainer container = ContainerUtil.getContainer(library);
-		Folder toFolder = ContainerUtil.getFolder(folderName, container);
-		ContainerUtil.moveObj2Folder(part, toFolder);
-	}
-
 }

@@ -72,7 +72,8 @@ public class PurchaseAlterTable extends AbstractComponentConfigBuilder
 		ColumnConfig stateColumn = factory.newColumnConfig(STATE, true);
 		stateColumn.setDataStoreOnly(true);
 		table.addComponent(stateColumn);
-
+		table.addComponent(factory.newColumnConfig("IBA|HHT_Price", "价格", false));
+		table.addComponent(factory.newColumnConfig("HHT_PriceUnit", "价格单位", false));
 		return table;
 	}
 

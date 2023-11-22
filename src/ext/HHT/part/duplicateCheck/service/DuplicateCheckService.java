@@ -1,4 +1,4 @@
-package ext.HHT.part.duplicateCheck;
+package ext.HHT.part.duplicateCheck.service;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,18 +7,16 @@ import java.util.Map;
 
 import com.ptc.netmarkets.util.beans.NmCommandBean;
 
+import ext.HHT.part.duplicateCheck.Config;
 import ext.ait.util.CommonUtil;
 import ext.ait.util.PersistenceUtil;
-import ext.ait.util.PropertiesUtil;
 import ext.ait.util.VersionUtil;
 import ext.classification.service.ClassificationDescription;
 import wt.fc.WTObject;
 import wt.part.WTPart;
 import wt.util.WTException;
 
-public class DuplicateCheckHelper {
-
-	private static PropertiesUtil pUtil = PropertiesUtil.getInstance("config.properties");
+public class DuplicateCheckService {
 
 	public static String process(NmCommandBean nmCommandBean) {
 		Map<String, Object> paramMap = nmCommandBean.getParameterMap();
@@ -26,7 +24,7 @@ public class DuplicateCheckHelper {
 		for (String key : paramMap.keySet()) {
 			Object value = paramMap.get(key);
 			String strValue = value instanceof String[] ? ((String[]) value)[0] : value.toString();
-			if (key.contains(pUtil.getValueByKey("iba.paramMap.HHT_Classification")) && key.endsWith("textbox")) {
+			if (key.contains(Config.getIBA_HHT_Classification()) && key.endsWith("textbox")) {
 				classification = strValue;
 			}
 		}
@@ -60,11 +58,10 @@ public class DuplicateCheckHelper {
 	 */
 	public static Map<String, String> getDescriptionByClass(String classification) {
 		Map<String, String> map = new HashMap<>();
-		String des = pUtil.getValueByKey("iba.internal.HHT_LongtDescription");
-		String classify = pUtil.getValueByKey("iba.internal.HHT_Classification");
 
 		String sql = "SELECT SV.VALUE,IDA3A4 FROM STRINGVALUE SV WHERE SV.IDA3A6 = ( SELECT SD.IDA2A2 FROM STRINGDEFINITION SD WHERE SD.NAME = ? ) AND SV.IDA3A4 IN ( SELECT SV2.IDA3A4 FROM STRINGVALUE SV2 WHERE SV2.IDA3A6 = (SELECT SD2.IDA2A2 FROM STRINGDEFINITION SD2 WHERE SD2.NAME = ? ) AND SV2.VALUE = ?)";
-		ResultSet resultSet = CommonUtil.excuteSelect(sql, des, classify, classification);
+		ResultSet resultSet = CommonUtil.excuteSelect(sql, Config.getHHT_LongtDescription(),
+				Config.getHHT_Classification(), classification);
 		try {
 			while (resultSet.next()) {
 				map.put(resultSet.getString("VALUE"), resultSet.getString("IDA3A4"));

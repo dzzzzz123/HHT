@@ -148,58 +148,43 @@ public class DocumentUtil implements RemoteAccess {
 	}
 
 	/**
-	 * 获取部件关联的参考文档
+	 * 获取部件关联的说明方文档(Described)/参考文档(Reference)
 	 * 
-	 * @param WTPart
+	 * @param part
+	 * @param flag Described/Reference
 	 * @return List<WTDocument>
-	 * @throws WTException
 	 */
-	@SuppressWarnings("deprecation")
-	public static List<WTDocument> getReferenceDocumentsFromPart(WTPart part) throws WTException {
-		QueryResult qr = null;
+	public static List<WTDocument> getDescOrRefByPart(WTPart part, String flag) {
 		List<WTDocument> list = new ArrayList<WTDocument>();
 		try {
-			// 根据part获取关联的参考文档
-			qr = WTPartHelper.service.getReferencesWTDocumentMasters(part);
-			while (qr.hasMoreElements()) {
-				Object obj = qr.nextElement();
-				if (obj instanceof WTDocumentMaster) {
-					WTDocumentMaster docmaster = (WTDocumentMaster) obj;
-					QueryResult qs = VersionControlHelper.service.allVersionsOf(docmaster);
-					WTDocument doc = (WTDocument) qs.nextElement();
-					list.add(doc);
+			switch (flag) {
+			case "Described":
+				QueryResult qr = WTPartHelper.service.getDescribedByDocuments(part);// 普通说明文档
+				while (qr.hasMoreElements()) {
+					Object obj = qr.nextElement();
+					if (obj instanceof WTDocument) {
+						WTDocument doc = (WTDocument) obj;
+						list.add(doc);
+					}
 				}
-			}
-
-		} catch (WTException e) {
-			e.printStackTrace();
-			throw new WTException("No Reference Document on Part :" + part.getName());
-		}
-		return list;
-	}
-
-	/**
-	 * 获取部件关联的说明方文档
-	 * 
-	 * @param WTPart
-	 * @return List<WTDocument>
-	 * @throws WTException
-	 */
-	public static List<WTDocument> getDescribedDocumentsFromPart(WTPart part) throws WTException {
-		QueryResult qr = null;
-		List<WTDocument> list = new ArrayList<WTDocument>();
-		try {
-			qr = WTPartHelper.service.getDescribedByDocuments(part);// 普通说明文档
-			while (qr.hasMoreElements()) {
-				Object obj = qr.nextElement();
-				if (obj instanceof WTDocument) {
-					WTDocument doc = (WTDocument) obj;
-					list.add(doc);
+				break;
+			case "Reference":
+				qr = WTPartHelper.service.getReferencesWTDocumentMasters(part);
+				while (qr.hasMoreElements()) {
+					Object obj = qr.nextElement();
+					if (obj instanceof WTDocumentMaster) {
+						WTDocumentMaster docmaster = (WTDocumentMaster) obj;
+						QueryResult qs = VersionControlHelper.service.allVersionsOf(docmaster);
+						WTDocument doc = (WTDocument) qs.nextElement();
+						list.add(doc);
+					}
 				}
+				break;
+			default:
+				break;
 			}
 		} catch (WTException e) {
 			e.printStackTrace();
-			throw new WTException("No Described Document on Part :" + part.getName());
 		}
 		return list;
 	}
