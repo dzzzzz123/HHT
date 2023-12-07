@@ -217,8 +217,14 @@ public class ClassificationUtil implements RemoteAccess {
 			ResultSet resultSet = CommonUtil.excuteSelect(sql, IBAName, classNode);
 			while (resultSet.next()) {
 				String oid = resultSet.getString("IDA3A4");
-				WTPart part = (WTPart) PersistenceUtil.oid2Object(oid);
-				partList.add(part);
+				WTPart part = null;
+				try {
+					part = (WTPart) PersistenceUtil.oid2Object(oid);
+				} catch (Exception e) {
+				}
+				if (part != null) {
+					partList.add(part);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

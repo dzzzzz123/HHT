@@ -25,6 +25,7 @@ public class CustingBuilder extends AbstractInfoConfigBuilder implements Compone
 	protected InfoConfig buildInfoConfig(ComponentParams arg0) throws WTException {
 		InfoComponentConfigFactory factory = getComponentConfigFactory();
 		InfoConfig result = factory.newInfoConfig();
+		result.setNavBarName("wtpart_custing_menu");
 		result.setTabSet("CustingInfoPageTabSet");
 		return result;
 	}

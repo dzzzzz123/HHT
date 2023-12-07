@@ -8,6 +8,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.util.FileCopyUtils;
@@ -25,6 +27,8 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import com.ptc.commons.lang.util.StringUtils;
+import com.lowagie.text.Element;
 
 import ext.ait.util.PropertiesUtil;
 
@@ -46,14 +50,38 @@ public class CustingPdfServlet implements Controller{
 		jsonBuilder.append(line);
 		}
 		String jsonData = jsonBuilder.toString();
+		System.out.println("上传参数：" + jsonData);
 		ObjectMapper objectMapper = new ObjectMapper();
 		@SuppressWarnings("unchecked")
-		List<List<String>> list = objectMapper.readValue(jsonData,List.class);
+		List<Map<String,Object>> list = objectMapper.readValue(jsonData,List.class);
 		String path = properties.getValueByKey("pdf.local.path");
 		File file = generatePdf(path,path+"\\"+System.currentTimeMillis()+".pdf","","",list);
-        FileCopyUtils.copy(new FileInputStream(file), response.getOutputStream());
+		FileInputStream ins = new FileInputStream(file);
+		if(file.exists()) {
+			file.delete();
+		}
+        FileCopyUtils.copy(ins, response.getOutputStream());
 		return null;
 	}
+	
+	   private static  void doopNumParent(List<Map<String,Object>> data,String number,List<String> result,int num) {
+		   if(StringUtils.isBlank(number)) {
+			   return;
+		   }
+		   String parentId = StringUtils.EMPTY;
+		   for(int i=0;i<num;i++) {
+			   String numberParent = isString(data.get(i).get("number"));
+			   if(number.equals(numberParent)) {
+				   parentId = isString(data.get(i).get("parent"));
+			   }
+		   }
+		   System.out.println("======parentId:"+parentId);
+		   if(StringUtils.isNotBlank(parentId)) {
+			   result.add(parentId);
+			   doopNumParent(data,parentId,result,num);
+		   }
+		   
+	   }
 	
      
 	  /**
@@ -66,7 +94,7 @@ public class CustingPdfServlet implements Controller{
 		 * @param data        文件表格数据
 		 * @return
 		 */
-		public static File generatePdf(String folderName, String fileName, String titleName, String contentName,List<List<String>> data) {
+		public static File generatePdf(String folderName, String fileName, String titleName, String contentName,List<Map<String,Object>> data) {
 			try {
 				//页面大小
 				Rectangle rect = new Rectangle(PageSize.A4);
@@ -88,7 +116,7 @@ public class CustingPdfServlet implements Controller{
 				Font fontContent = new Font(bfChinese, 10, Font.NORMAL);
 
 				Paragraph title = new Paragraph(titleName, fontTitle);
-				//居中
+				//居中 0靠左 1，居中 2，靠右
 				title.setAlignment(1);
 				document.add(title);
 
@@ -102,15 +130,14 @@ public class CustingPdfServlet implements Controller{
 				// 空一行
 				document.add(emptyRow);
 
-				int columnNum = 7;
+				int columnNum = 6;
 				PdfPTable headerTable = new PdfPTable(columnNum);
 				headerTable.setWidthPercentage(100);
-				int headerwidths[] = {5, 8, 10, 5, 5,5,5};
+				int headerwidths[] = {10, 6, 5, 5,5,5};
 				headerTable.setWidths(headerwidths);
 
 				// 构建表格头 （根据需求修改，也可作为入参传进来）
 				List<String> headList = new ArrayList<>();
-				headList.add("父编号");
 				headList.add("编号");
 				headList.add("名称");
 				headList.add("版本");
@@ -121,22 +148,35 @@ public class CustingPdfServlet implements Controller{
 					createTableCell(headList.get(i), fontContent, headerTable,false);
 				}
 
-				// 外层循环构建行，内层循环构建列
+				// 外层循环构建行 
 				for (int i = 0; i < data.size()-1; i++) {
-					List<String> hList = data.get(i);
-					for (int j = 0; j < hList.size(); j++) {
-						createTableCell(data.get(i).get(j), fontContent, headerTable,false);
+					List<String> result = new ArrayList<>();
+					doopNumParent(data,isString(data.get(i).get("parent")),result,i);
+					int num = result.size();
+					String format = StringUtils.EMPTY;
+					while(num > 0) {
+						format +="    ";
+						num--;
 					}
+					System.out.println("number:" + isString(data.get(i).get("number")) + " num:" + num);
+					//判断是否是父件
+					boolean master =  isString(data.get(i).get("master")).equals("true")?true:false;
+					if(master) {
+						createTableCell(format+">"+isString(data.get(i).get("number")), fontContent, headerTable,false);
+					} else {
+						createTableCell(format+"  "+isString(data.get(i).get("number")), fontContent, headerTable,false);
+					}
+					createTableCell(isString(data.get(i).get("name")), fontContent, headerTable,false);
+					createTableCell(isString(data.get(i).get("version")), fontContent, headerTable,false);
+					createTableCell(isString(data.get(i).get("status")), fontContent, headerTable,false);
+					createTableCell(isString(data.get(i).get("amount")), fontContent, headerTable,false);
+					createTableCell(isString(data.get(i).get("price")), fontContent, headerTable,false);
 				}
 
 				// 构建表格尾（根据需求修改，也可作为入参传进来）
-				List<String> endList = new ArrayList<>();
-				endList.add("合计：");
-				List<String> lastList = data.get(data.size() -1);
-				endList.add(lastList.get(lastList.size() -1));
-				for (int i = 0; i < endList.size(); i++) {
-					createTableCell(endList.get(i), fontContent, headerTable,true);
-				}
+				Map<String,Object> lastMap = data.get(data.size() -1);
+				createTableCell("合计：", fontContent, headerTable,true);
+				createTableCell(isString(lastMap.get("price")), fontContent, headerTable,true);
 
 				document.add(headerTable);
 
@@ -151,6 +191,18 @@ public class CustingPdfServlet implements Controller{
 				throw new RuntimeException(e);
 			}
 		}
+		
+		/**
+		 * 字符对象判断
+		 * @param value
+		 * @return
+		 */
+		private static String isString(Object value) {
+			if(value == null) {
+				return "";
+			}
+			return value.toString();
+		}
 
 		/**
 		 * 创建表格单元格
@@ -163,10 +215,10 @@ public class CustingPdfServlet implements Controller{
 			Phrase phrase = new Phrase(content, fontContent);
 			PdfPCell pdfPCell = new PdfPCell(phrase);
 			pdfPCell.setFixedHeight(18);
-			pdfPCell.setHorizontalAlignment(1);
+			pdfPCell.setHorizontalAlignment(Element.ALIGN_LEFT);
 			pdfPCell.setVerticalAlignment(1);
 			if(isHw) {
-				pdfPCell.setColspan(6);
+				pdfPCell.setColspan(5);
 				if("合计：".equals(content)) {
 					pdfPCell.setVerticalAlignment(2);
 					pdfPCell.setHorizontalAlignment(2);

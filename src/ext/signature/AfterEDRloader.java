@@ -22,12 +22,7 @@ import wt.fc.QueryResult;
 import wt.fc.ReferenceFactory;
 import wt.fc.collections.WTArrayList;
 import wt.fc.collections.WTCollection;
-import wt.fc.collections.WTList;
 import wt.filter.NavigationCriteria;
-import wt.inf.container.WTContainerRef;
-import wt.lifecycle.LifeCycleHelper;
-import wt.lifecycle.LifeCycleTemplate;
-import wt.lifecycle.State;
 import wt.maturity.MaturityHelper;
 import wt.query.QuerySpec;
 import wt.query.SearchCondition;
@@ -70,11 +65,7 @@ public class AfterEDRloader {
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("002-resignPDF ERROR:" + e.getMessage());
-				
-				
-				
-				
-		
+
 			}
 
 		} else if (repable instanceof WTDocument) {
@@ -90,14 +81,15 @@ public class AfterEDRloader {
 					System.out.println("002-resignPDF : signature information from process var [reviewer]: "
 							+ new JSONObject(signInfo).toJSONString());
 					PDFSign.signPDFVisualization(doc, signInfo, "PDF文档");
-					// 2020-5-31 解决pdf表示法无法在creo view直接打开的问题，方案是重置一下生命周期状态
-					WTList list = new WTArrayList();
-					list.add(doc);
-					LifeCycleTemplate lifeCycleTemplate = LifeCycleHelper.service.getLifeCycleTemplate(doc);
-					WTContainerRef containerReference = doc.getContainerReference();
-					State state = doc.getLifeCycleState();
-					LifeCycleHelper.service.reassign(list, lifeCycleTemplate.getLifeCycleTemplateReference(),
-							containerReference, state);
+					// 2020-5-31 解决pdf表示法无法在creo view直接打开的问题，方案是重置一下生命周期状态.
+					// --2023-11-27qqqqqqqqqqqq取消重置生命周期
+//					WTList list = new WTArrayList();
+//					list.add(doc);
+//					LifeCycleTemplate lifeCycleTemplate = LifeCycleHelper.service.getLifeCycleTemplate(doc);
+//					WTContainerRef containerReference = doc.getContainerReference();
+//					State state = doc.getLifeCycleState();
+//					LifeCycleHelper.service.reassign(list, lifeCycleTemplate.getLifeCycleTemplateReference(),
+//							containerReference, state);
 					/*
 					 * if(signInfo != null && ! signInfo.isEmpty()) {
 					 * PDFSign.signPDFVisualization(doc, signInfo, "PDF文档"); }else { System.out.

@@ -165,6 +165,8 @@ public class WorkFlowUtil {
 		try {
 			HashMap<String, Vector<String[]>> signInfo = getSignInfo(self);
 			System.out.println("Sign Info :" + new JSONObject(signInfo).toJSONString());
+			System.out.println("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq" + pbo);
+
 			if (pbo instanceof WTDocument) {
 				// 获取文档的pdf表示法，签名，更新表示法
 				/*
@@ -199,6 +201,7 @@ public class WorkFlowUtil {
 					}
 				}
 			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

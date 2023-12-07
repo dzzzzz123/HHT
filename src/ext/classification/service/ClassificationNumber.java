@@ -2,13 +2,19 @@ package ext.classification.service;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
 
 import ext.ait.util.CommonUtil;
+import ext.ait.util.IBAUtil;
 import ext.ait.util.PartUtil;
 import ext.ait.util.PersistenceUtil;
 import ext.ait.util.PropertiesUtil;
 import wt.part.WTPart;
+import wt.util.WTException;
 
 public class ClassificationNumber {
 
@@ -54,12 +60,9 @@ public class ClassificationNumber {
 	 * @return String 新编号
 	 */
 	private static String getNewNumberForEndItem(WTPart part, String classInternalName) {
-		String Brand = pUtil.getValueByKey(part, "iba.internal.Brand");
-		String Producer = pUtil.getValueByKey(part, "iba.internal.Producer");
-		String ProductModel = pUtil.getValueByKey(part, "iba.internal.ProductModel");
-		// 添加前导00000000
-		ProductModel = CommonUtil.addLead0(ProductModel, 7);
-		return classInternalName + Brand + Producer + ProductModel;
+		String pattern = pUtil.getValueByKey(classInternalName);
+		pattern = StringUtils.isBlank(pattern) ? pUtil.getValueByKey("common.pattern") : pattern;
+		return processParttern(pattern, part);
 	}
 
 	/**
@@ -89,5 +92,29 @@ public class ClassificationNumber {
 		maxNumberStr = maxNumberStr.isEmpty() ? "0" : String.valueOf(Integer.parseInt(maxNumberStr) + 1);
 		maxNumberStr = String.format("%04d", Integer.parseInt(maxNumberStr));
 		return classInternalName + maxNumberStr + suffix;
+	}
+
+	public static String processParttern(String pattern, WTPart part) {
+		String result = "";
+		try {
+			String[] numberPattern = pattern.split(",");
+			IBAUtil ibaUtil = new IBAUtil(part);
+			Hashtable hashtable = ibaUtil.getAllIBAValues();
+			Set set = hashtable.keySet();
+			for (String word : numberPattern) {
+				if (set.contains(word)) {
+					String temp = ibaUtil.getIBAValue(word);
+					if (word.equals("ProductModel") || word.equals("HHT_EncodingModel")) {
+						temp = CommonUtil.addLead0(temp, 15 - result.length());
+					}
+					result += temp;
+				} else {
+					result += "";
+				}
+			}
+		} catch (WTException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 }

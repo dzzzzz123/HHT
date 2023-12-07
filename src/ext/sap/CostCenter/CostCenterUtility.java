@@ -1,7 +1,7 @@
 package ext.sap.CostCenter;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.List;
 
 import com.ptc.core.components.descriptor.ModelContext;
 import com.ptc.core.components.factory.dataUtilities.AttributeDataUtilityHelper;
@@ -9,23 +9,21 @@ import com.ptc.core.components.factory.dataUtilities.DefaultDataUtility;
 import com.ptc.core.components.rendering.guicomponents.ComboBox;
 import com.ptc.core.components.rendering.guicomponents.GUIComponentArray;
 
-import ext.ait.util.PropertiesUtil;
 import wt.util.WTException;
 
 public class CostCenterUtility extends DefaultDataUtility {
-
-	private static PropertiesUtil pUtil = PropertiesUtil.getInstance("customEnum.properties");
 
 	@Override
 	public Object getDataValue(String componentId, Object datum, ModelContext modelContext) throws WTException {
 		GUIComponentArray array = new GUIComponentArray();
 		ComboBox comboBox = new ComboBox();
 
-		Map<String, String> map = pUtil.getAll();
-		ArrayList<String> keys = new ArrayList<>(map.keySet());
+		List<CostCenterEntity> entityList = CostCenterServlet.getAllCostCenter();
+		ArrayList<String> keys = new ArrayList<>();
 		ArrayList<String> values = new ArrayList<>();
-		for (String key : keys) {
-			values.add(map.get(key).split("/")[0]);
+		for (CostCenterEntity entity : entityList) {
+			keys.add(entity.getInternalName());
+			values.add(entity.getDisplayName());
 		}
 
 		String columnName = AttributeDataUtilityHelper.getColumnName(componentId, datum, modelContext);

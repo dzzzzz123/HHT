@@ -15,6 +15,8 @@ import static com.ptc.core.components.descriptor.DescriptorConstants.ColumnIdent
 import static com.ptc.core.components.descriptor.DescriptorConstants.ColumnIdentifiers.STATE;
 import static com.ptc.core.components.descriptor.DescriptorConstants.ColumnIdentifiers.VERSION;
 
+import java.util.List;
+
 import com.ptc.core.htmlcomp.components.ConfigurableTableBuilder;
 import com.ptc.core.htmlcomp.tableview.ConfigurableTable;
 import com.ptc.jca.mvc.components.JcaColumnConfig;
@@ -30,8 +32,9 @@ import com.ptc.mvc.components.TableConfig;
 import com.ptc.netmarkets.model.NmOid;
 import com.ptc.netmarkets.util.beans.NmCommandBean;
 
-import ext.ait.util.WorkflowUtil;
-import wt.maturity.PromotionNotice;
+import ext.ait.util.CommonUtil;
+import wt.fc.WTObject;
+import wt.part.WTPart;
 import wt.util.WTException;
 import wt.workflow.work.WorkItem;
 
@@ -87,8 +90,8 @@ public class PurchaseAlterTable extends AbstractComponentConfigBuilder
 		Object content = primaryOid2.getRef();
 		if (content instanceof WorkItem) {
 			WorkItem wi = (WorkItem) content;
-			PromotionNotice pn = (PromotionNotice) wi.getPrimaryBusinessObject().getObject();
-			return WorkflowUtil.getTargerObjectByPromotionNotices(pn);
+			Object obj = (Object) wi.getPrimaryBusinessObject().getObject();
+			return (List<WTPart>) CommonUtil.getListFromPBO((WTObject) obj, WTPart.class);
 		}
 		return null;
 	}

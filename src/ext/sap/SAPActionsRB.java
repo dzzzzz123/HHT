@@ -63,4 +63,10 @@ public class SAPActionsRB extends WTListResourceBundle {
 	public static final String PRIVATE_CONSTANT_27 = "SAPWizard.alterPropertiesTable.description";
 	@RBEntry("Alter Price Properties Table")
 	public static final String PRIVATE_CONSTANT_28 = "SAPWizard.alterPropertiesTable.tooltip";
+	@RBEntry("SAP Result Table")
+	public static final String PRIVATE_CONSTANT_29 = "SAPWizard.masterDataResult.title";
+	@RBEntry("SAP Result Table")
+	public static final String PRIVATE_CONSTANT_30 = "SAPWizard.masterDataResult.description";
+	@RBEntry("SAP Result Table")
+	public static final String PRIVATE_CONSTANT_31 = "SAPWizard.masterDataResult.tooltip";
 }

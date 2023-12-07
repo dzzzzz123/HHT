@@ -30,10 +30,14 @@ public class SendBOM2SAPProcessor extends DefaultObjectFormProcessor {
 
 		try {
 			List<String> msg = SendBOM2SAP.sendListBOM2SAP(ref);
-			if (msg.size() == 1 && StringUtils.isNotBlank(msg.get(0))) {
+			if (StringUtils.isNotBlank(msg.get(0))) {
+				StringBuffer errorMsg = new StringBuffer();
+				for (String err : msg) {
+					errorMsg.append(err).append(System.lineSeparator());
+				}
 				formResult = new FormResult(FormProcessingStatus.FAILURE);
 				formResult.addFeedbackMessage(new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(), null,
-						null, new String[] { msg.get(0) }));
+						null, new String[] { errorMsg.toString() }));
 				return formResult;
 			}
 		} catch (Exception e) {

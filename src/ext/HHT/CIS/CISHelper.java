@@ -1,8 +1,10 @@
 package ext.HHT.CIS;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +13,6 @@ import ext.ait.util.CommonUtil;
 import ext.ait.util.PropertiesUtil;
 import wt.fc.WTObject;
 import wt.part.WTPart;
-import wt.util.WTException;
 
 public class CISHelper {
 
@@ -27,14 +28,9 @@ public class CISHelper {
 		List<WTPart> parts = CommonUtil.getListFromPBO(ref, WTPart.class);
 		List<String> result = new ArrayList<>();
 		parts.forEach(part -> {
-			CISEntity entity = null;
+
 			try {
-				entity = getEntity(part);
-			} catch (WTException e) {
-				e.printStackTrace();
-			}
-			try {
-				result.add(sendToDB(entity));
+				result.add(sendToDB(getEntity(part)));
 			} catch (Exception e) {
 				String Msg = e.getMessage();
 				result.add(Msg);
@@ -49,9 +45,8 @@ public class CISHelper {
 	 * 
 	 * @param part
 	 * @return CISEntity
-	 * @throws WTException
 	 */
-	private static CISEntity getEntity(WTPart part) throws WTException {
+	private static CISEntity getEntity(WTPart part) {
 		CISEntity entity = new CISEntity();
 		entity.setName(part.getName());
 		entity.setNumber(part.getNumber());
@@ -72,12 +67,11 @@ public class CISHelper {
 	 * @throws Exception
 	 */
 	private static String sendToDB(CISEntity entity) throws Exception {
-		Connection connection = DatabaseConnector.getConnection();
+		Connection connection = getConnection();
 		String HHT_Classification = entity.getHHT_Classification();
 		String ClassificationName = HHT_Classification.substring(0, 2);
 		if (ClassificationName.equals("11")) {
 			String Classification = HHT_Classification.substring(0, 4);
-			System.out.println("Classification==========" + Classification);
 			String nameSql = "select name from sysobjects where xtype='U'";
 			Statement Statement = connection.createStatement();
 			ResultSet resultSet = Statement.executeQuery(nameSql);
@@ -91,18 +85,12 @@ public class CISHelper {
 			if (name.subSequence(0, 4).equals(Classification)) {
 				String Numbersql = "SELECT * FROM dbo.[" + name + "] WHERE Part_Number = '" + entity.getNumber() + "'";
 
-				System.out.println("entity.getNumber()=====" + entity.getNumber());
-				System.out.println("Numbersql=====" + Numbersql);
 				ResultSet rt = Statement.executeQuery(Numbersql);
 				int rowCount = 0;
 				while (rt.next()) {
 					rowCount++;
-
 				}
-				System.out.println("rt=======" + rt);
-				System.out.println("rowCount=======" + rowCount);
 				if (rowCount == 1) {
-
 					String sql = "UPDATE dbo.[" + name
 							+ "] SET  Description=?, Spec=?, Part_Type=?, Schematic_Part=?, PCB_Footprint=?, Classification=?  WHERE Part_Number= '"
 							+ entity.getNumber() + "'";
@@ -121,7 +109,6 @@ public class CISHelper {
 					ps.executeUpdate();
 					ps.close();
 					connection.close();
-					System.out.println("sql=====" + sql);
 					return "数据已更新";
 				} else {
 					String sql = "INSERT INTO dbo.[" + name
@@ -152,5 +139,14 @@ public class CISHelper {
 		} else {
 			return "该电子数据不应该发送到CIS";
 		}
+	}
+
+	public static Connection getConnection() throws SQLException, ClassNotFoundException {
+		String JDBC_URL = pUtil.getValueByKey("JDBC_URL");
+		String USERNAME = pUtil.getValueByKey("USERNAME");
+		String PASSWORD = pUtil.getValueByKey("PASSWORD");
+		System.out.println("JDBC_URL=" + JDBC_URL + "USERNAME=" + USERNAME + "PASSWORD=" + PASSWORD);
+		return DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+
 	}
 }

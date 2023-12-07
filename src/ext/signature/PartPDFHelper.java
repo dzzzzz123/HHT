@@ -113,22 +113,28 @@ public class PartPDFHelper {
 				for (int i = 0; i < appDatas.size(); i++) {
 					appData = (ApplicationData) appDatas.get(i);
 					fileName = appData.getFileName();
+					System.out.println("qqq111--------------filename" + fileName);
 					ContentRoleType role = appData.getRole();
 					// 检查表示法中是否包含pdf
+					// && FileUtil.getExtension(fileName).equalsIgnoreCase("pdf")
 					if ((role.equals(ContentRoleType.ADDITIONAL_FILES) || role.equals(ContentRoleType.SECONDARY))
-							&& FileUtil.getExtension(fileName).equalsIgnoreCase("pdf")) {
+							&& (FileUtil.getExtension(fileName).equalsIgnoreCase("pdf")
+									|| FileUtil.getExtension(fileName).equalsIgnoreCase("dxf"))) {
 						foundPDF = appData;
-						break;
+						pdfList.add(foundPDF);
+						System.out.println("-------------qqq222--------------filename" + fileName);
+
+//						break;
 					}
 				}
 				if (foundPDF != null) {
 					break;
 				}
 			}
-			if (foundPDF != null) {
-				System.out.println("005-batch download pdf : findPDFRepFromPart " + foundPDF.getFileName());
-				pdfList.add(foundPDF);
-			}
+//			if (foundPDF != null) {
+//				System.out.println("005-batch download pdf : findPDFRepFromPart " + foundPDF.getFileName());
+//				pdfList.add(foundPDF);
+//			}
 		}
 		return pdfList;
 	}
@@ -333,8 +339,9 @@ public class PartPDFHelper {
 					doc = (EPMDocument) obj;
 					EPMDocumentType docType = doc.getDocType();
 //					EPMAuthoringAppType appType = doc.getAuthoringApplication();
-					if (CADDRAWING.equals(docType) && doc.getNumber().contains(part.getNumber())) {
+					if (CADDRAWING.equals(docType)) {
 						System.out.println("005-batch download pdf : get2DDrawingByWTPart " + doc.getNumber());
+
 						result.add(doc);
 					}
 				}

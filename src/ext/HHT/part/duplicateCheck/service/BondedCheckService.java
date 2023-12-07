@@ -6,14 +6,12 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.ptc.netmarkets.util.beans.NmCommandBean;
 
-import ext.HHT.part.duplicateCheck.Config;
-
 public class BondedCheckService {
 
 	public static String process(NmCommandBean nmCommandBean) {
 		Map<String, Object> paramMap = nmCommandBean.getParameterMap();
-		String NonbondedNumber = Config.getIBA_NonbondedNumber();
-		String HHT_Bonded = Config.getIBA_HHT_Bonded();
+		String NonbondedNumber = ext.HHT.Config.getIBA_NonbondedNumber();
+		String HHT_Bonded = ext.HHT.Config.getIBA_HHT_Bonded();
 		String NonbondedNumberValue = "";
 		String HHT_BondedValue = "";
 

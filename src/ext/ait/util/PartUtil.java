@@ -147,6 +147,36 @@ public class PartUtil implements RemoteAccess {
 	}
 
 	/**
+	 * 递归获取部件的所有子部件
+	 *
+	 * @param WTPart
+	 * @return List<WTPart>
+	 */
+	public static List<WTPart> getAllBomByPart(WTPart part) {
+		List<WTPart> localList = new ArrayList<>(); // 局部列表用于递归操作的累积结果
+
+		WTPart sPart = null;
+		QueryResult qr2 = null;
+		try {
+			QueryResult qr = WTPartHelper.service.getUsesWTPartMasters(part);
+			while (qr.hasMoreElements()) {
+				WTPartUsageLink usageLink = (WTPartUsageLink) qr.nextElement();
+				qr2 = VersionControlHelper.service.allVersionsOf(usageLink.getUses());
+				if (qr2.hasMoreElements()) {
+					sPart = (WTPart) qr2.nextElement();
+					localList.add(sPart);
+
+					// 递归调用，将结果合并到局部列表
+					localList.addAll(getAllBomByPart(sPart));
+				}
+			}
+		} catch (WTException e) {
+			e.printStackTrace();
+		}
+		return localList; // 返回局部列表
+	}
+
+	/**
 	 * 修改部件编号
 	 * 
 	 * @param WTPart
@@ -534,36 +564,6 @@ public class PartUtil implements RemoteAccess {
 	}
 
 	/**
-	 * 递归获取部件的所有子部件
-	 *
-	 * @param WTPart
-	 * @return List<WTPart>
-	 */
-	public static List<WTPart> getAllBomByPart(WTPart part) {
-		List<WTPart> localList = new ArrayList<>(); // 局部列表用于递归操作的累积结果
-
-		WTPart sPart = null;
-		QueryResult qr2 = null;
-		try {
-			QueryResult qr = WTPartHelper.service.getUsesWTPartMasters(part);
-			while (qr.hasMoreElements()) {
-				WTPartUsageLink usageLink = (WTPartUsageLink) qr.nextElement();
-				qr2 = VersionControlHelper.service.allVersionsOf(usageLink.getUses());
-				if (qr2.hasMoreElements()) {
-					sPart = (WTPart) qr2.nextElement();
-					localList.add(sPart);
-
-					// 递归调用，将结果合并到局部列表
-					localList.addAll(getAllBomByPart(sPart));
-				}
-			}
-		} catch (WTException e) {
-			e.printStackTrace();
-		}
-		return localList; // 返回局部列表
-	}
-
-	/**
 	 * 检入部件
 	 * 
 	 * @param WTPart
@@ -891,6 +891,34 @@ public class PartUtil implements RemoteAccess {
 						WTPart childPart = (WTPart) qr.nextElement();
 						list.addAll(getTopParentParts(childPart));
 					}
+				}
+			}
+		} catch (WTException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	/**
+	 * 获取替代部件
+	 * 
+	 * @param childPart
+	 * @param fatherPart
+	 * @return
+	 */
+	public static List<WTPart> getSubstitutesParts(WTPart childPart, WTPart fatherPart) {
+		String view = childPart.getViewName();
+		List<WTPart> list = new ArrayList<WTPart>();
+		List<WTPartUsageLink> usageLinks = PartUtil.getWtPartUsageLink(fatherPart, childPart);
+		WTPartUsageLink usageLink = usageLinks.get(0);
+		try {
+			QueryResult queryResult = wt.part.WTPartHelper.service.getSubstitutesWTPartMasters(usageLink);
+			while (queryResult.hasMoreElements()) {
+				Object obj = queryResult.nextElement();
+				if (obj instanceof WTPartMaster) {
+					WTPartMaster master = (WTPartMaster) obj;
+//					list.add(PartUtil.getWTPartByNumber(master.getNumber()));
+					list.add(PartUtil.getWTPartByNumberAndView(master.getNumber(), view));
 				}
 			}
 		} catch (WTException e) {

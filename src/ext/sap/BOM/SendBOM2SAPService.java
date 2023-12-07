@@ -38,22 +38,10 @@ public class SendBOM2SAPService {
 		bom.setNumber(part.getNumber());
 		bom.setName(part.getName());
 		bom.setHHT_BasicQuantity(Config.getHHT_BasicQuantity(part));
-		bom.setUnit(part.getDefaultUnit().getDisplay());
+		bom.setUnit(Config.getValue(part.getDefaultUnit().toString()));
 		bom.setVersion(VersionUtil.getVersion(part));
 		bom.setFactory(part.getViewName());
-		String ECNnum = "";
-		try {
-			WTCollection conllection = RelatedChangesQueryCommands.getRelatedResultingChangeNotices(part);
-			for (Object object : conllection) {
-				if (object instanceof WTChangeOrder2) {
-					WTChangeOrder2 wtChangeOrder2 = (WTChangeOrder2) object;
-					ECNnum += wtChangeOrder2.getNumber();
-				}
-			}
-		} catch (WTException e) {
-			e.printStackTrace();
-		}
-		bom.setECNNumber(ECNnum);
+		bom.setECNNumber(geECNNumber(part));
 		bom.setStlan(stlan);
 		bom.setBOMBody(body);
 		return bom;
@@ -66,23 +54,59 @@ public class SendBOM2SAPService {
 	 * @return List<BOMBodyEntity>
 	 */
 	public static List<BOMBodyEntity> getBodyEntitiesByBOM(WTPart wtPart) {
+		int substituteGroup = 65;
 		List<BOMBodyEntity> list = new ArrayList<>();
 		List<WTPart> partList = PartUtil.getBomByPart(wtPart);
 		for (WTPart part : partList) {
-			SendBOM2SAP.sendListBOM2SAP(part);
+//			SendBOM2SAP.sendListBOM2SAP(part);
 			BOMBodyEntity entity = new BOMBodyEntity();
 			WTPartUsageLink link = PartUtil.getLinkByPart(wtPart, part);
+			List<BOMBodyEntity> substitutes = getSubstitutesEntity(part, wtPart);
+			if (substitutes.size() > 0) {
+				String substituteGroupStr = String.valueOf((char) substituteGroup);
+				for (BOMBodyEntity subEntity : substitutes) {
+					subEntity.setHHT_SubstituteGroup(substituteGroupStr);
+					list.add(subEntity);
+				}
+				entity.setHHT_SubstituteGroup(substituteGroupStr);
+				substituteGroup++;
+			} else {
+				entity.setHHT_SubstituteGroup(Config.getHHT_SubstituteGroup(link));
+			}
 			entity.setName(part.getName());
 			entity.setNumber(part.getNumber());
 			entity.setVersion(VersionUtil.getVersion(part));
-			entity.setUnit(part.getDefaultUnit().getDisplay());
+			entity.setUnit(Config.getValue(part.getDefaultUnit().toString()));
 			entity.setQuantity(String.valueOf(link.getQuantity().getAmount()));
 			entity.setReferenceDesignatorRange(PartUtil.getPartUsesOccurrence(link));
-			entity.setHHT_SubstituteGroup(Config.getHHT_SubstituteGroup(link));
 			entity.setHHT_Priority(Config.getHHT_Priority(link));
-			entity.setHHT_Strategies(Config.getHHT_Strategies(link));
-			entity.setHHT_UsagePossibility(Config.getHHT_UsagePossibility(link));
+			entity.setHHT_Strategies("1");
+			entity.setHHT_UsagePossibility("100");
 			entity.setHHT_MatchGroup(Config.getHHT_MatchGroup(link));
+			list.add(entity);
+		}
+		return list;
+	}
+
+	/**
+	 * 获取替代部件实体类
+	 * 
+	 * @param childPart
+	 * @param fatherPart
+	 * @return
+	 */
+	public static List<BOMBodyEntity> getSubstitutesEntity(WTPart childPart, WTPart fatherPart) {
+		List<WTPart> parts = PartUtil.getSubstitutesParts(childPart, fatherPart);
+		List<BOMBodyEntity> list = new ArrayList<>();
+		for (WTPart part : parts) {
+			BOMBodyEntity entity = new BOMBodyEntity();
+			entity.setName(part.getName());
+			entity.setNumber(part.getNumber());
+			entity.setVersion(VersionUtil.getVersion(part));
+			entity.setUnit(Config.getValue(part.getDefaultUnit().toString()));
+			entity.setHHT_Strategies("1");
+			entity.setHHT_UsagePossibility("0");
+			entity.setQuantity("1");
 			list.add(entity);
 		}
 		return list;
@@ -117,7 +141,6 @@ public class SendBOM2SAPService {
 
 		Map<String, Object> rootMap = new HashMap<>();
 		Map<String, Object> bomHeadMap = new HashMap<>();
-		Map<String, Object> bomBodyMap = new HashMap<>();
 
 		// 填入BOMHead的内容
 		bomHeadMap.put("MATNR", bomEnrity.getNumber());
@@ -132,7 +155,7 @@ public class SendBOM2SAPService {
 		// 获取BOMbody的内容并填入map
 		List<BOMBodyEntity> bomBodyEntities = bomEnrity.getBOMBody();
 		bomBodyEntities.forEach(bomBodyEntity -> {
-
+			Map<String, Object> bomBodyMap = new HashMap<>();
 			bomBodyMap.put("IDNRK", bomBodyEntity.getNumber());
 			bomBodyMap.put("MAKTX", bomBodyEntity.getName());
 			bomBodyMap.put("MENGE", bomBodyEntity.getQuantity());
@@ -193,4 +216,24 @@ public class SendBOM2SAPService {
 		return null;
 	}
 
+	/**
+	 * 获取部件相关联的ECN编号
+	 * 
+	 * @param part
+	 * @return
+	 */
+	public static String geECNNumber(WTPart part) {
+		try {
+			WTCollection conllection = RelatedChangesQueryCommands.getRelatedResultingChangeNotices(part);
+			for (Object object : conllection) {
+				if (object instanceof WTChangeOrder2) {
+					WTChangeOrder2 wtChangeOrder2 = (WTChangeOrder2) object;
+					return wtChangeOrder2.getNumber();
+				}
+			}
+		} catch (WTException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
 }

@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import ext.HHT.part.duplicateCheck.DuplicateCheckHelper;
+import ext.HHT.part.duplicateCheck.service.DuplicateCheckService;
 import ext.ait.util.CommonUtil;
 import ext.ait.util.PersistenceUtil;
 import ext.ait.util.PropertiesUtil;
@@ -77,7 +77,7 @@ public class ClassificationDescription {
 				return "当前分类 " + classInternalName + " 在配置文件中不存在!\r\n";
 			}
 			String newDescription = Util.processPartten(pattern, part);
-			Map<String, String> map = DuplicateCheckHelper.getDescriptionByClass(classInternalName);
+			Map<String, String> map = DuplicateCheckService.getDescriptionByClass(classInternalName);
 			for (String key : map.keySet()) {
 				if (key.equals(newDescription)) {
 					String oid = map.get(key);

@@ -313,9 +313,14 @@ public class CommonUtil implements RemoteAccess {
 	 * @return WTConnection 数据库连接
 	 * @throws Exception
 	 */
-	public static WTConnection getWTConnection() throws Exception {
-		MethodContext methodcontext = MethodContext.getContext();
-		WTConnection wtconnection = (WTConnection) methodcontext.getConnection();
+	public static WTConnection getWTConnection() {
+		WTConnection wtconnection = null;
+		try {
+			MethodContext methodcontext = MethodContext.getContext();
+			wtconnection = (WTConnection) methodcontext.getConnection();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return wtconnection;
 	}
 
@@ -431,7 +436,8 @@ public class CommonUtil implements RemoteAccess {
 		System.out.println("--------当前执行的请求接口的参数列表--------");
 		System.out.println("URL: " + url);
 		System.out.println("USERNAME: " + username + " PASSWORD:" + password);
-		System.out.println("JSON: " + processJson(json));
+//		System.out.println("JSON: " + processJson(json));
+		System.out.println("JSON: " + json);
 		System.out.println("METHOD: " + method);
 		System.out.println("HEADERS: ");
 
@@ -601,7 +607,8 @@ public class CommonUtil implements RemoteAccess {
 			while ((line = reader.readLine()) != null) {
 				jsonInput.append(line);
 			}
-
+			System.out.println("-------从HttpServletRequest获取到的内容-------");
+			System.out.println("json: " + jsonInput.toString());
 			return getEntitiesFromJson(jsonInput.toString(), clazz, rootNodeString);
 		} catch (IOException e) {
 			e.printStackTrace();

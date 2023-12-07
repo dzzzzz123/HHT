@@ -1,9 +1,12 @@
 package ext.sap.supply;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -21,7 +24,7 @@ import wt.fc.WTObject;
 import wt.part.WTPart;
 import wt.util.WTException;
 import wt.util.WTRuntimeException;
-import wt.workflow.engine.WfProcess;
+import wt.workflow.work.WfAssignedActivity;
 import wt.workflow.work.WorkItem;
 
 public class SupplyChainService {
@@ -37,18 +40,22 @@ public class SupplyChainService {
 		String username = Config.getUsername();
 		String password = Config.getPassword();
 		String jsonStr = CommonUtil.requestInterface(url, username, password, jsonInput.toString(), "POST", null);
-		Entity entity = new Entity();
-		try {
-			ObjectMapper objectMapper = new ObjectMapper();
-			JsonNode rootNode = objectMapper.readTree(jsonStr.toString());
-			rootNode = cleanJsonNode(rootNode.get("IS_MRP1"));
-			entity = objectMapper.treeToValue(rootNode, Entity.class);
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+		if (StringUtils.isBlank(jsonStr)) {
+			return null;
+		} else {
+			Entity entity = new Entity();
+			try {
+				ObjectMapper objectMapper = new ObjectMapper();
+				JsonNode rootNode = objectMapper.readTree(jsonStr.toString());
+				rootNode = cleanJsonNode(rootNode.get("IS_MRP1"));
+				entity = objectMapper.treeToValue(rootNode, Entity.class);
+			} catch (JsonMappingException e) {
+				e.printStackTrace();
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
+			return entity;
 		}
-		return entity;
 	}
 
 	/**
@@ -86,17 +93,9 @@ public class SupplyChainService {
 			String json = "";
 			ReferenceFactory rf = new ReferenceFactory();
 			WorkItem workItem = (WorkItem) rf.getReference(workItemID).getObject();
-			WTObject pbo = WorkflowUtil.getPBOByWorkItem(workItem);
-			WfProcess process = WorkflowUtil.getProcessByPbo(pbo);
-			HashMap<String, Object> map = WorkflowUtil.getRefinedVarsByWf(process);
-			for (Entry<String, Object> entry : map.entrySet()) {
-				String key = entry.getKey();
-				Object value = entry.getValue();
-				if (Config.getValue("").equals(key)) {
-					json = String.valueOf(value);
-					result = CommonUtil.getEntitiesFromJson(json, Entity.class, "");
-				}
-			}
+			WfAssignedActivity wfAssignedActivity = (WfAssignedActivity) workItem.getSource().getObject();
+			json = (String) wfAssignedActivity.getContext().getValue(Config.getValue("supplyChainList"));
+			result = CommonUtil.getEntitiesFromJson(json, Entity.class, "");
 		} catch (WTRuntimeException e) {
 			e.printStackTrace();
 		} catch (WTException e) {
@@ -114,10 +113,35 @@ public class SupplyChainService {
 	public static String setVar(WTObject pbo) {
 		ArrayList<WTPart> parts = (ArrayList<WTPart>) CommonUtil.getListFromPBO(pbo, WTPart.class);
 		List<Entity> entities = new ArrayList<>();
+		entities.add(SupplyChainService.requestSupplyChain("{ \"I_MATNR\": \"230820014A\" }"));
+		entities.add(SupplyChainService.requestSupplyChain("{ \"I_MATNR\": \"230820014A\" }"));
 		for (WTPart part : parts) {
 			entities.add(requestSupplyChain("{ \"I_MATNR\": \"" + part.getNumber() + "\" }"));
 		}
 		return CommonUtil.getJsonFromObject(entities);
+	}
+
+	public static String setVar2(WTObject pbo) {
+		ZoneId zoneId = ZoneId.of("Asia/Shanghai");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDateTime currentTime = LocalDateTime.now(zoneId);
+		String formattedTime = currentTime.format(formatter);
+		return formattedTime;
+	}
+
+	public static String getVar2(String workItemID) {
+		String result = "";
+		try {
+			ReferenceFactory rf = new ReferenceFactory();
+			WorkItem workItem = (WorkItem) rf.getReference(workItemID).getObject();
+			WfAssignedActivity wfAssignedActivity = (WfAssignedActivity) workItem.getSource().getObject();
+			result = (String) wfAssignedActivity.getContext().getValue(Config.getValue("supplyChainList.time"));
+		} catch (WTRuntimeException e) {
+			e.printStackTrace();
+		} catch (WTException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 	/**
@@ -130,9 +154,14 @@ public class SupplyChainService {
 	public static List<IT_MRP2> getIT_MRP2(List<Entity> entities, String flag) {
 		List<IT_MRP2> result = new ArrayList<>();
 		for (Entity entity : entities) {
-			for (IT_MRP2 subEntity : entity.getIT_MRP2()) {
-				if (flag.equals(subEntity.getFactory())) {
-					result.add(subEntity);
+			if (entity != null) {
+				List<IT_MRP2> list = entity.getIT_MRP2();
+				if (list != null) {
+					for (IT_MRP2 subEntity : list) {
+						if (flag.equals(subEntity.getFactory())) {
+							result.add(subEntity);
+						}
+					}
 				}
 			}
 		}

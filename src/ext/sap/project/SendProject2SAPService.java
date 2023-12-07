@@ -26,7 +26,7 @@ public class SendProject2SAPService {
 	 */
 	public static ProjectEntity getProjectEntity(Project2 project) throws WTException {
 		ProjectEntity projectEntity = new ProjectEntity();
-		projectEntity.setProjectNumber(project.getProjectNumber());
+		projectEntity.setProjectNumber(Config.getHHT_ProjectNum(project));
 		projectEntity.setProjectName(project.getName());
 		projectEntity.setProjectCategory(getCategory(project.getCategory().getDisplay()));
 		projectEntity.setProjectOwner(project.getOwner().getName());
@@ -40,8 +40,10 @@ public class SendProject2SAPService {
 			projectEntity.setProjectEndStamp(new SimpleDateFormat("yyyyMMdd").format(new Date(endTime.getTime())));
 		}
 		projectEntity.setFactoryCode(project.getBusinessUnit());
-		projectEntity.setProjectDescription(project.getDescription());
-		projectEntity.setFinishFlag(project.getContainerTeamManagedInfo().getState().getDisplay());
+		projectEntity.setProjectDescription(String.valueOf(project.getPersistInfo().getObjectIdentifier().getId()));
+		projectEntity.setFinishFlag(
+				project.getContainerTeamManagedInfo().getState().toString().equalsIgnoreCase("COMPLETED") ? "1" : "2");
+
 		return projectEntity;
 	}
 
@@ -56,14 +58,14 @@ public class SendProject2SAPService {
 		Map<String, Object> rootMap = new HashMap<>();
 		Map<String, Object> nodeMap = new HashMap<>();
 
-		nodeMap.put("PSPNR", entity.getProjectNumber());
+		nodeMap.put("PSPNR", entity.getProjectDescription());
 		nodeMap.put("POST1", entity.getProjectName());
 		nodeMap.put("PRART", entity.getProjectCategory());
 		nodeMap.put("USR01", entity.getProjectOwner());
 		nodeMap.put("PLFAZ", entity.getProjectCreateStamp());
 		nodeMap.put("PLSEZ", entity.getProjectEndStamp());
 		nodeMap.put("BUKRS", entity.getFactoryCode());
-		nodeMap.put("POSID", entity.getProjectDescription());
+		nodeMap.put("POSID", entity.getProjectNumber());
 		nodeMap.put("ZWJBS", entity.getFinishFlag());
 
 		rootMap.put("IS_OBJECT", nodeMap);

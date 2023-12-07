@@ -4,7 +4,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import ext.HHT.part.duplicateCheck.Config;
+import ext.HHT.Config;
 import ext.ait.util.ClassificationUtil;
 import ext.ait.util.ContainerUtil;
 import wt.part.WTPart;

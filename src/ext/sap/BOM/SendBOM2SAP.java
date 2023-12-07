@@ -17,15 +17,16 @@ public class SendBOM2SAP {
 	 */
 	public static List<String> sendListBOM2SAP(WTObject obj) {
 		List<WTPart> list = CommonUtil.getListFromPBO(obj, WTPart.class);
+		List<WTPart> listIncludeBOM = new ArrayList<>();
 		List<WTPart> listFiltered = new ArrayList<>();
 		List<String> msg = new ArrayList<>();
-		// 过滤部件，判断是否为BOM
+		// 将BOM和下层BOM都放入其中
+		listIncludeBOM.addAll(list);
 		list.forEach(part -> {
-			List<WTPart> BOMList = PartUtil.getBomByPart(part);
-			if (BOMList.size() > 0) {
-				listFiltered.add(part);
-			}
+			listIncludeBOM.addAll(PartUtil.getAllBomByPart(part));
 		});
+		// 过滤部件，判断是否为BOM
+		listIncludeBOM.stream().filter(SendBOM2SAP::checkBOM).forEach(listFiltered::add);
 		// 从部件中获取BOM实体类，并逐个发送给SAP
 		listFiltered.forEach(part -> {
 			BOMEntity bomEntity = SendBOM2SAPService.getBOMEntity(part);
@@ -34,5 +35,16 @@ public class SendBOM2SAP {
 			msg.add(SendBOM2SAPService.getResultFromJson(result));
 		});
 		return msg;
+	}
+
+	/**
+	 * 判断部件是否是BOM
+	 * 
+	 * @param part
+	 * @return
+	 */
+	public static boolean checkBOM(WTPart part) {
+		List<WTPart> BOMList = PartUtil.getBomByPart(part);
+		return BOMList.size() > 0;
 	}
 }

@@ -3,6 +3,8 @@ package ext.sap.masterData;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,26 +18,41 @@ import wt.part.WTPart;
 public class SendSAPService {
 
 	public static SendSAPPartEntity SendSAPPart(WTPart part) {
+		// 构建实体类
 		SendSAPPartEntity sapPartEntity = new SendSAPPartEntity();
+		// 获取WTPart IBA属性
 		String HHT_Bonded = Config.getHHT_Bonded(part);
 		String HHT_ClassificationCode = Config.getHHT_Classification(part);
+		String HHT_Classification = HHT_ClassificationCode;
 		String HHT_INValue = Config.getHHT_INValue(part);
+		String HHT_SerialNumber = Config.getHHT_SerialNumber(part);
+		String NonbondedNumber = Config.getNonbondedNumber(part);
+		String fullPath = ClassificationUtil.getFullPathByInternal(HHT_Classification);
+		fullPath = processClassPath(fullPath);
+		String partPath = processPartPath(fullPath);
 
+		// 获取WTPart基础属性
 		String number = part.getNumber();
 		String name = part.getName();
 		String version = VersionUtil.getVersion(part);
-		String unit = part.getDefaultUnit().toString();
+		String unit = Config.getValue(part.getDefaultUnit().toString());
 		String state = part.getState().getState().getDisplay();
-		String defaultTraceCode = part.getDefaultTraceCode().toString();
 
+		// 根据条件修改获取的属性以满足传入SAP的需求
 		boolean HHT_INValueBoolean = HHT_INValue.equals("是") ? true : false;
-		String HHT_Classification = HHT_ClassificationCode;
 		String PartType = mapClassificationToPartType(HHT_ClassificationCode, HHT_INValueBoolean);
 		String HHT_ClassificationName = ClassificationUtil.getClassificationdDisPlayName(HHT_ClassificationCode);
+		version = StringUtils.substring(version, 0, 1);
 		state = getSAPState(state);
-		unit = Config.getValue(unit);
-		HHT_Bonded = HHT_Bonded.equals("是") ? "Y" : "N";
-		defaultTraceCode = defaultTraceCode.equals("S") ? "0001" : "";
+		System.out.println("HHT_Bonded" + HHT_Bonded);
+		HHT_Bonded = HHT_Bonded.equals("True") || HHT_Bonded.equals("是") || HHT_Bonded.equals("真") ? "Y" : "N";
+		System.out.println("HHT_Bonded" + HHT_Bonded);
+		NonbondedNumber = StringUtils.isBlank(NonbondedNumber) ? "" : NonbondedNumber;
+		System.out.println("HHT_SerialNumber" + HHT_SerialNumber);
+		HHT_SerialNumber = HHT_SerialNumber.equals("True") || HHT_SerialNumber.equals("是")
+				|| HHT_SerialNumber.equals("真") ? "0001" : "";
+		System.out.println("HHT_SerialNumber" + HHT_SerialNumber);
+		HHT_Classification = processClassification(HHT_Classification, number);
 
 		sapPartEntity.setPartType(PartType);
 		sapPartEntity.setHHT_Classification(HHT_Classification);
@@ -44,6 +61,7 @@ public class SendSAPService {
 		sapPartEntity.setRevision(version);
 		sapPartEntity.setUnit(unit);
 		sapPartEntity.setHHT_Bonded(HHT_Bonded);
+		sapPartEntity.setNonbondedNumber(NonbondedNumber);
 		sapPartEntity.setState(state);
 		sapPartEntity.setHHT_GrossWeight(Config.getHHT_GrossWeight(part));
 		sapPartEntity.setHHT_NetWeight(Config.getHHT_NetWeight(part));
@@ -69,13 +87,14 @@ public class SendSAPService {
 		sapPartEntity.setHHT_ProductDevelopmentType(Config.getHHT_ProductDevelopmentType(part));
 		sapPartEntity.setHHT_CustomizedProductIdentifier(Config.getHHT_CustomizedProductIdentifier(part));
 		sapPartEntity.setHHT_SupplierSku(Config.getHHT_SupplierSku(part));
-		sapPartEntity.setDefaultTraceCode(defaultTraceCode);
+		sapPartEntity.setHHT_SerialNumber(HHT_SerialNumber);
 		sapPartEntity.setHHT_Factory(Config.getHHT_Factory(part));
 		sapPartEntity.setHHT_Price(Config.getHHT_Price(part));
 		sapPartEntity.setHHT_PriceUnit(Config.getHHT_PriceUnit(part));
 		sapPartEntity.setHHT_INValue(HHT_INValue);
 		sapPartEntity.setHHT_ProductNumber(Config.getHHT_ProductNumber(part));
-
+		sapPartEntity.setClassDescription(fullPath);
+		sapPartEntity.setClassPartDescription(partPath);
 		return sapPartEntity;
 	}
 
@@ -100,6 +119,15 @@ public class SendSAPService {
 		default:
 			return "D1";
 		}
+	}
+
+	private static String processClassification(String hHT_Classification, String number) {
+		if (number.startsWith("6") && hHT_Classification.startsWith("5")) {
+			return "6" + hHT_Classification.substring(1);
+		} else {
+			return hHT_Classification;
+		}
+
 	}
 
 	/**
@@ -148,6 +176,40 @@ public class SendSAPService {
 	}
 
 	/**
+	 * 处理分类组描述
+	 * 
+	 * @param fullPath
+	 * @return
+	 */
+	private static String processClassPath(String fullPath) {
+		fullPath = fullPath.substring(1);
+		fullPath = fullPath.replaceAll("\\\\", "/");
+		String[] parts = fullPath.split("/");
+		for (int i = 0; i < parts.length; i++) {
+			parts[i] = parts[i].replaceAll(".*_", "");
+		}
+		return String.join("/", parts);
+	}
+
+	/**
+	 * 获取部分的分类组描述
+	 * 
+	 * @param fullPath
+	 * @return
+	 */
+	private static String processPartPath(String fullPath) {
+		String[] parts = fullPath.split("/");
+		String newPartPath = "";
+		for (int i = 1; i < parts.length; i++) {
+			newPartPath += parts[i];
+			if (i != parts.length - 1) {
+				newPartPath += "/";
+			}
+		}
+		return newPartPath;
+	}
+
+	/**
 	 * 将实体类转换为发送给SAP的json
 	 * 
 	 * @param entity 物料主数据实体类
@@ -190,10 +252,15 @@ public class SendSAPService {
 		isMatnrMap.put("ZZCPKFLX", entity.getHHT_ProductDevelopmentType());
 		isMatnrMap.put("ZZDZCPBS", entity.getHHT_CustomizedProductIdentifier());
 		isMatnrMap.put("ZZGYSHH", entity.getHHT_SupplierSku());
-		isMatnrMap.put("SERNP", entity.getDefaultTraceCode());
+		isMatnrMap.put("SERNP", entity.getHHT_SerialNumber());
 		isMatnrMap.put("ZZCD", entity.getHHT_Factory());
 		isMatnrMap.put("ZZJG", entity.getHHT_Price());
 		isMatnrMap.put("PEINH", entity.getHHT_PriceUnit());
+		isMatnrMap.put("PEINH", entity.getHHT_PriceUnit());
+		isMatnrMap.put("ZZJHBS", entity.getHHT_Bonded());
+		isMatnrMap.put("ZZFBSLH", entity.getNonbondedNumber());
+		isMatnrMap.put("WGBEZ", entity.getClassDescription());
+		isMatnrMap.put("WGBEZ60", entity.getClassPartDescription());
 
 		rootMap.put("IS_MATNR", isMatnrMap);
 		try {
@@ -217,6 +284,12 @@ public class SendSAPService {
 		return CommonUtil.requestInterface(url, username, password, masterDataJson, "POST", null);
 	}
 
+	/**
+	 * 从SAP返回的信息中获取需要的信息
+	 * 
+	 * @param json
+	 * @return
+	 */
 	public static String getResultFromJson(String json) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {

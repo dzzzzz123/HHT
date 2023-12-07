@@ -31,8 +31,7 @@ public class AlterAttrProcessorContrller implements FormProcessorController {
 		String[] newPriceUnits = new String[] {};
 		for (String key : paramMap.keySet()) {
 			Object value = paramMap.get(key);
-			String strValue = value instanceof String[] ? ((String[]) value)[0] : value.toString();
-			System.out.println("execute-------key:" + key + " value:" + strValue);
+//			String singleValue = value instanceof String[] ? ((String[]) value)[0] : value.toString();
 			if (key.equals("number")) {
 				numbers = (String[]) value;
 			} else if (key.equals("newPrice")) {
@@ -45,7 +44,6 @@ public class AlterAttrProcessorContrller implements FormProcessorController {
 			String number = numbers[i];
 			String newPrice = newPrices[i];
 			String newPriceUnit = newPriceUnits[i];
-			System.out.println("number:" + number + " newPrice:" + newPrice + " newPriceUnit:" + newPriceUnit);
 			if (StringUtils.isNotBlank(newPrice)) {
 				Config.setHHT_Price(PartUtil.getWTPartByNumber(number), newPrice);
 			}
@@ -64,7 +62,6 @@ public class AlterAttrProcessorContrller implements FormProcessorController {
 		ArrayList<WTPart> partList = new ArrayList<>();
 		for (String oid : soid) {
 			String regex = "(?:OR:|VR:)wt\\.part\\.WTPart:(\\d+)";
-//			String regex = "(?:OR:)?VR:wt\\.part\\.WTPart:\\d+";
 			Pattern pattern = Pattern.compile(regex);
 			Matcher matcher = pattern.matcher(oid);
 

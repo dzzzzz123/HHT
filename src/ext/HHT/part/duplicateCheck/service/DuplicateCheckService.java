@@ -5,9 +5,11 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.ptc.netmarkets.util.beans.NmCommandBean;
 
-import ext.HHT.part.duplicateCheck.Config;
+import ext.HHT.Config;
 import ext.ait.util.CommonUtil;
 import ext.ait.util.PersistenceUtil;
 import ext.ait.util.VersionUtil;
@@ -64,7 +66,10 @@ public class DuplicateCheckService {
 				Config.getHHT_Classification(), classification);
 		try {
 			while (resultSet.next()) {
-				map.put(resultSet.getString("VALUE"), resultSet.getString("IDA3A4"));
+				String key = resultSet.getString("VALUE");
+				if (StringUtils.isNotBlank(key)) {
+					map.put(key, resultSet.getString("IDA3A4"));
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -79,7 +84,7 @@ public class DuplicateCheckService {
 				throw new WTException(result);
 			}
 		} catch (WTException e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 
 		return result;

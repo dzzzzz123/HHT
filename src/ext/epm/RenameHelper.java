@@ -149,12 +149,13 @@ public class RenameHelper {
 		String new3DName = part.getName();
 		String new2DName = part.getName();
 		String new3DFileName = new3DNumber + ".prt";
+		String newASMFileName = new3DNumber + ".asm";
 		String new2DFileName = new3DNumber + ".drw";
 
 		// 3d
 		for (EPMDocument epm : list) {
 			EPMDocumentType epmType = epm.getDocType();
-			if ((CADCOMPONENT.equals(epmType) || CADASSEMBLY.equals(epmType))) {
+			if (CADCOMPONENT.equals(epmType)) {
 				reEPMNameNumber(epm, new3DNumber, new3DName, new3DFileName);
 //				System.out.println("001-rename cad : find 3d " + epm.getNumber());
 //				// 3D
@@ -167,6 +168,8 @@ public class RenameHelper {
 //					number3d = part.getNumber();
 //				}
 //				break;
+			} else if (CADASSEMBLY.equals(epmType)) {
+				reEPMNameNumber(epm, new3DNumber, new3DName, newASMFileName);
 			}
 			// 2D
 			else if (CADDRAWING.equals(epmType)) {

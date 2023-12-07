@@ -60,7 +60,7 @@ public class Util {
 				} else if (set.contains(word)) {
 					String temp = "";
 					temp = ibaUtil.getIBAValue(word);
-					if (temp.matches("[a-zA-Z]+")) {
+					if (check(temp)) {
 						temp = ClassificationUtil.getDisplayByInternal(temp);
 					}
 					newStr += temp;
@@ -104,5 +104,20 @@ public class Util {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * 去除掉特殊字符之后判断字符串是否为英文
+	 * 
+	 * @param input
+	 * @return
+	 */
+	public static boolean check(String input) {
+		Pattern pattern = Pattern.compile("[\\/*\\-+—_&$%@#]");
+		String processed = pattern.matcher(input).replaceAll("");
+		if (processed.matches("[a-zA-Z]+")) {
+			return true;
+		}
+		return false;
 	}
 }

@@ -7,6 +7,7 @@ import com.ptc.core.components.beans.ObjectBean;
 import com.ptc.core.components.forms.DefaultObjectFormProcessor;
 import com.ptc.core.components.forms.FormProcessingStatus;
 import com.ptc.core.components.forms.FormResult;
+import com.ptc.core.components.forms.FormResultAction;
 import com.ptc.core.components.util.FeedbackMessage;
 import com.ptc.core.ui.resources.FeedbackType;
 import com.ptc.netmarkets.util.beans.NmCommandBean;
@@ -51,6 +52,7 @@ public class ChangeDescriptionProcessor extends DefaultObjectFormProcessor {
 			formResult = new FormResult(FormProcessingStatus.SUCCESS);
 			formResult.addFeedbackMessage(new FeedbackMessage(FeedbackType.SUCCESS, SessionHelper.getLocale(), null,
 					null, new String[] { "部件描述更新成功！" }));
+			formResult.setNextAction(FormResultAction.REFRESH_OPENER);
 			return formResult;
 		}
 	}

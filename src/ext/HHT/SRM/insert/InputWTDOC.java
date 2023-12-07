@@ -2,6 +2,9 @@ package ext.HHT.SRM.insert;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,10 +27,37 @@ import wt.folder.FolderEntry;
 import wt.folder.FolderHelper;
 import wt.inf.container.WTContainer;
 import wt.method.RemoteAccess;
+import wt.method.RemoteMethodServer;
 import wt.part.WTPart;
 import wt.pom.Transaction;
+import wt.type.ClientTypedUtility;
+import wt.type.TypeDefinitionReference;
+import wt.util.WTException;
+import wt.util.WTRuntimeException;
 
-public class InputWTDOC implements RemoteAccess {
+public class InputWTDOC implements RemoteAccess, Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	public static void main(String[] args) throws WTRuntimeException, WTException {
+		String flag = (String) invoke("insertData", InputWTDOC.class.getName(), null, new Class[] {}, new Object[] {});
+		System.out.println("flag:" + flag);
+	}
+
+	public static Object invoke(String methodName, String className, Object instance, Class[] cla, Object[] obj) {
+		RemoteMethodServer rms = RemoteMethodServer.getDefault();
+		rms.setUserName("wcadmin");
+		rms.setPassword("wcadmin");
+		try {
+			return rms.invoke(methodName, className, instance, cla, obj);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			return null;
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	private static HashMap<String, String> docTypeMap = new HashMap<>() {
 		{
@@ -53,8 +83,19 @@ public class InputWTDOC implements RemoteAccess {
 
 				// 为每个 SQLData 创建并上传文档
 				for (SQLData sqlData : dataList) {
-					filePath = "/opt/acknowledgment/" + sqlData.getFilePath().split("/")[2];
-					DocumentType docType = DocumentType.toDocumentType(docTypeMap.get(sqlData.getDocType()));
+					filePath = sqlData.getFilePath();
+					int lastSlashIndex = filePath.lastIndexOf('/');
+					filePath = lastSlashIndex != -1 && lastSlashIndex < filePath.length() - 1
+							? "/opt/acknowledgment/" + filePath.substring(lastSlashIndex + 1)
+							: sqlData.getName();
+
+//					Pattern pattern = Pattern.compile(".*/([^/]+)$");
+//					Matcher matcher = pattern.matcher(filePath);
+//					filePath = matcher.find() ? "/opt/acknowledgment/" + matcher.group(1)
+//							: "/opt/acknowledgment/" + sqlData.getName();
+//					filePath = "/opt/acknowledgment/" + sqlData.getFilePath().split("/")[2];
+//					DocumentType docType = DocumentType.toDocumentType(docTypeMap.get(sqlData.getDocType()));
+					DocumentType docType = DocumentType.toDocumentType("$$Document");
 					WTDocument doc = createAndUpload(sqlData.getName(), sqlData.getDocNumber(), filePath, part,
 							docType);
 					docList.add(doc);
@@ -76,6 +117,10 @@ public class InputWTDOC implements RemoteAccess {
 		try {
 			// 创建WTDocument对象
 			WTDocument doc = WTDocument.newWTDocument();
+
+			TypeDefinitionReference tdr = ClientTypedUtility
+					.getTypeDefinitionReference("com.honghe_tech.HHT_Acknowledgment");
+			doc.setTypeDefinitionReference(tdr);
 			doc.setName(name);
 			doc.setNumber("OUT" + CommonUtil.addLead0(number, 8));
 			doc.setDocType(docType);
@@ -85,7 +130,7 @@ public class InputWTDOC implements RemoteAccess {
 			doc.setContainer(container);
 			Folder folder = container.getIdentity().contains("PDMLinkProduct")
 					? ContainerUtil.getFolder("08-采购文档", container)
-					: ContainerUtil.getFolder("/", container);
+					: ContainerUtil.getFolder("/" + part.getFolderPath().split("/")[2], container);
 			FolderHelper.assignLocation((FolderEntry) doc, (Folder) folder);
 			// WTDoc needs to be stored before content may be added
 			doc = (WTDocument) PersistenceHelper.manager.store(doc);
@@ -124,7 +169,7 @@ public class InputWTDOC implements RemoteAccess {
 				data.setDocType(resultSet.getString("docType"));
 				String partNumber = resultSet.getString("partNumber");
 				data.setPartNumber(partNumber);
-				data.setSupplier(resultSet.getString("supplier"));
+//				data.setSupplier(resultSet.getString("supplier"));
 				data.setDepartment(resultSet.getString("department"));
 				data.setVersion(resultSet.getString("version"));
 				data.setFilePath(resultSet.getString("filePath"));

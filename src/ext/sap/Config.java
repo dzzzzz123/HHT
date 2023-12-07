@@ -2,6 +2,7 @@ package ext.sap;
 
 import ext.ait.util.ClassificationUtil;
 import ext.ait.util.PropertiesUtil;
+import wt.iba.value.IBAHolder;
 import wt.part.WTPart;
 import wt.part.WTPartUsageLink;
 
@@ -72,6 +73,10 @@ public class Config {
 
 	public static String getHHT_Bonded(WTPart part) {
 		return properties.getValueByKey(part, "iba.internal.HHT_Bonded");
+	}
+
+	public static String getNonbondedNumber(WTPart part) {
+		return properties.getValueByKey(part, "iba.internal.NonbondedNumber");
 	}
 
 	public static String getHHT_GrossWeight(WTPart part) {
@@ -190,8 +195,12 @@ public class Config {
 		return properties.getValueByKey(part, "iba.internal.HHT_INValue");
 	}
 
-	public static String getSourceBuy() {
-		return properties.getValueByKey("source.buy");
+	public static String getHHT_SerialNumber(WTPart part) {
+		return properties.getValueByKey(part, "iba.internal.HHT_SerialNumber");
+	}
+
+	public static String getHHT_ProjectNum(IBAHolder ibaHolder) {
+		return properties.getValueByKey(ibaHolder, "iba.internal.HHT_ProjectNum");
 	}
 
 	public static void setHHT_Price(WTPart part, String IBAValue) {
@@ -200,6 +209,14 @@ public class Config {
 
 	public static void setHHT_PriceUnit(WTPart part, String IBAValue) {
 		properties.setValueByKey(part, "iba.internal.HHT_PriceUnit", IBAValue);
+	}
+
+	public static String getSourceBuy() {
+		return properties.getValueByKey("source.buy");
+	}
+
+	public static String getJsonVar() {
+		return properties.getValueByKey("masterData.json.var");
 	}
 
 }

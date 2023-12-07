@@ -28,15 +28,11 @@ public class CustingSAPService {
 		bom.setNumber(part.getNumber());
 		bom.setName(part.getName());
 		bom.setVersion(VersionUtil.getVersion(part));
-		bom.setStatus(part.getState().getState().getValue());
+		bom.setStatus(part.getState().getState().getDisplay());
 		WTPartUsageLink link = PartUtil.getLinkByPart(parent, part);
 		if(link != null && link.getQuantity() != null) {
 			bom.setAmount(link.getQuantity().getAmount());
 		}
-//		List<WTPartUsageLink> list = PartUtil.getBomLinkByChildPart(part);
-//		if(list != null && list.size() > 0) {
-//			bom.setAmount(list.get(list.size()-1).getQuantity().getAmount());
-//		}
 		return bom;
 	}
 	

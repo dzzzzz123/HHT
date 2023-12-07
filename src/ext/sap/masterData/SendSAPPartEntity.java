@@ -9,6 +9,7 @@ public class SendSAPPartEntity {
 	private String revision;
 	private String Unit;
 	private String HHT_Bonded;
+	private String NonbondedNumber;
 	private String HHT_GrossWeight;
 	private String HHT_NetWeight;
 	private String HHT_WeightUnit;
@@ -35,24 +36,29 @@ public class SendSAPPartEntity {
 	private String HHT_ProductDevelopmentType;
 	private String HHT_CustomizedProductIdentifier;
 	private String HHT_SupplierSku;
-	private String DefaultTraceCode;
+	private String HHT_SerialNumber;
 	private String HHT_Factory;
 	private String HHT_Price;
 	private String HHT_PriceUnit;
 	private String HHT_INValue;
+	private String ClassDescription;
+	private String ClassPartDescription;
 
 	public SendSAPPartEntity() {
 	}
 
 	public SendSAPPartEntity(String partType, String hHT_Classification, String number, String name, String revision,
-			String unit, String hHT_Bonded, String hHT_GrossWeight, String hHT_NetWeight, String hHT_WeightUnit,
-			String hHT_Traffic, String hHT_VolumeUnit, String hHT_Length, String hHT_Width, String hHT_Height,
-			String hHT_SizeUnits, String state, String hHT_ClassificationCode, String hHT_ClassificationName,
-			String hHT_ProductLineNumber, String hHT_ProductLineName, String hHT_ProductNumber,
-			String hHT_Productdescription, String hHT_ModelSpecification, String hHT_CommodityName, String hHT_Brand,
-			String hHT_Year, String largeScreenSize, String hHT_FinishedSeries, String hHT_Industry,
-			String hHT_ProductDevelopmentType, String hHT_CustomizedProductIdentifier, String hHT_SupplierSku,
-			String defaultTraceCode, String hHT_Factory, String hHT_Price, String hHT_PriceUnit, String hHT_INValue) {
+			String unit, String hHT_Bonded, String nonbondedNumber, String hHT_GrossWeight, String hHT_NetWeight,
+			String hHT_WeightUnit, String hHT_Traffic, String hHT_VolumeUnit, String hHT_Length, String hHT_Width,
+			String hHT_Height, String hHT_SizeUnits, String state, String hHT_ClassificationCode,
+			String hHT_ClassificationName, String hHT_ProductLineNumber, String hHT_ProductLineName,
+			String hHT_ProductNumber, String hHT_Productdescription, String hHT_ModelSpecification,
+			String hHT_CommodityName, String hHT_Brand, String hHT_Year, String largeScreenSize,
+			String hHT_FinishedSeries, String hHT_Industry, String hHT_ProductDevelopmentType,
+			String hHT_CustomizedProductIdentifier, String hHT_SupplierSku, String hHT_SerialNumber, String hHT_Factory,
+			String hHT_Price, String hHT_PriceUnit, String hHT_INValue, String classDescription,
+			String classPartDescription) {
+		super();
 		PartType = partType;
 		HHT_Classification = hHT_Classification;
 		Number = number;
@@ -60,6 +66,7 @@ public class SendSAPPartEntity {
 		this.revision = revision;
 		Unit = unit;
 		HHT_Bonded = hHT_Bonded;
+		NonbondedNumber = nonbondedNumber;
 		HHT_GrossWeight = hHT_GrossWeight;
 		HHT_NetWeight = hHT_NetWeight;
 		HHT_WeightUnit = hHT_WeightUnit;
@@ -86,11 +93,13 @@ public class SendSAPPartEntity {
 		HHT_ProductDevelopmentType = hHT_ProductDevelopmentType;
 		HHT_CustomizedProductIdentifier = hHT_CustomizedProductIdentifier;
 		HHT_SupplierSku = hHT_SupplierSku;
-		DefaultTraceCode = defaultTraceCode;
+		HHT_SerialNumber = hHT_SerialNumber;
 		HHT_Factory = hHT_Factory;
 		HHT_Price = hHT_Price;
 		HHT_PriceUnit = hHT_PriceUnit;
 		HHT_INValue = hHT_INValue;
+		ClassDescription = classDescription;
+		ClassPartDescription = classPartDescription;
 	}
 
 	public String getPartType() {
@@ -147,6 +156,14 @@ public class SendSAPPartEntity {
 
 	public void setHHT_Bonded(String hHT_Bonded) {
 		HHT_Bonded = hHT_Bonded;
+	}
+
+	public String getNonbondedNumber() {
+		return NonbondedNumber;
+	}
+
+	public void setNonbondedNumber(String nonbondedNumber) {
+		NonbondedNumber = nonbondedNumber;
 	}
 
 	public String getHHT_GrossWeight() {
@@ -357,12 +374,12 @@ public class SendSAPPartEntity {
 		HHT_SupplierSku = hHT_SupplierSku;
 	}
 
-	public String getDefaultTraceCode() {
-		return DefaultTraceCode;
+	public String getHHT_SerialNumber() {
+		return HHT_SerialNumber;
 	}
 
-	public void setDefaultTraceCode(String defaultTraceCode) {
-		DefaultTraceCode = defaultTraceCode;
+	public void setHHT_SerialNumber(String hHT_SerialNumber) {
+		HHT_SerialNumber = hHT_SerialNumber;
 	}
 
 	public String getHHT_Factory() {
@@ -397,24 +414,41 @@ public class SendSAPPartEntity {
 		HHT_INValue = hHT_INValue;
 	}
 
+	public String getClassDescription() {
+		return ClassDescription;
+	}
+
+	public void setClassDescription(String classDescription) {
+		ClassDescription = classDescription;
+	}
+
+	public String getClassPartDescription() {
+		return ClassPartDescription;
+	}
+
+	public void setClassPartDescription(String classPartDescription) {
+		ClassPartDescription = classPartDescription;
+	}
+
 	@Override
 	public String toString() {
 		return "SendSAPPartEntity [PartType=" + PartType + ", HHT_Classification=" + HHT_Classification + ", Number="
 				+ Number + ", Name=" + Name + ", revision=" + revision + ", Unit=" + Unit + ", HHT_Bonded=" + HHT_Bonded
-				+ ", HHT_GrossWeight=" + HHT_GrossWeight + ", HHT_NetWeight=" + HHT_NetWeight + ", HHT_WeightUnit="
-				+ HHT_WeightUnit + ", HHT_Traffic=" + HHT_Traffic + ", HHT_VolumeUnit=" + HHT_VolumeUnit
-				+ ", HHT_Length=" + HHT_Length + ", HHT_Width=" + HHT_Width + ", HHT_Height=" + HHT_Height
-				+ ", HHT_SizeUnits=" + HHT_SizeUnits + ", state=" + state + ", HHT_ClassificationCode="
-				+ HHT_ClassificationCode + ", HHT_ClassificationName=" + HHT_ClassificationName
-				+ ", HHT_ProductLineNumber=" + HHT_ProductLineNumber + ", HHT_ProductLineName=" + HHT_ProductLineName
-				+ ", HHT_ProductNumber=" + HHT_ProductNumber + ", HHT_Productdescription=" + HHT_Productdescription
-				+ ", HHT_ModelSpecification=" + HHT_ModelSpecification + ", HHT_CommodityName=" + HHT_CommodityName
-				+ ", HHT_Brand=" + HHT_Brand + ", HHT_Year=" + HHT_Year + ", LargeScreenSize=" + LargeScreenSize
-				+ ", HHT_FinishedSeries=" + HHT_FinishedSeries + ", HHT_Industry=" + HHT_Industry
+				+ ", NonbondedNumber=" + NonbondedNumber + ", HHT_GrossWeight=" + HHT_GrossWeight + ", HHT_NetWeight="
+				+ HHT_NetWeight + ", HHT_WeightUnit=" + HHT_WeightUnit + ", HHT_Traffic=" + HHT_Traffic
+				+ ", HHT_VolumeUnit=" + HHT_VolumeUnit + ", HHT_Length=" + HHT_Length + ", HHT_Width=" + HHT_Width
+				+ ", HHT_Height=" + HHT_Height + ", HHT_SizeUnits=" + HHT_SizeUnits + ", state=" + state
+				+ ", HHT_ClassificationCode=" + HHT_ClassificationCode + ", HHT_ClassificationName="
+				+ HHT_ClassificationName + ", HHT_ProductLineNumber=" + HHT_ProductLineNumber + ", HHT_ProductLineName="
+				+ HHT_ProductLineName + ", HHT_ProductNumber=" + HHT_ProductNumber + ", HHT_Productdescription="
+				+ HHT_Productdescription + ", HHT_ModelSpecification=" + HHT_ModelSpecification + ", HHT_CommodityName="
+				+ HHT_CommodityName + ", HHT_Brand=" + HHT_Brand + ", HHT_Year=" + HHT_Year + ", LargeScreenSize="
+				+ LargeScreenSize + ", HHT_FinishedSeries=" + HHT_FinishedSeries + ", HHT_Industry=" + HHT_Industry
 				+ ", HHT_ProductDevelopmentType=" + HHT_ProductDevelopmentType + ", HHT_CustomizedProductIdentifier="
-				+ HHT_CustomizedProductIdentifier + ", HHT_SupplierSku=" + HHT_SupplierSku + ", DefaultTraceCode="
-				+ DefaultTraceCode + ", HHT_Factory=" + HHT_Factory + ", HHT_Price=" + HHT_Price + ", HHT_PriceUnit="
-				+ HHT_PriceUnit + ", HHT_INValue=" + HHT_INValue + "]";
+				+ HHT_CustomizedProductIdentifier + ", HHT_SupplierSku=" + HHT_SupplierSku + ", HHT_SerialNumber="
+				+ HHT_SerialNumber + ", HHT_Factory=" + HHT_Factory + ", HHT_Price=" + HHT_Price + ", HHT_PriceUnit="
+				+ HHT_PriceUnit + ", HHT_INValue=" + HHT_INValue + ", ClassDescription=" + ClassDescription
+				+ ", ClassPartDescription=" + ClassPartDescription + "]";
 	}
 
 }
