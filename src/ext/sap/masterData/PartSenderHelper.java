@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import ext.ait.util.CommonUtil;
 import ext.ait.util.PersistenceUtil;
+import ext.sap.Config;
 import ext.sap.masterData.mvc.Result;
 import wt.fc.WTObject;
 import wt.part.WTPart;
@@ -49,6 +50,8 @@ public class PartSenderHelper {
 			String SAPResult = SendSAPService.getResultFromJson(result);
 			if (StringUtils.isNotBlank(SAPResult)) {
 				msg.add(part.getNumber() + "未发送成功，错误信息为： " + SAPResult);
+			} else {
+				Config.setHHT_SapMark(part, "X");
 			}
 		}
 		return msg;
@@ -73,6 +76,7 @@ public class PartSenderHelper {
 		Result resultData = new Result();
 		resultData.setNumber(part.getNumber());
 		resultData.setName(part.getName());
+		resultData.setSapMark(Config.getHHT_SapMark(part));
 		if (StringUtils.isNotBlank(SAPResult)) {
 			resultData.setResult("ERROR");
 			resultData.setMsg(SAPResult);
@@ -84,6 +88,22 @@ public class PartSenderHelper {
 		String formattedTime = currentTime.format(formatter);
 		resultData.setTime(formattedTime);
 		return resultData;
+	}
+
+	/**
+	 * 校验sap给出的信息中是否存在错误信息
+	 * 
+	 * @param res
+	 * @return error/ok
+	 */
+	public static String checkSAPRes(String res) {
+		List<Result> results = CommonUtil.getEntitiesFromJson(res, Result.class, "");
+		for (Result result : results) {
+			if (result.getResult().equalsIgnoreCase("ERROR")) {
+				return "error";
+			}
+		}
+		return "ok";
 	}
 
 }

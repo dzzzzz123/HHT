@@ -21,9 +21,11 @@ public class CustomCreatePROPLProjectFormProcessor extends CreatePROPLProjectFor
 				? (list.get(0).getObject() instanceof Project2 ? (Project2) list.get(0).getObject() : null)
 				: null;
 		System.out.println("----------------新建项目时按照规则修改项目编号----------------");
-		String result = GenerateNumber.process(project);
-		if (StringUtils.isNotBlank(result)) {
-			throw new WTException(result);
+		if (project != null) {
+			String result = GenerateNumber.process(project);
+			if (StringUtils.isNotBlank(result)) {
+				throw new WTException(result);
+			}
 		}
 		return super.postProcess(nmCommandBean, list);
 	}

@@ -9,10 +9,12 @@ import com.ptc.core.components.forms.FormResult;
 import com.ptc.netmarkets.util.beans.NmCommandBean;
 import com.ptc.windchill.enterprise.part.forms.CreatePartAndCADDocFormProcessor;
 
+import ext.HHT.Config;
 import ext.HHT.part.duplicateCheck.service.BondedCheckService;
 import ext.HHT.part.duplicateCheck.service.DistrbutePartService;
 import ext.HHT.part.duplicateCheck.service.DuplicateCheckService;
 import ext.HHT.part.duplicateCheck.service.MaterialNumberService;
+import ext.classification.service.ClassificationNumber;
 import wt.part.WTPart;
 import wt.util.WTException;
 
@@ -48,10 +50,17 @@ public class CustomCreatePartAndCADDocFormProcessor extends CreatePartAndCADDocF
 		if (StringUtils.isNotBlank(result)) {
 			throw new WTException(result);
 		}
-		System.out.println("----------------创建物料生成物料编号----------------");
+		System.out.println("----------------创建成品物料时更新成品正式编号----------------");
 		String result2 = MaterialNumberService.process(part);
 		if (StringUtils.isNotBlank(result2)) {
 			throw new WTException(result2);
+		}
+		System.out.println("----------------创建物料生成物料编号----------------");
+		if (Config.getHHT_Classification(part).startsWith("5")) {
+			String result3 = ClassificationNumber.process(part);
+			if (StringUtils.isNotBlank(result3)) {
+				throw new WTException(result3);
+			}
 		}
 		return super.postProcess(nmCommandBean, list);
 	}

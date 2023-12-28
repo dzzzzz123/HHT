@@ -26,7 +26,7 @@
         <title>成本分析</title>
         <link rel="stylesheet" href="<%= basePath %>netmarkets/jsp/ext/requirement/insert/layui-v2.7.6/layui/css/jquery-ui.css"/>
 		<style>
-.custingTr{
+#myTable{
 margin: 0 auto;
 border-collapse: collapse;
 border-spacing: 0;
@@ -36,9 +36,7 @@ border: 1px solid #bdc3c7;
 padding: 10px;
 vertical-align: middle;
 }
-.custingTr:nth-child(even){
-background-color: #f2f2f2;
-}
+
 #custingButton,#pdfButton {
     width: 80px;
     margin: 3px 1px 0 5px;
@@ -68,46 +66,88 @@ width:100%;
 	<span >分析时间：</span><span id = "timeFx"></span>
 	</div>
 	<div id="divone">
-	<table cellspacing="0"border="1px" width = "100%" id = "tr">
-
+	<table cellspacing="0"border="1px" width = "100%" id = "myTable">
 	</table>
 	</div>
-
-  <h1>BOM成本的表格最好按照Windchill展示逻辑显示出来<h1>
-  <h1>显示所有部件的成本，只计算上层的成本，不无限向下计算所有部件的成本<h1>
-
-	  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
 
     <script type="text/javascript">
 	getCbjs();
 	
-	
 	var btn = document.getElementById("pdfButton");  
     btn.onclick =function(){
-		var  table = document.getElementById("tr");
-		let allList = new Array();　　
-		for (var i = 1; i < table.rows.length; i++) {   
-             var cells = table.rows[i].cells;
-		let list = new Array();　　
-        for (var j = 0; j < cells.length; j++) {
-        var value = cells[j].innerHTML;
-		list.push(value);
-         }
-		 allList.push(list);
-     }
-	 if(allList.length == 0){
-		 alert("无成本计算数据");
-	 } else {
-	   httpPostLocaltion("",allList);
-	 }
-	 
+		var oid ='<%= oid %>';
+        var httpRequest = new XMLHttpRequest();//第一步：建立所需的对象
+        httpRequest.open('GET', 'http://hhplm.honghe-tech.com:8080/Windchill/servlet/Navigation/sap/Custing?oid='+oid, true);//第二步：打开连接  将请求参数写在url中  ps:"http://localhost:8080/rest/xxx"
+        httpRequest.send();//第三步：发送请求  将请求参数写在URL中
+        /**
+         * 获取数据后的处理程序
+         */
+        httpRequest.onreadystatechange = function () {
+            if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+				
+				var timeFx = document.getElementById("timeFx");
+                timeFx.innerHTML = formatDateTime(new Date(),"yyyy年MM月dd日 HH:mm:ss");
+                var json = httpRequest.responseText;//获取到json字符串，还需解析
+                testJson = eval("(" + json + ")");
+				httpPostLocaltion("",testJson);
+				
+        }; 
+	}	 
+	}
+	
+	//获取该组件下的所有子件
+	let sonListData = [];
+	function doopAllNode(number,sonListData){
+		  for(let ii=0;ii<treeData.length;ii++){
+		   if(number == treeData[ii].parent){
+			   sonListData.push(treeData[ii].number);
+			   if(treeData[ii].master){
+				   doopAllNode(treeData[ii].number,sonListData);
+			   }
+		   }
+	   }
+	}
+	
+	function test(i){
+	   button = document.getElementById("image"+i);
+	   var parentNumber = treeData[i].number;
+	   doopAllNode(parentNumber,sonListData);
+	   let newList2 = [];
+       sonListData.forEach((item) => {
+        if (!newList2.includes(item)) {
+            newList2.push(item)
+        }
+        })
+		var num = newList2.length;
+	   sonListData = [];
+	   if(button.src.indexOf("right.png") != -1){
+		button.src = '<%= basePath %>netmarkets/jsp/ext/SAP/Custing/down.png';
+		for(let ii =1;ii<=num;ii++){
+		table = document.getElementById("tableTr"+(i+ii));
+		if(treeData[i].number == treeData[(ii+i)].parent){
+			table.style.display='';
+			table.style.background="#f2f2f2";
+		}
+		}
+	   }else{
+		button.src = '<%= basePath %>netmarkets/jsp/ext/SAP/Custing/right.png';
+		for(let ii =1;ii<=num;ii++){
+		button = document.getElementById("image"+(i+ii));
+		if(button != null){
+		button.src = '<%= basePath %>netmarkets/jsp/ext/SAP/Custing/right.png';
+		}
+
+		table = document.getElementById("tableTr"+(i+ii));
+        table.style.display='none';
+		}
+	   }
+	   
 	}
 	
 	function httpPostLocaltion(key,params){
-	let url = "http://uat.honghe-tech.com/Windchill/servlet/Navigation/sap/CustingPdfServlet";
-	// 把参数对象转换为json
 	let param = JSON.stringify(params);
+	let url = "http://hhplm.honghe-tech.com:8080/Windchill/servlet/Navigation/sap/CustingPdfServlet";
+	// 把参数对象转换为json
 	let xhr = new XMLHttpRequest();
 	xhr.responseType = 'blob';
 	xhr.onreadystatechange = function () {
@@ -141,6 +181,7 @@ width:100%;
 	xhr.send(param);
 }
 
+
 	
 
 	
@@ -170,56 +211,99 @@ width:100%;
   }
   return format;
 }
+
+	//获取该组件下的所有父件
+	let parentListData = [];
+	function doopAllParentNode(number,parentListData,num){
+		  if(number == null || number == ''){
+			  return;
+		  }
+		  var parentid = '';
+        for(let ii =0;ii<=num;ii++){
+		if(number == treeData[ii].number){
+			parentid = treeData[ii].parent;
+		}
+		}
+		if(parentid != ''){
+			parentListData.push(parentid);
+			doopAllParentNode(parentid,parentListData,num);	
+		}
+	}
+
+//属性结构数据
+var treeData;
   
   function getCbjs(){
 	 var oid ='<%= oid %>';
         var httpRequest = new XMLHttpRequest();//第一步：建立所需的对象
-        httpRequest.open('GET', 'http://uat.honghe-tech.com/Windchill/servlet/Navigation/sap/Custing?oid='+oid, true);//第二步：打开连接  将请求参数写在url中  ps:"http://localhost:8080/rest/xxx"
+        httpRequest.open('GET', 'http://hhplm.honghe-tech.com:8080/Windchill/servlet/Navigation/sap/Custing?oid='+oid, true);//第二步：打开连接  将请求参数写在url中  ps:"http://localhost:8080/rest/xxx"
         httpRequest.send();//第三步：发送请求  将请求参数写在URL中
         /**
          * 获取数据后的处理程序
          */
         httpRequest.onreadystatechange = function () {
             if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+				
 				var timeFx = document.getElementById("timeFx");
                 timeFx.innerHTML = formatDateTime(new Date(),"yyyy年MM月dd日 HH:mm:ss");
                 var json = httpRequest.responseText;//获取到json字符串，还需解析
-				// if(json == null || json == ''){
-				// 	alert("无零件结构");
-				// }
                 testJson = eval("(" + json + ")");
-			var allHtml = "<tr align='center' class = 'custingTr'>" +
-			            "<td width = '5%' class = 'custingTd'>父编号</td>" +
-						"<td width = '15%' class = 'custingTd'>编号</td>" +
-						"<td width = '40%' class = 'custingTd'>名称</td>" +
+				treeData = testJson;
+		
+			var allHtml = "<tr align='left' class = 'custingTr'>" +
+						"<td width = '40%' class = 'custingTd'>编号</td>" +
+						"<td width = '20%' class = 'custingTd'>名称</td>" +
 						"<td width = '10%' class = 'custingTd'>版本</td>" +
 						"<td width = '10%' class = 'custingTd'>状态</td>" +
-						"<td width = '10%' class = 'custingTd'>数量</td>" +
+						"<td width = '5%' class = 'custingTd'>单位</td>" +
+						"<td width = '5%' class = 'custingTd'>数量</td>" +
 						"<td width = '10%' class = 'custingTd'>总价</td>" +
                         "</tr>";
+			var rootNumber = testJson[0].parent;
+						
 			for(let i =0;i<testJson.length;i++){
 				var val = testJson[i];
-				var html = "<tr align='center' class = 'custingTr'>" +
-            "<td class = 'custingTd'>"+(val.parent == null?"":val.parent)+"</td>" +
-            "<td class = 'custingTd'>"+val.number+"</td>" +
+				doopAllParentNode(val.parent,parentListData,i);
+				var nbspNum = parentListData.length == 0 ? 1:(parentListData.length+1);
+				console.log("num:" + nbspNum  + " 当前编号:" + val.number + " []" + parentListData);
+				parentListData = [];
+				var spaceStr = "";
+				for(let num=0;num < nbspNum;num++){
+					spaceStr +="&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
+				}
+				
+				var isTreeMsg = "<td class = 'custingTd'>"+spaceStr+" <image id='image"+i+"' src='<%= basePath %>netmarkets/jsp/ext/SAP/Custing/right.png' width='10px' onclick='test("+i+")'/>"+ val.number+"</td>";
+                   if(!val.master){
+					   isTreeMsg = "<td class = 'custingTd'> &nbsp&nbsp&nbsp&nbsp"+spaceStr+val.number+"</td>";
+				   }
+		    var hidde = "style='display:none'";
+			if(val.parent == rootNumber){
+				hidde="";
+			}
+			
+			var html = "<tr align='left' class = 'custingTr' id='tableTr"+i+"' "+hidde+">" +
+            isTreeMsg +
             "<td class = 'custingTd'>"+val.name+"</td>" +
             "<td class = 'custingTd'>"+val.version+"</td>" +
             "<td class = 'custingTd'>"+val.status+"</td>" +
+			"<td class = 'custingTd'>"+(val.unit == null?"":val.unit)+"</td>" +
             "<td class = 'custingTd'>"+(val.amount == null?"":val.amount)+"</td>" +
             "<td class = 'custingTd'>"+(val.price == null ? "":val.price)+"</td>" +
             "</tr>";
 			if(i == testJson.length -1){
 				html = "<tr class = 'custingTr'>" +
             "<td colspan='6' align='right' class = 'custingTd'>合计：</td>" +
-            "<td align='center' class = 'custingTd'>"+val.price+"</td>" +
+            "<td class = 'custingTd' >"+val.price+"</td>" +
             "</tr>";
 			}
 			allHtml += html;
-			}
-			var tab = document.getElementById("tr");
+			var tab = document.getElementById("myTable");
                 tab.innerHTML = allHtml;
             }
+				}
+				
         }; 
+		
   };
 
   var btn = document.getElementById("custingButton");  

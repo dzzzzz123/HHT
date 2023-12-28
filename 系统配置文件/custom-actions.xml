@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE listofactions SYSTEM "customActions.dtd">
+<listofactions>
+
+    <objecttype name="classificationWizard" resourceBundle="ext.classification.ClassificationActionsRB">
+		<action name="changeName">
+			<command class="ext.classification.processor.ChangeNameProcessor" method="execute"/> 
+		</action>
+		<action name="changeNumber">
+			<command class="ext.classification.processor.ChangeNumberProcessor" method="execute"/> 
+		</action>
+		<action name="changeDescription">
+			<command class="ext.classification.processor.ChangeDescriptionProcessor" method="execute"/> 
+		</action>
+		<action name="changeAll">
+			<command class="ext.classification.processor.ClassificationProcessor" method="execute"/> 
+		</action>
+	</objecttype>
+
+	<objecttype name="SAPWizard" resourceBundle="ext.sap.SAPActionsRB">
+		<action name="sendBOM2SAP">
+			<command class="ext.sap.BOM.SendBOM2SAPProcessor" method="execute"/> 
+		</action>
+		<action name="sendProject2SAP">
+			<command class="ext.sap.project.SendProject2SAPProcessor" method="execute"/> 
+		</action>
+		<action name="sendPartSAP">
+			<command class="ext.sap.masterData.SendPartSAPProcessor" method="execute"/> 
+		</action>
+		<action name="autoImportProductCatalog">
+			<command class="ext.HHT.catalog.UpdateProductCatalogProcessor" method="execute"/>
+		</action>
+		<action name="masterDataResult">
+        	<component name="sap.result.list" windowType="page"/>
+    	</action>
+    	<action name="Custing" ajax="row">
+			<command url="netmarkets/jsp/ext/SAP/Custing/custing.jsp" windowType="page"/>
+		</action>
+		<action name="supplyInfoPage" ajax="row">
+			<command url="netmarkets/jsp/ext/SAP/supply/infoPage.jsp" windowType="page"/>
+		</action>
+		<action name="alterPropertiesWizard" ajax="row">
+			<command class="ext.sap.purchase.AlterAttrProcessor" method="execute" url="netmarkets/jsp/ext/SAP/purchase/alterWizard.jsp" windowType="popup"/>
+		</action>
+		<action name="alterProperties" ajax="row">
+			<command url="netmarkets/jsp/ext/SAP/purchase/alter.jsp" windowType="popup"/>
+		</action>
+		<action name="alterPropertiesTable">
+			<component name="purchase.alter.table" windowType="page"/>
+		</action>
+	</objecttype>
+
+	<objecttype name="HHTWizard" resourceBundle="ext.HHT.HHTActionsRB">
+		<action name="testSRM" ajax="row">
+			<command class="ext.HHT.SRM.insert.Processor" method="execute"/> 
+		</action>
+		<action name="send2CIS">
+  			<command class="ext.HHT.CIS.CISProcessor" method="execute" /> 
+  		</action>
+		<action name="send2SRM">
+			<command class="ext.HHT.SRM.acknowledgment.Processor" method="execute"/> 
+		</action>
+		<action name="trackHoursWizard" ajax="row">
+			<command class="ext.HHT.project.TrackHoursProcessor" method="execute" url="netmarkets/jsp/ext/HHT/project/alterWizard.jsp" windowType="popup"/>
+		</action>
+		<action name="trackHours" ajax="row">
+			<command url="netmarkets/jsp/ext/HHT/project/alter.jsp" windowType="popup"/>
+		</action>
+		<action name="generateProjectNumber">
+			<command class="ext.HHT.project.GenerateNumberProcessor" method="execute"/> 
+		</action>
+	</objecttype>
+
+	<objecttype name="ProjectRequirement" resourceBundle="ext.requirement.requirementActionRB">
+		<action name="create">
+			<command url="netmarkets/jsp/ext/requirement/insert/create.jsp" windowType="popup"/> 
+		</action>
+		<action name="requirementInfo" ajax="row">
+			<command url="netmarkets/jsp/ext/requirement/info/infoPage.jsp" windowType="page"/> 
+		</action>
+		<action name="editRequirement">
+			<command url="netmarkets/jsp/ext/requirement/edit/edit.jsp" windowType="popup"/> 
+		</action>
+	</objecttype>
+	
+	<!--批量下载-->
+	<objecttype name="part" resourceBundle="ext.signature.ResourceRB">
+		<action name="batchpdf" enabledwhensuspended="true" >
+		    <command url="servlet/Navigation/BatchDownloadZipPDFServlet" windowType="popup"/>
+		</action>
+	</objecttype>
+	<objecttype name="ecaWizard" resourceBundle="ext.plm.change.resource.ecActionRB">
+      <action name="ecaChangeEdit" ajax="row">
+        <command url="/netmarkets/jsp/plmext/eca/eca_edit.jsp" windowType="page" />
+      </action>
+	  <action name="ecaChangeView" ajax="row">
+        <command url="/netmarkets/jsp/plmext/eca/eca_review.jsp" windowType="page" />
+      </action>
+	</objecttype>
+
+</listofactions>

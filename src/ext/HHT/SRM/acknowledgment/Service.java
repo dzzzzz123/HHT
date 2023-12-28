@@ -1,10 +1,25 @@
 package ext.HHT.SRM.acknowledgment;
 
+import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import ext.HHT.Config;
 import ext.HHT.SRM.acknowledgment.Acknowledgment.Body;
@@ -14,8 +29,11 @@ import ext.ait.util.DocumentUtil;
 import ext.ait.util.PersistenceUtil;
 import ext.ait.util.VersionUtil;
 import wt.content.ApplicationData;
+import wt.content.ContentHelper;
+import wt.content.ContentHolder;
 import wt.content.ContentItem;
 import wt.content.ContentServerHelper;
+import wt.content.FormatContentHolder;
 import wt.doc.WTDocument;
 import wt.fc.WTObject;
 import wt.part.WTPart;
@@ -67,14 +85,19 @@ public class Service {
 			Body body = acknowledgment.new Body();
 			body.setItemCode(part.getNumber());
 			body.setItemName(part.getName());
-			body.setItemVersion(VersionUtil.getVersion(part));
+			body.setItemVersion(StringUtils.substring(VersionUtil.getVersion(part), 0, 1));
 
 			WTDocument document = getAcknowledgmentDoc(part);
-			body.setAttachmentVersion(VersionUtil.getVersion(document));
+			body.setAttachmentVersion(StringUtils.substring(VersionUtil.getVersion(document), 0, 1));
 			File file = getAcknowledgmentFile(document);
 			String uuid = requestUUid();
 			String netPath = requestMultipart(file, uuid);
 			body.setAttachmentUuid(uuid);
+			String HHT_SupplierInternal = Config.getHHT_Supplier(document);
+			String HHT_SupplierDisplay = getSupplier(HHT_SupplierInternal);
+			body.setSupplierCompanyCode(HHT_SupplierInternal);
+			body.setSupplierCompanyName(HHT_SupplierDisplay);
+			bodys.add(body);
 		}
 		acknowledgment.setHeader(header);
 		acknowledgment.setBody(bodys);
@@ -105,7 +128,12 @@ public class Service {
 	 * @return
 	 */
 	public static String requestUUid() {
-		return requestBase(Config.getUUidUrl(), null);
+		HashMap<String, String> headers = new HashMap<>() {
+			{
+				put("Authorization", "Bearer " + requestSRMToken());
+			}
+		};
+		return CommonUtil.requestInterface(Config.getUUidUrl(), "POST", null, headers);
 	}
 
 	/**
@@ -116,16 +144,15 @@ public class Service {
 	 * @return
 	 */
 	public static String requestMultipart(File file, String uuid) {
-		HashMap<String, Object> formData = new HashMap<>() {
+		HashMap<String, String> formData = new HashMap<>() {
 			{
 				put("attachmentUUID", uuid);
 				put("bucketName", Config.getBucketName());
 				put("directory", Config.getDirectory());
-				put("file", file);
 				put("fileName", file.getName());
 			}
 		};
-		return requestBase(Config.getMultipartUrl(), formData);
+		return uploadFile(Config.getMultipartUrl(), file, formData);
 	}
 
 	/**
@@ -139,9 +166,10 @@ public class Service {
 		String ackTypeName = Config.getAcknowLedgmentTypeName();
 		String ackDocType = Config.getAcknowLedgmentDocType();
 		for (WTDocument doc : docList) {
-			String type = PersistenceUtil.getTypeName(doc);
+			String type = PersistenceUtil.getSubTypeInternal(doc);
 			String docType = doc.getDocType().toString();
-			if (type.equals(ackTypeName) && docType.equals(ackDocType)) {
+//			if (type.equals(ackTypeName) && docType.equals(ackDocType)) {
+			if (type.equals(ackTypeName)) {
 				return doc;
 			}
 		}
@@ -157,7 +185,9 @@ public class Service {
 	public static File getAcknowledgmentFile(WTDocument doc) {
 		File file = new File("/opt/acknowledgment/");
 		try {
-			ContentItem ci = doc.getPrimary();
+			ContentHolder contentHolder = ContentHelper.service.getContents(doc);
+			FormatContentHolder formatContentHolder = (FormatContentHolder) contentHolder;
+			ContentItem ci = ContentHelper.getPrimary(formatContentHolder);
 			ApplicationData applicationData = (ApplicationData) ci;
 			file = new File(file, applicationData.getFileName());
 			ContentServerHelper.service.writeContentStream((ApplicationData) ci, file.getCanonicalPath());
@@ -167,24 +197,50 @@ public class Service {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (PropertyVetoException e) {
+			e.printStackTrace();
 		}
 		return file;
 	}
 
-	/**
-	 * 访问SRM通用访问接口
-	 * 
-	 * @param url
-	 * @param formData
-	 * @return
-	 */
-	private static String requestBase(String url, HashMap<String, Object> formData) {
-		HashMap<String, String> headers = new HashMap<>() {
-			{
-				put("Authorization", "Bearer " + requestSRMToken());
+	public static String uploadFile(String apiUrl, File file, Map<String, String> additionalParams) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", "Bearer " + requestSRMToken());
+		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+		body.add("file", new FileSystemResource(file));
+
+		if (additionalParams != null) {
+			for (Map.Entry<String, String> entry : additionalParams.entrySet()) {
+				body.add(entry.getKey(), entry.getValue());
 			}
-		};
-		return CommonUtil.requestInterface(url, "POST", formData, headers);
+		}
+
+		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<String> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity,
+				String.class);
+		// ResponseEntity<String> responseEntity = restTemplate.postForEntity(apiUrl,
+		// requestEntity, String.class);
+
+		System.out.println("Response code: " + responseEntity.getStatusCode());
+		System.out.println("Response body: " + responseEntity.getBody());
+		return responseEntity.getBody().toString();
+	}
+
+	public static String getSupplier(String HHT_SupplierInternal) {
+		String HHT_SupplierDisplay = "";
+		String sql = "SELECT DISPLAYNAME FROM CUS_SUPPLIER WHERE INTERNALNAME = ?";
+		ResultSet resultSet = CommonUtil.excuteSelect(sql, HHT_SupplierInternal);
+		try {
+			while (resultSet.next()) {
+				HHT_SupplierDisplay = resultSet.getString("DISPLAYNAME");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return HHT_SupplierDisplay;
 	}
 
 }

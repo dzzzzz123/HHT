@@ -42,7 +42,7 @@ public class DuplicateCheckService {
 				if (key.equals(result)) {
 					String oid = map.get(key);
 					WTPart part = (WTPart) PersistenceUtil.oid2Object(oid);
-					if (VersionUtil.isLatestIterated(part)) {
+					if (part != null && VersionUtil.isLatestIterated(part)) {
 						return "当前物料系统中已存在编号为 " + part.getNumber() + " 的物料与其相同！";
 					}
 				}

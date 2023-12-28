@@ -1,0 +1,195 @@
+<?xml version="1.0"?>
+<!DOCTYPE listofactions SYSTEM 'actions.dtd'>
+<listofactions>
+
+   <objecttype name="part" class="wt.part.WTPart" resourceBundle="com.ptc.windchill.enterprise.part.partResource">
+
+      <action name="assignView" checkaccess="true" ajax="row">
+         <command class="com.ptc.windchill.enterprise.part.forms.AssignViewFormProcessor" method="execute" windowType="popup"/>
+         <includeFilter name="sandboxSharingValidationSimple"/>
+      	 <includeFilter name="hideForAdminLocked"/>
+      	 <includeFilter name="disableForPartToCadBuildAdminLocked"/>
+      </action>
+
+      <action name="assignView_step">
+        <command class="null" method="null"/>
+        <access name="update"/>
+      </action>
+
+      <action name="newViewVersion">
+         <command class="com.ptc.windchill.enterprise.part.forms.NewViewVersionFormProcessor" method="execute" windowType="popup" url="/netmarkets/jsp/part/newViewVersion.jsp?templateMode=EDIT"/>
+         <includeFilter name="sandboxSharingValidationSimple"/>
+         <includeFilter name="hideForAdminLocked"/>
+         <includeFilter name="disableForPartToCadBuildAdminLocked"/>
+         <includeFilter name="hideAdhocVersionFilter"/>
+      </action>
+
+      <action name="newViewVersion_step">
+        <command windowType="wizard_step"/>
+      </action>
+
+      <action name="oneOffVersion" uicomponent="ONEOFFVESRION_OUTSIDE_CHANGE">
+         <command class="com.ptc.windchill.enterprise.part.forms.OneOffViewVersionFormProcessor" method="execute" windowType="popup" url="/netmarkets/jsp/part/oneOffVersion.jsp?templateMode=EDIT"/>
+         <includeFilter name="sandboxSharingValidationSimple"/>
+         <includeFilter name="hideForAdminLocked"/>
+         <includeFilter name="disableForPartToCadBuildAdminLocked"/>
+         <includeFilter name="newOneOffVersionInChangeFilter"/>
+         <includeFilter name="hideAdhocVersionFilter"/>
+      </action>
+
+      <action name="oneOffVersion_step">
+        <command windowType="wizard_step"/>
+      </action>
+
+      <action name="makePrimaryEndItem" ajax="page">
+          <command class="com.ptc.windchill.enterprise.product.commands.EndItemsCommand" method="setPrimaryEndItem"/>
+      </action>
+
+      <action name="removePrimaryEndItem" ajax="page">
+          <command class="com.ptc.windchill.enterprise.product.commands.EndItemsCommand" method="removePrimaryEndItem"/>
+      </action>
+
+      <!-- Create Part Actions - Start -->
+	  <!-- URL Parameters: invokedfrom: if the New Part wizard is launched from workspace
+	                       revisionMode: is "create" for New Part wizard. This is used to show the Revision Picker on the wizard
+						   showNewCADDocStep: if the New CAD Doc should be added or not to the wizard
+						   hideAssociatePart: if to show the Associate Part checkbox
+						   hideRevisionPicker: This parameter is now removed but it was used to determine if to show the Revision Picker in the wizard or not-->
+      <action name="createPartWizard" uicomponent="CREATE_PART" ajax="row">
+         <!-- <command class="com.ptc.windchill.enterprise.part.forms.CreatePartAndCADDocFormProcessor" method="execute" url="/netmarkets/jsp/part/createPartWizard.jsp?revisionMode=create&amp;showNewCADDocStep=true&amp;hideAssociatePart=true" onClick="validateCreateLocation(event)" windowType="popup"/> -->
+         <command class="ext.HHT.part.duplicateCheck.CustomCreatePartAndCADDocFormProcessor" method="execute" url="/netmarkets/jsp/part/createPartWizard.jsp?revisionMode=create&amp;showNewCADDocStep=true&amp;hideAssociatePart=true" onClick="validateCreateLocation(event)" windowType="popup"/>
+      <includeFilter name="showNewActionPreValidation"/>
+      </action>
+
+		<!-- Action is use to show the correct layout for insert part-->
+		<action name="insertPartRevision" uicomponent="CREATE_PART" ajax="row">
+			<component name="insertPartForRevision" typeBased="true" windowType="wizard_step"/>
+		</action>
+
+      <!-- URL Parameters: invokedfrom: if the New Part wizard is launched from workspace
+	                       revisionMode: is "create" for New Part wizard. This is used to show the Revision Picker on the wizard
+						   showNewCADDocStep: if the New CAD Doc should be added or not to the wizard
+						   hideAssociatePart: if to show the Associate Part checkbox
+						   hideRevisionPicker: This parameter is now removed but it was used to determine if to show the Revision Picker in the wizard or not-->
+      <action name="createPartFromWorkspace" uicomponent="CREATE_PART" ajax="page">
+        <!-- <command class="com.ptc.windchill.enterprise.part.forms.CreatePartAndCADDocFormProcessor" method="execute" windowType="popup" url="/netmarkets/jsp/part/createPartWizard.jsp?invokedfrom=workspace&amp;revisionMode=create&amp;showNewCADDocStep=true&amp;hideAssociatePart=true"/>  -->
+        <command class="ext.HHT.part.duplicateCheck.CustomCreatePartAndCADDocFormProcessor" method="execute" windowType="popup" url="/netmarkets/jsp/part/createPartWizard.jsp?invokedfrom=workspace&amp;revisionMode=create&amp;showNewCADDocStep=true&amp;hideAssociatePart=true"/>
+        <includeFilter name="showNewActionPreValidation"/>
+      </action>
+
+     <!-- defineItemAttributesWizStepForCADDoc is main single step wizard for new CAD Doc.
+          It is based on defineItemAttributesWizStep from core actions.xml . Defined here
+          so that custom hooks for other attributes such as postloadJS, afterJs can be done for
+          new Part+CADDoc use case.                                                              -->
+     <action name="defineItemAttributesWizStepForCADDoc" hidden="true" afterVK="setAttributesWizStep" preloadWizardPage="false" required="true" postloadJS="newCADDocumentInitialize" resourceBundle="com.ptc.core.ui.componentRB">
+         <component name="defineItemAttributesWizStep" typeBased="true" windowType="wizard_step"/>
+     </action>
+
+     <!-- Create Part Actions - End -->
+
+      <!-- Edit Part Actions - Start -->
+
+      <action name="edit" ajax="row">
+          <command class="ext.HHT.part.duplicateCheck.CustomEditPartFormProcessor" method="execute" windowType="popup"/>
+          <!-- <command class="com.ptc.windchill.enterprise.part.forms.EditPartFormProcessor" method="execute" windowType="popup"/> -->
+          <includeFilter name="sandboxSharingValidationSimple"/>
+          <includeFilter name="hideForNewObjectInWorkspace"/>
+          <includeFilter name="hideForCheckedoutObjectInWorkspace"/>
+          <includeFilter name="hideSBHiddenFilter"/>
+          <includeFilter name="hideForAdminLocked"/>
+          <includeFilter name="disableForPartToCadBuildAdminLocked"/>
+      </action>
+
+      <action name="editFromAttributesTable" ajax="row">
+          <command class="ext.HHT.part.duplicateCheck.CustomEditPartFormProcessor" method="execute" windowType="popup" url="/netmarkets/jsp/part/edit.jsp?componentType=INFO"/>
+          <!-- <command class="com.ptc.windchill.enterprise.part.forms.EditPartFormProcessor" method="execute" windowType="popup" url="/netmarkets/jsp/part/edit.jsp?componentType=INFO"/> -->
+          <includeFilter name="sandboxSharingValidationSimple"/>
+          <includeFilter name="hideForNewObjectInWorkspace"/>
+          <includeFilter name="hideForCheckedoutObjectInWorkspace"/>
+          <includeFilter name="hideForAdminLocked"/>
+          <includeFilter name="disableForPartToCadBuildAdminLocked"/>
+      </action>
+
+      <action name="checkoutAndEditFromAttributesTable" ajax="row">
+          <command class="ext.HHT.part.duplicateCheck.CustomEditPartFormProcessor" method="execute" windowType="popup" url="/netmarkets/jsp/part/edit.jsp?componentType=INFO"/>
+          <!-- <command class="com.ptc.windchill.enterprise.part.forms.EditPartFormProcessor" method="execute" windowType="popup" url="/netmarkets/jsp/part/edit.jsp?componentType=INFO"/> -->
+          <includeFilter name="sandboxSharingValidationSimple"/>
+          <includeFilter name="hideForNewObjectInWorkspace"/>
+          <includeFilter name="hideForCheckedoutObjectInWorkspace"/>
+          <includeFilter name="hideForAdminLocked"/>
+          <includeFilter name="disableForPartToCadBuildAdminLocked"/>
+      </action>
+
+      <action name="checkoutAndEdit" ajax="row">
+          <command class="ext.HHT.part.duplicateCheck.CustomEditPartFormProcessor" method="execute" windowType="popup" url="/netmarkets/jsp/part/edit.jsp"/>
+          <!-- <command class="com.ptc.windchill.enterprise.part.forms.EditPartFormProcessor" method="execute" windowType="popup" url="/netmarkets/jsp/part/edit.jsp"/> -->
+          <includeFilter name="sandboxSharingValidationSimple"/>
+          <includeFilter name="disableForNewObjectInWorkspace"/>
+          <includeFilter name="hideSBHiddenFilter"/>
+          <includeFilter name="hideForAdminLocked"/>
+          <includeFilter name="disableForPartToCadBuildAdminLocked"/>
+          <includeFilter name="scheduledDeliverablesActionSimpleFilter"/>
+      </action>
+
+      <action name="editNewPartInWorkspace" ajax="row">
+          <command class="com.ptc.windchill.enterprise.part.forms.EditNewPartInWorkspaceProcessor" method="execute" windowType="popup" url="/netmarkets/jsp/part/edit.jsp?newInWorkspace=true"/>
+      </action>
+
+      <action name="editCheckedOutPartInWorkspace" ajax="row">
+          <command class="ext.HHT.part.duplicateCheck.CustomEditPartFormProcessor" method="execute" windowType="popup" url="/netmarkets/jsp/part/edit.jsp?checkedOutInWorkspace=true"/>
+          <!-- <command class="com.ptc.windchill.enterprise.part.forms.EditPartFormProcessor" method="execute" windowType="popup" url="/netmarkets/jsp/part/edit.jsp?checkedOutInWorkspace=true"/> -->
+      </action>
+
+      <!-- Edit Part Actions - End -->
+
+      <action name="insertPartWizardStep" preloadWizardPage="false" required="true" resourceBundle="com.ptc.windchill.enterprise.revisionControlled.insertWizardResource">
+           <command class="" method="" windowType="wizard_step"/>
+      </action>
+
+      <action name="part_insert_from_folder" uicomponent="part_insert_from_folder" ajax="row" resourceBundle="com.ptc.windchill.enterprise.revisionControlled.insertWizardResource">
+          <command class="com.ptc.windchill.enterprise.part.forms.InsertPartFormProcessor" method="execute" windowType="popup"/>
+          <includeFilter name="sandboxSharingValidationSimple"/>
+      </action>
+
+      <action name="editPartCommonAttrsWizard" ajax="row">
+        <command class="com.ptc.windchill.enterprise.part.forms.EditPartCommonAttrsFormProcessor" method="execute" windowType="popup"/>
+        <includeFilter name="sandboxSharingValidationSimple"/>
+        <includeFilter name="hideSBHiddenFilter"/>
+		<includeFilter name="hideAdhocVersionFilter"/>
+      </action>
+
+    <!-- Edit Common Attributes action definition for Part Attributes table, need to add an extra action so that validator will not validate launch in context of Part Info Page -->
+      <action name="editPartCommonAttrsAttrTableWizard">
+        <command class="com.ptc.windchill.enterprise.part.forms.EditPartCommonAttrsFormProcessor" method="execute" windowType="popup" url="/netmarkets/jsp/part/editPartCommonAttrsWizard.jsp"/>
+        <includeFilter name="sandboxSharingValidationSimple"/>
+      </action>
+
+      <action name="editPartCommonAttrsWizardStep">
+         <command class="" method="" windowType="wizard_step"/>
+      </action>
+
+      <action name="editAttributesWizStep" id="editAttributesWizStep" preloadWizardPage="false" required="false">
+	<component name="editAttributesWizStep" typeBased="true" windowType="wizard_step"/>
+	</action>
+
+      <action name="addEmptyRow" renderType="GENERAL">
+         <!-- &lt;command class=&quot;com.ptc.netmarkets.team.NmTeamCommands&quot; method=&quot;addEmptyRow&quot; /&gt; -->
+         <command class="" windowType="page" method="javascript:addRowToMultiPartTable1()"/>
+      </action>
+      <action name="removeEmptyRow" ajax="page">
+        <command class="com.ptc.netmarkets.model.NmObjectCommands" method="removeFromClipboard"/>
+        <!-- &lt;command class=&quot;com.ptc.netmarkets.team.NmTeamCommands&quot; method=&quot;removeEmptyRow&quot;/&gt; -->
+      </action>
+
+      <action name="publishToCAD" multiselect="true" selectRequired="true">
+         <command class="com.ptc.windchill.enterprise.part.forms.PublishToCADProcessor" method="execute"/>
+         <includeFilter name="hideForAdminLocked"/>
+      </action>
+
+      <action name="createNewPlaceholder" ajax="row" uicomponent="CREATE_PART" resourceBundle="com.ptc.windchill.enterprise.revisionControlled.insertWizardResource">
+         <command class="com.ptc.windchill.enterprise.part.forms.CreatePartFormProcessor" windowType="popup" method="execute" url="/netmarkets/jsp/part/createPartWizard.jsp?hideRevisionPicker=true&amp;hideAssociatePart=true&amp;isPlaceholderAction=true"/>
+      </action>
+   </objecttype>
+
+
+</listofactions>

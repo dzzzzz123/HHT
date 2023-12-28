@@ -5,7 +5,7 @@
 <%@page import="java.util.Map"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="ext.sap.purchase.AlterAttrProcessorContrller"%>
+<%@page import="ext.sap.purchase.AlterAttrController"%>
 <%@page import="ext.sap.Config"%>
 
 <%
@@ -25,7 +25,6 @@
     nmCommandBean.setContextBean       (new NmContextBean());
 
     Map<String, String[]> paramMap = request.getParameterMap();
-    String oid = NmCommandBean.convert(request.getParameter("oid"));
     String[] soid = new String[] {};
 
     for (Map.Entry<String, String[]> entry : paramMap.entrySet()) {
@@ -43,13 +42,13 @@
         // out.println("</ul>");
     }
 
-    ArrayList<WTPart> partList = AlterAttrProcessorContrller.processSoid(soid);
+    ArrayList<WTPart> partList = AlterAttrController.processSoid(soid);
 %>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>需求信息</title>
+        <title>修改价格价格单位属性</title>
         <link rel="stylesheet" href="<%= basePath %>/netmarkets/jsp/ext/SAP/DataTables/datatables.css" />
         <style>
         </style>
@@ -61,13 +60,14 @@
         <table id="priceTable">
             <tr>
                 <th>部件编号</th>
-                <th>价格单位当前属性</th>
-                <th>价格单位新属性</th>
-                <th>价格当前属性</th>
-                <th>价格新属性</th>
+                <th>当前价格单位</th>
+                <th>新价格单位</th>
+                <th>当前价格</th>
+                <th>新价格</th>
             </tr>
     <%
         for (WTPart part : partList) {
+            if (part!=null){
             String number = part.getNumber();
             String price = Config.getHHT_Price(part);
             String priceUnit = Config.getHHT_PriceUnit(part);
@@ -80,7 +80,7 @@
             <td><input type="text" name="newPrice"></td>
         </tr>
     <%
-        }
+        } }
     %>
         </table>
     <%

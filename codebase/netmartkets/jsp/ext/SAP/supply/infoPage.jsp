@@ -21,17 +21,19 @@
     nmCommandBean.setOut (out);
     nmCommandBean.setContextBean (new NmContextBean());
 
+    // String jsonInput = "{ \"I_MATNR\": \"230820014A\" }";
+    // Entity supplyInfo = SupplyChainService.requestSupplyChain(jsonInput);
+
     String oid = NmCommandBean.convert(request.getParameter("oid"));
-    String jsonInput = "{ \"I_MATNR\": \"230820014A\" }";
-    Entity supplyInfo = SupplyChainService.requestSupplyChain(jsonInput);
     List<Entity> supplyChainList = new ArrayList<>();
     supplyChainList = SupplyChainService.getVar(oid);
 
-    supplyChainList.add(supplyInfo);
-    supplyChainList.add(supplyInfo);
-
     List<IT_MRP2> factory2000 = SupplyChainService.getIT_MRP2(supplyChainList,"2000");
     List<IT_MRP2> factory2100 = SupplyChainService.getIT_MRP2(supplyChainList,"2100");
+
+    String time = SupplyChainService.getVar2(oid);
+
+
     // Map<String, String[]> paramMap = request.getParameterMap();
     // for (Map.Entry<String, String[]> entry : paramMap.entrySet()) {
     //    String key = entry.getKey();
@@ -44,6 +46,7 @@
     //   out.println("</ul>");
     // }
     %>
+    
 
 <!DOCTYPE html>
 <html>
@@ -69,6 +72,7 @@
     </style>
     </head>
     <body>
+        <div>请求供应链信息的时间为：<%= time %><div>
         <% if (supplyChainList.size() > 0) { %>
             <table id="priceTable">
                 <tr>
@@ -85,6 +89,11 @@
                     <th>VMI库存</th>
                 </tr>
         <% for (Entity entity : supplyChainList) { %>
+            <% if (entity == null ) { %>
+                <tr>
+                    <td>访问SAP接口出现问题，请联系管理员！</td>
+                </tr>
+            <% } else{ %>
             <tr>
                 <td name="PartNumber"  value="<%= entity.getPartNumber() %>"><%= entity.getPartNumber() %></td>
                 <td name="MRPBalanceQuantity"  value="<%= entity.getMRPBalanceQuantity() %>"><%= entity.getMRPBalanceQuantity() %></td>
@@ -98,7 +107,7 @@
                 <td name="RedundantPR"  value="<%= entity.getRedundantPR() %>"><%= entity.getRedundantPR() %></td>
                 <td name="VMIInventory"  value="<%= entity.getVMIInventory() %>"><%= entity.getVMIInventory() %></td>
             </tr>
-        <% } %>
+        <% } } %>
             </table>
             <table id="priceTable">
             <tr>

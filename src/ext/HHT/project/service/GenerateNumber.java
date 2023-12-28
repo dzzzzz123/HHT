@@ -3,8 +3,6 @@ package ext.HHT.project.service;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.commons.lang3.StringUtils;
-
 import ext.HHT.Config;
 import ext.ait.util.CommonUtil;
 import wt.projmgmt.admin.Project2;
@@ -20,24 +18,25 @@ public class GenerateNumber {
 	public static String process(Project2 project) {
 		String result = "";
 		try {
-			String category = project.getCategory().toString();
-			String HHT_Classification = Config.getHHT_Classification(project);
-			String year = String.valueOf(project.getCreateTimestamp().getYear());
-			year = StringUtils.substring(year, year.length() - 2);
-			String serialNumber = "";
-			String sql = "SELECT HHT_PROJECT.NEXTVAL FROM DUAL";
-			ResultSet resultSet = CommonUtil.excuteSelect(sql);
+			// String year = String.valueOf(project.getCreateTimestamp().getYear());
+			// year = StringUtils.substring(year, year.length() - 2);
+
+			String HHT_PojectYear = Config.getHHT_PojectYear(project);
+			String sql = "SELECT PROJECTNUMBER FROM PMNUMBER WHERE YEAR = ?";
+			ResultSet resultSet = CommonUtil.excuteSelect(sql, HHT_PojectYear);
 			while (resultSet.next()) {
-				serialNumber = resultSet.getString(1);
+				String serialNumber = CommonUtil.addLead0(resultSet.getString("PROJECTNUMBER"), 3);
+				String newNumber = project.getCategory().toString() + Config.getHHT_Classification(project)
+						+ HHT_PojectYear + serialNumber + "-" + project.getBusinessUnit();
+				System.out.println("newNumber: " + newNumber);
+				Config.setHHT_ProjectNum(project, newNumber);
+				// String sql2 = "UPDATE PROJECT2 SET PROJECTNUMBER = ? WHERE IDA2A2 = ? ";
+				// int affectedRows = CommonUtil.excuteUpdate(sql2, newNumber,
+				// String.valueOf(project.getPersistInfo().getObjectIdentifier().getId()));
+				// System.out.println("affectedRows: " + affectedRows);
+				String sqls = "UPDATE PMNUMBER SET PROJECTNUMBER=? where YEAR=?";
+				CommonUtil.excuteUpdate(sqls, String.valueOf(Integer.parseInt(serialNumber) + 1), HHT_PojectYear);
 			}
-			serialNumber = CommonUtil.addLead0(serialNumber, 3);
-			String facotry = project.getBusinessUnit();
-			String newNumber = category + HHT_Classification + year + serialNumber + "-" + facotry;
-			Config.setHHT_ProjectNum(project, newNumber);
-//			String sql2 = "UPDATE PROJECT2 SET PROJECTNUMBER = ? WHERE IDA2A2 = ? ";
-//			int affectedRows = CommonUtil.excuteUpdate(sql2, newNumber,
-//					String.valueOf(project.getPersistInfo().getObjectIdentifier().getId()));
-//			System.out.println("affectedRows: " + affectedRows);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

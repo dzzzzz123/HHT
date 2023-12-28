@@ -349,9 +349,9 @@ public class PersistenceUtil implements RemoteAccess {
 	 * @throws WTException
 	 */
 	public static WTObject oid2Object(String oid) {
-		ReferenceFactory factory = new ReferenceFactory();
 		try {
-			return (WTObject) factory.getReference("OR:wt.part.WTPart:" + oid).getObject();
+			ReferenceFactory factory = new ReferenceFactory();
+			return (WTObject) factory.getReference(oid).getObject();
 		} catch (WTRuntimeException e) {
 			e.printStackTrace();
 		} catch (WTException e) {

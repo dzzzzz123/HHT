@@ -43,8 +43,10 @@ import com.ptc.core.lwc.server.TypeDefinitionServiceHelper;
 
 import wt.change2.ChangeException2;
 import wt.change2.ChangeHelper2;
+import wt.change2.ChangeRequestIfc;
 import wt.change2.WTChangeActivity2;
 import wt.change2.WTChangeOrder2;
+import wt.change2.WTChangeRequest2;
 import wt.fc.PersistenceHelper;
 import wt.fc.QueryResult;
 import wt.fc.WTObject;
@@ -690,6 +692,10 @@ public class CommonUtil implements RemoteAccess {
 			} else if (obj instanceof WTChangeActivity2) {
 				WTChangeActivity2 eca = (WTChangeActivity2) obj;
 				QueryResult qr = ChangeHelper2.service.getChangeablesAfter(eca);
+				list = CommonUtil.getListFromQR(qr, targetType);
+			} else if (obj instanceof WTChangeRequest2) {
+				WTChangeRequest2 ecr = (WTChangeRequest2) obj;
+				QueryResult qr = ChangeHelper2.service.getChangeables((ChangeRequestIfc) ecr);
 				list = CommonUtil.getListFromQR(qr, targetType);
 			} else {
 				System.out.println("数据不正确!");

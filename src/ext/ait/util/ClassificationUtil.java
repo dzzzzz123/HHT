@@ -2,6 +2,7 @@ package ext.ait.util;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import wt.facade.classification.ClassificationFacade;
 import wt.meta.LocalizedValues;
 import wt.method.RemoteAccess;
 import wt.part.WTPart;
+import wt.pom.WTConnection;
 import wt.session.SessionHelper;
 import wt.util.WTException;
 
@@ -96,15 +98,52 @@ public class ClassificationUtil implements RemoteAccess {
 	 * @return display 显示名称
 	 */
 	public static String getDisplayByInternal(String internal) {
-		String display = "";
+		String display = internal;
 		String sql = "SELECT VALUE FROM LWCLOCALIZABLEPROPERTYVALUE WHERE IDA3B4 IN ( SELECT IDA2A2 FROM LWCENUMERATIONENTRY WHERE NAME= ? )";
 		try {
 			ResultSet resultSet = CommonUtil.excuteSelect(sql, internal.toString());
 			while (resultSet.next()) {
 				display = resultSet.getString("VALUE");
 			}
+			resultSet.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
+		return display;
+	}
+
+	/**
+	 * 根据查询数据库从全局枚举的内部名称获取显示名称 ZeroStickers->零贴
+	 * 
+	 * @param internal 内部名称
+	 * @return display 显示名称
+	 */
+	public static String getDisplayByInternal(String internal, WTConnection connection) {
+		System.out.println("参数2:" + internal);
+
+		String display = "";
+		String sql = "SELECT VALUE FROM LWCLOCALIZABLEPROPERTYVALUE WHERE IDA3B4 IN ( SELECT IDA2A2 FROM LWCENUMERATIONENTRY WHERE NAME = '"
+				+ internal + "' )";
+
+		PreparedStatement statement = null;
+		try {
+			statement = connection.prepareStatement(sql);
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				display = resultSet.getString("VALUE");
+			}
+			resultSet.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		return display;
 	}
@@ -217,14 +256,8 @@ public class ClassificationUtil implements RemoteAccess {
 			ResultSet resultSet = CommonUtil.excuteSelect(sql, IBAName, classNode);
 			while (resultSet.next()) {
 				String oid = resultSet.getString("IDA3A4");
-				WTPart part = null;
-				try {
-					part = (WTPart) PersistenceUtil.oid2Object(oid);
-				} catch (Exception e) {
-				}
-				if (part != null) {
-					partList.add(part);
-				}
+				WTPart part = (WTPart) PersistenceUtil.oid2Object(oid);
+				partList.add(part);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

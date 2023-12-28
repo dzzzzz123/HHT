@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.ptc.com/schema/mvc"	
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+http://www.ptc.com/schema/mvc http://www.ptc.com/schema/mvc/mvc-10.0.xsd">
+
+	<!-- Configurations in this file override all other configurations -->
+	<!-- BOM成本 -->
+	<bean id="CustingServlet" class="ext.sap.Custing.CustingServlet"/>
+	<bean id="CustingPdfServlet" class="ext.sap.Custing.CustingPdfServlet"/>
+	<bean class="ext.sap.Custing.CustingBuilder"/>
+	<!-- 供应商主数据 -->
+	<bean id="SupplierMasterDataServlet" class="ext.sap.SupplierMasterData.SupplierMasterDataServlet"/>
+	<!-- 成本中心 -->
+	<bean id="CostCenterServlet" class="ext.sap.CostCenter.CostCenterServlet"/>
+	<!-- 项目需求 -->
+	<bean id="InsertRequirementServlet" class="ext.requirement.insert.InsertRequirementServlet"/>
+	<bean id="editRequirementServlet" class="ext.requirement.edit.editRequirementServlet"/>
+	<bean class="ext.requirement.info.RequirementInfoBuilder"/>
+	<!-- 批量下载图纸 -->
+	<bean id="BatchDownloadZipPDFServlet" class="ext.signature.BatchDownloadZipPDFServlet"/>
+	<!-- 单点登录 -->
+	<bean id="UserAccess" class="ext.HHT.singleSignOn.UserAccess"/>
+	<!-- SAP主数据返参数表格 -->
+	<bean class="ext.sap.masterData.mvc.ResultTableBuilder"/>
+	<!-- 策采核价表格 -->
+	<bean class="ext.sap.purchase.PurchaseAlterTable"/>
+</beans>

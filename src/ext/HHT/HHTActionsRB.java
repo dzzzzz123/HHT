@@ -31,5 +31,18 @@ public class HHTActionsRB extends WTListResourceBundle {
 	public static final String PRIVATE_CONSTANT_10 = "HHTWizard.send2SRM.tooltip";
 	@RBEntry("testcase_new.png")
 	public static final String PRIVATE_CONSTANT_11 = "HHTWizard.send2SRM.icon";
-
+	@RBEntry("Track Hours Wizard")
+	public static final String PRIVATE_CONSTANT_12 = "HHTWizard.trackHoursWizard.title";
+	@RBEntry("Track Hours Wizard")
+	public static final String PRIVATE_CONSTANT_13 = "HHTWizard.trackHoursWizard.description";
+	@RBEntry("Track Hours Wizard")
+	public static final String PRIVATE_CONSTANT_14 = "HHTWizard.trackHoursWizard.tooltip";
+	@RBEntry("build_part_all.gif")
+	public static final String PRIVATE_CONSTANT_15 = "HHTWizard.trackHoursWizard.icon";
+	@RBEntry("Generate Project Number")
+	public static final String PRIVATE_CONSTANT_16 = "HHTWizard.generateProjectNumber.description";
+	@RBEntry("Generate Project Number")
+	public static final String PRIVATE_CONSTANT_17 = "HHTWizard.generateProjectNumber.tooltip";
+	@RBEntry("new_option_set.gif")
+	public static final String PRIVATE_CONSTANT_18 = "HHTWizard.generateProjectNumber.icon";
 }

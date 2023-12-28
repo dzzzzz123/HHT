@@ -18,10 +18,11 @@ import com.ptc.netmarkets.util.beans.NmCommandBean;
 import ext.ait.util.CommonUtil;
 import ext.sap.Config;
 import wt.util.WTException;
+import wt.workflow.engine.WfProcess;
 import wt.workflow.work.WfAssignedActivity;
 import wt.workflow.work.WorkItem;
 
-@ComponentBuilder(value = { "masterData.result.table" }, type = ComponentBuilderType.CONFIG_AND_DATA)
+@ComponentBuilder(value = { "sap.result.list" }, type = ComponentBuilderType.CONFIG_AND_DATA)
 public class ResultTableBuilder extends AbstractComponentBuilder {
 
 	@Override
@@ -35,11 +36,11 @@ public class ResultTableBuilder extends AbstractComponentBuilder {
 			if (content instanceof WorkItem) {
 				WorkItem wi = (WorkItem) content;
 				WfAssignedActivity wfAssignedActivity = (WfAssignedActivity) wi.getSource().getObject();
-				String value = (String) wfAssignedActivity.getContext().getValue(Config.getJsonVar());
+				WfProcess wfProcess = wfAssignedActivity.getParentProcess();
+				String value = (String) wfProcess.getContext().getValue(Config.getJsonVar());
 				result = CommonUtil.getEntitiesFromJson(value.toString(), Result.class, "");
 			}
 		}
-
 //		result.add(new Result("A10000001", "测试物料01", "ERROR", "SAP未给出错误信息", new Date().toString()));
 //		result.add(new Result("A10000002", "测试物料02", "ERROR", "SAP未给出错误信息", new Date().toString()));
 //		result.add(new Result("A10000003", "测试物料03", "ERROR", "SAP未给出错误信息", new Date().toString()));
@@ -74,6 +75,10 @@ public class ResultTableBuilder extends AbstractComponentBuilder {
 		ColumnConfig SourceChildPartConfig = configFactory.newColumnConfig("time", true);
 		SourceChildPartConfig.setLabel("集成时间");
 		tableConfig.addComponent(SourceChildPartConfig);
+
+		ColumnConfig SAPMarkConfig = configFactory.newColumnConfig("sapMark", true);
+		SAPMarkConfig.setLabel("是否已在SAP中创建");
+		tableConfig.addComponent(SAPMarkConfig);
 
 		return tableConfig;
 	}

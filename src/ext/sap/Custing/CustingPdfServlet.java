@@ -113,7 +113,7 @@ public class CustingPdfServlet implements Controller{
 				BaseFont bfChinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
 
 				Font fontTitle = new Font(bfChinese, 18, Font.BOLD);
-				Font fontContent = new Font(bfChinese, 10, Font.NORMAL);
+				Font fontContent = new Font(bfChinese, 7, Font.NORMAL);
 
 				Paragraph title = new Paragraph(titleName, fontTitle);
 				//居中 0靠左 1，居中 2，靠右
@@ -130,10 +130,13 @@ public class CustingPdfServlet implements Controller{
 				// 空一行
 				document.add(emptyRow);
 
-				int columnNum = 6;
+				int columnNum = 7;
 				PdfPTable headerTable = new PdfPTable(columnNum);
 				headerTable.setWidthPercentage(100);
-				int headerwidths[] = {10, 6, 5, 5,5,5};
+				headerTable.setSplitRows(false);
+				headerTable.completeRow();
+				headerTable.setTotalWidth(500);
+				int headerwidths[] = {10, 17, 3, 5,3,3,5};
 				headerTable.setWidths(headerwidths);
 
 				// 构建表格头 （根据需求修改，也可作为入参传进来）
@@ -142,6 +145,7 @@ public class CustingPdfServlet implements Controller{
 				headList.add("名称");
 				headList.add("版本");
 				headList.add("状态");
+				headList.add("单位");
 				headList.add("数量");
 				headList.add("总价");
 				for (int i = 0; i < headList.size(); i++) {
@@ -169,6 +173,7 @@ public class CustingPdfServlet implements Controller{
 					createTableCell(isString(data.get(i).get("name")), fontContent, headerTable,false);
 					createTableCell(isString(data.get(i).get("version")), fontContent, headerTable,false);
 					createTableCell(isString(data.get(i).get("status")), fontContent, headerTable,false);
+					createTableCell(isString(data.get(i).get("unit")), fontContent, headerTable,false);
 					createTableCell(isString(data.get(i).get("amount")), fontContent, headerTable,false);
 					createTableCell(isString(data.get(i).get("price")), fontContent, headerTable,false);
 				}
@@ -218,7 +223,7 @@ public class CustingPdfServlet implements Controller{
 			pdfPCell.setHorizontalAlignment(Element.ALIGN_LEFT);
 			pdfPCell.setVerticalAlignment(1);
 			if(isHw) {
-				pdfPCell.setColspan(5);
+				pdfPCell.setColspan(6);
 				if("合计：".equals(content)) {
 					pdfPCell.setVerticalAlignment(2);
 					pdfPCell.setHorizontalAlignment(2);

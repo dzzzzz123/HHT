@@ -19,9 +19,6 @@ public class CustomEditPartFormProcessor extends EditPartFormProcessor {
 
 	@Override
 	public FormResult doOperation(NmCommandBean nmCommandBean, List<ObjectBean> list) throws WTException {
-		WTPart part = (list.size() > 0)
-				? (list.get(0).getObject() instanceof WTPart ? (WTPart) list.get(0).getObject() : null)
-				: null;
 		System.out.println("----------------编辑物料保税校验----------------");
 		String result = BondedCheckService.process(nmCommandBean);
 		if (StringUtils.isNotBlank(result)) {
@@ -32,14 +29,20 @@ public class CustomEditPartFormProcessor extends EditPartFormProcessor {
 		if (StringUtils.isNotBlank(result2)) {
 			throw new WTException(result2);
 		}
-		if (part == null) {
-			System.out.println("----------------编辑物料生成物料编号----------------");
-			String result3 = MaterialNumberService.process(part);
-			if (StringUtils.isNotBlank(result3)) {
-				throw new WTException(result3);
-			}
-		}
 		return super.doOperation(nmCommandBean, list);
+	}
+
+	@Override
+	public FormResult postProcess(NmCommandBean nmCommandBean, List<ObjectBean> list) throws WTException {
+		WTPart part = (list.size() > 0)
+				? (list.get(0).getObject() instanceof WTPart ? (WTPart) list.get(0).getObject() : null)
+				: null;
+		System.out.println("----------------编辑成品物料生成成品物料正式编号----------------");
+		String result3 = MaterialNumberService.process(part);
+		if (StringUtils.isNotBlank(result3)) {
+			throw new WTException(result3);
+		}
+		return super.postProcess(nmCommandBean, list);
 	}
 
 }

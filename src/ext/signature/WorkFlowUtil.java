@@ -13,6 +13,7 @@ import com.ptc.windchill.enterprise.workflow.WfDataUtilitiesHelper;
 import wt.change2.WTChangeActivity2;
 import wt.doc.WTDocument;
 import wt.epm.EPMDocument;
+import wt.epm.EPMDocumentType;
 import wt.fc.ObjectIdentifier;
 import wt.fc.ObjectReference;
 import wt.fc.Persistable;
@@ -39,6 +40,7 @@ import wt.workflow.work.WfAssignedActivity;
 import wt.workflow.work.WorkItem;
 
 public class WorkFlowUtil {
+	private static EPMDocumentType CADDRAWING = EPMDocumentType.toEPMDocumentType("CADDRAWING");
 
 	/***
 	 * 流程反签，流程审批人、审批时间、备注等信息写到流程变量中
@@ -220,12 +222,19 @@ public class WorkFlowUtil {
 			System.out.println("Sign Info :" + new JSONObject(signInfo).toJSONString());
 			if (pbo instanceof PromotionNotice) {
 				PromotionNotice pn = (PromotionNotice) pbo;
+				System.out.println("qqqqqqqqqqqqqqqqqqqq" + pn.getNumber());
 				// 获取流程的多个对象
 				QueryResult qr = MaturityHelper.service.getPromotionTargets(pn);
 				while (qr.hasMoreElements()) {
 					Object obj = qr.nextElement();
 					if (obj instanceof EPMDocument) {
-						PDFSign.signPDFVisualization((EPMDocument) obj, signInfo, "PDF图纸");
+						EPMDocument epmDocument = (EPMDocument) obj;
+						System.out.println("qqqqqqqqqqqqqqqqqqqq" + epmDocument.getDocType());
+						if (CADDRAWING.equals(epmDocument.getDocType())) {
+
+							PDFSign.signPDFVisualization((EPMDocument) obj, signInfo, "PDF图纸");
+						}
+
 					}
 				}
 			} else if (pbo instanceof WTChangeActivity2) {
@@ -275,7 +284,7 @@ public class WorkFlowUtil {
 						String date = SignatureHelper.DATEFORMATE.format(wfvoting.getTimestamp());
 						info[1] = date;
 						// info[2] = wfvoting.getUserRef().getName();
-						info[2] = wfvoting.getUserRef().getFullName();
+						info[2] = wfvoting.getUserRef().getName();
 						info[3] = wfvoting.getUserComment();
 					}
 

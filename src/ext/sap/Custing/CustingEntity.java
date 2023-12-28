@@ -9,6 +9,7 @@ public class CustingEntity {
 	private boolean Master = false;
 	private String Parent;
 	private String status;
+	private String unit;
 
 	public CustingEntity() {
 	}
@@ -83,6 +84,14 @@ public class CustingEntity {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getUnit() {
+		return unit;
+	}
+
+	public void setUnit(String unit) {
+		this.unit = unit;
 	}
 
 }

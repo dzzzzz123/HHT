@@ -44,7 +44,7 @@ import wt.util.WTProperties;
 
 public class PDFSign {
 	private static WTPart getPartbyEPM(EPMDocument epm) {
-		EPMDocument prt = null;
+		EPMDocument epmDoc = null;
 		WTPart part = null;
 		try {
 			QueryResult qr = PersistenceHelper.manager.navigate(epm, "references",
@@ -52,21 +52,24 @@ public class PDFSign {
 			System.out.println("qr" + qr.size());
 			while (qr.hasMoreElements()) {
 				Object object = qr.nextElement();
-				System.out.println("object" + object);
+				System.out.println("object: " + object);
 				if (object instanceof EPMDocumentMaster) {
 					EPMDocumentMaster master = (EPMDocumentMaster) object;
-					prt = (EPMDocument) VersionUtil.getLatestObjectByMaster(master);
-					System.out.println("prt" + prt);
+					epmDoc = (EPMDocument) VersionUtil.getLatestObjectByMaster(master);
+					System.out.println("EPMDocument: " + epmDoc);
 				}
-			}
-			QueryResult qr2 = PersistenceHelper.manager.navigate(prt, EPMBuildRule.BUILD_TARGET_ROLE,
-					EPMBuildRule.class, true);
-			System.out.println("qr2" + qr2.size());
-			while (qr2.hasMoreElements()) {
-				Object object = qr2.nextElement();
-				System.out.println("object" + object);
-				if (object instanceof WTPart) {
-					part = (WTPart) object;
+				if (!epmDoc.getDocType().toString().equals("FORMAT")) {
+					QueryResult qr2 = PersistenceHelper.manager.navigate(epmDoc, EPMBuildRule.BUILD_TARGET_ROLE,
+							EPMBuildRule.class, true);
+					System.out.println("qr2: " + qr2.size());
+					while (qr2.hasMoreElements()) {
+						Object object2 = qr2.nextElement();
+						System.out.println("object2: " + object2);
+						if (object2 instanceof WTPart) {
+							part = (WTPart) object2;
+							System.out.println("part: " + part);
+						}
+					}
 				}
 			}
 		} catch (QueryException e) {
@@ -74,7 +77,6 @@ public class PDFSign {
 		} catch (WTException e) {
 			e.printStackTrace();
 		}
-
 		return part;
 	}
 
@@ -176,13 +178,16 @@ public class PDFSign {
 					TypeIdentifier typeIdentifier = TypeIdentifierUtility.getTypeIdentifier(doc);
 					TypeDefinitionReadView typeDefView = TypeDefinitionServiceHelper.service
 							.getTypeDefView(typeIdentifier);
+					String docType = doc.getDocType().getDisplay(Locale.CHINA);
 					if (typeDefView != null) {
 						String typename = typeIdentifier.getTypename();
 						String displayName = typeDefView.getDisplayName();
 						System.out.println("002-check PDF Document Type: " + typename);
 						System.out.println("002-check PDF Document Type Display name: " + displayName);
+						System.out.println("002-check PDF Document Type docType: " + docType);
 						if (!StringUtils.equalsIgnoreCase("wt.doc.WTDocument", typename)) {
-							documentType = displayName + "." + documentType;
+							// documentType = docType + "." + displayName + "." + documentType;
+							documentType = docType + "." + displayName + "." + documentType;
 						}
 					}
 				}
@@ -238,7 +243,7 @@ public class PDFSign {
 				} else if (persistable instanceof WTDocument) {
 					WTDocument wtDocument = (WTDocument) persistable;
 					String newFileName = wtDocument.getName() + "_" + wtDocument.getVersionIdentifier().getValue() + "_"
-							+ wtDocument.getLifeCycleState().getDisplay(Locale.CHINA) + ".pdf";
+							+ "已发布.pdf";
 					foundPDF.setFileName(newFileName);
 					PersistenceHelper.manager.save(foundPDF);
 				}

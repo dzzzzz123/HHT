@@ -1,0 +1,381 @@
+<?xml version="1.0"?>
+<!DOCTYPE listofactions SYSTEM 'actions.dtd'>
+<listofactions>
+
+   <objecttype name="principal" class="wt.org.WTPrincipal" resourceBundle="com.ptc.windchill.principal.administration.administrationResource">
+      <action name="participantAdministration">
+         <description>The action for the Participant Administration table launched from the utilities page. </description>
+         <command url="netmarkets/jsp/administration/participantAdministration.jsp" windowType="page"/>
+      </action>  
+      <action name="addParticipantToPAList" enabledwhensuspended="true" ajax="row">
+         <description>Add participants to the participant administration table.  Table action that will launch a picker.</description>
+         <command class="com.ptc.windchill.principal.administration.ParticipantCommands" method="addPrincipalsToParticipantAdmin" windowType="popup"/>
+      </action>
+      <action name="removeParticipantFromPAList" enabledwhensuspended="true" ajax="row">
+         <description>Remove participants from the participant administration table.</description>
+         <command class="com.ptc.windchill.principal.administration.ParticipantCommands" method="removePrincipalsFromParticipantAdmin" onClick="PTC.participantAdministration.utils.selectRequiredAndConfirmation(event,target,table,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_REMOVE&apos;)"/>
+      </action>
+      <action name="removeParticipantFromCache" enabledwhensuspended="true" ajax="row" uicomponent="removeParticipantFromCache">
+         <description>Remove the selected principal(s) from the principal cache.</description>
+         <command class="com.ptc.windchill.principal.administration.ParticipantCommands" method="removeParticipantFromCache" onClick="(PTC.participantAdministration)?PTC.participantAdministration.utils.selectRequiredAndConfirmation(event,target,table,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_REMOVE&apos;):JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_REMOVE&apos;)"/>
+         <includeFilter name="participantAdminActionFilter"/>
+         <includeFilter name="disconnectedPrincipalActionsFilter"/>
+		 <includeFilter name="disabledPrincipalActionsFilter"/>
+      </action>
+      <action name="deleteParticipantFromWindchill" enabledwhensuspended="true" ajax="row" uicomponent="deleteParticipantFromWindchill">
+         <description>Delete the selected principal(s) from Windchill.</description>
+         <command class="com.ptc.windchill.principal.administration.ParticipantCommands" method="deleteParticipantFromWindchill" onClick="PTC.participantAdministration.utils.selectRequiredAndConfirmation(event,target,table,&apos;com.ptc.windchill.principal.administration.administrationResource.CONFIRM_DELETE_FROM_WINDCHILL&apos;)"/>
+         <includeFilter name="deleteActionValidator" />
+         <includeFilter name="participantAdminActionFilter"/>
+      </action>
+      <action name="deleteParticipant" enabledwhensuspended="true" ajax="row" uicomponent="deleteParticipant">
+         <description>Delete the selected principal(s) from Windchill and Directory Service.</description>
+         <command class="com.ptc.windchill.principal.administration.ParticipantCommands" method="deleteParticipant" onClick="PTC.participantAdministration.utils.selectRequiredAndConfirmation(event,target,table,&apos;com.ptc.windchill.principal.administration.administrationResource.CONFIRM_DELETE_FROM_WINDCHILL_AND_DS&apos;)"/>
+         <includeFilter name="deleteActionValidator" />
+         <includeFilter name="deleteFromWindchillAndDSActionValidator" />
+         <includeFilter name="readOnlyLdapActionValidator" />
+         <includeFilter name="participantAdminActionFilter"/>
+         <includeFilter name="disconnectedPrincipalActionsFilter"/>
+      </action>
+      <action name="find_disconnected" enabledwhensuspended="true" ajax="row" uicomponent="find_disconnected">
+         <description>Search for disconnected principals and add them to the Participant Administration page.</description>
+         <command class="com.ptc.windchill.principal.administration.ParticipantCommands" method="addPrincipalsToParticipantAdmin" windowType="popup"/>
+      </action>
+      <action name="purge_cache" enabledwhensuspended="true" ajax="page" uicomponent="purge_cache">
+         <description>Clear the entire principal cache.</description>
+         <command class="com.ptc.windchill.principal.administration.ParticipantCommands" method="purgeCache" onClick="JCAConfirm(event,&apos;com.ptc.windchill.principal.administration.administrationResource.CONFIRM_PURGE_CACHE&apos;)"/>
+      </action>
+      <action name="reconnectDisconnectedPrincipal" enabledwhensuspended="true" ajax="row">
+         <description>Reconnect a disconnected principal.</description>
+         <command class="com.ptc.windchill.principal.administration.ParticipantCommands" method="reconnectPrincipal" windowType="popup"/>
+      </action>
+      <action name="domainPicker">
+         <command class="" method="" url="netmarkets/jsp/domainPicker/domainPicker.jsp" windowType="popup"/>
+      </action>
+      <action name="principalApplyButton" id="PJL_wizard_apply">
+         <description>Custom apply button to clear fields on principal create wizards.</description>
+         <command class="" method="" windowType="page" url="javascript:PTC.participantAdministration.onPrincipalApply();"/>
+      </action>
+   </objecttype>
+   
+   <objecttype name="org" class="wt.inf.container.OrgContainer" resourceBundle="com.ptc.windchill.principal.org.OrganizationActionsRB">
+      <action name="view" enabledwhensuspended="true">
+         <description>The action to launch the info/detail page for the organization</description>
+         <command windowType="page"/>
+      </action>
+      <action name="removeFromCreators" enabledwhensuspended="true" selectRequired="true" ajax="row">
+         <description>Remove a User from the organization creators.  Table action.</description>
+         <command class="com.ptc.windchill.principal.org.OrganizationCommands" method="removeFromCreators" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_REMOVE&apos;)"/>
+      </action>
+      <action name="addToCreators" enabledwhensuspended="true">
+         <description>Add a user to the organization creators.  Table action that will launch a picker.</description>
+         <command class="com.ptc.windchill.enterprise.picker.principal.PrincipalCommands" method="addPrincipal" windowType="popup"/>
+      </action>
+      <action name="updateOrg" enabledwhensuspended="true">
+         <description>Action to edit the properties of the organization.</description>
+         <command class="com.ptc.windchill.principal.org.processor.EditOrgContainerFormProcessor" method="execute" windowType="popup"/>
+         <includeFilter name="updateActionValidator" />
+      </action>
+      <action name="addRolesToOrg" ajax="row">
+         <description>Action to add roles to the organization.  Launches a window for role creation.</description>
+         <command class="com.ptc.windchill.principal.org.OrganizationCommands" method="addRolesToOrg" windowType="popup"/>
+         <access name="update"/>
+      </action>
+      <action name="addRolesToOrg_step">
+         <description>step for add role wizard</description>
+         <command class="" method="" windowType="wizard_step"/>
+      </action>
+      <action name="subscribe">
+         <description>Action to subscribe to an organization</description>
+         <command class="com.ptc.windchill.principal.org.OrganizationCommands" method="subscribe"/>
+      </action>
+      <action name="unsubscribe" installType="PDM|PJL">
+         <description>Action to unsubscribe to an organization. </description>
+         <command class="com.ptc.windchill.principal.org.OrganizationCommands" method="unsubscribe"/>
+      </action>
+      <action name="org_create" installType="PDM|PJL" ajax="row">
+         <description>Toolbar action to create an organization.  Will launch a create wizard.</description>
+         <command class="com.ptc.windchill.principal.org.processor.CreateOrgContainerFormProcessor" method="execute" windowType="popup"/>
+      </action>
+      <action name="list_hideRoleFromOrg" ajax="row" selectRequired="true">
+         <description>Toolbar action to hide a role from use within an organization.</description>
+         <command class="com.ptc.windchill.principal.org.OrganizationCommands" method="list_hideRoleFromOrg"/>
+      </action>
+      <action name="list_showRoleToOrg" ajax="row" selectRequired="true">
+         <description>Toolbar action to show a role for use within an organization.</description>      
+         <command class="com.ptc.windchill.principal.org.OrganizationCommands" method="list_showRoleToOrg"/>
+      </action>
+      <action name="hideRoleFromOrg" ajax="row" selectRequired="true">
+         <description>Row action to hide a role from use within an organization.</description>
+         <command class="com.ptc.windchill.principal.org.OrganizationCommands" method="hideRoleFromOrg"/>
+      </action>
+      <action name="showRoleToOrg" ajax="row" selectRequired="true">
+         <description>Row action to show a role for use within an organization.</description>      
+         <command class="com.ptc.windchill.principal.org.OrganizationCommands" method="showRoleToOrg"/>
+      </action>
+      <action name="removeRoleFromOrg" ajax="row" selectRequired="true">
+         <description>Toolbar and row action to remove a role from use within an organization.  Only organization created custom roles can be removed.</description>        
+         <command class="com.ptc.windchill.principal.role.RoleCommands" method="removeCustomRoleFromOrg" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_REMOVE&apos;)"/>
+      </action>
+      <action name="createOrgTemplate" enabledwhensuspended="true">
+         <description>Action to create a template for an org.</description>      
+         <command url="netmarkets/jsp/templates/create.jsp" class="com.ptc.windchill.principal.template.processor.CreateContainerTemplateFormProcessor" method="execute" windowType="popup"/>
+      </action>
+   </objecttype>
+
+   <objecttype name="user" class="wt.org.WTUser" resourceBundle="com.ptc.windchill.principal.user.userActionsRB">
+       <action name="removeFromAdmin" enabledwhensuspended="true" selectRequired="true">
+          <description>Toolbar action to remove a user from the admin role of an orgnization.</description>       
+          <command class="com.ptc.windchill.principal.user.UserCommands" method="removeFromAdmin" onClick="PTC.orgAdministration.utils.selectRequiredAndConfirmation(event,target,table,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_REMOVE&apos;)"/>
+       </action>
+       <action name="addToAdmin" enabledwhensuspended="true">
+         <description>Toolbar action to add a user to the admin role of an orgnization.</description>       
+         <command class="com.ptc.windchill.enterprise.picker.principal.PrincipalCommands" method="addPrincipal" windowType="popup"/>
+       </action>
+       <action name="create" ajax="row">
+         <description>Toolbar action to create a user.  Will launch a create wizard.</description>
+         <command class="com.ptc.windchill.principal.user.processor.CreateUserFormProcessor" method="execute" windowType="popup"/>
+       </action>
+       <action name="updateUser" ajax="row">
+         <description>Actions menu item to edit selected user</description>      
+         <command class="com.ptc.windchill.principal.user.processor.EditUserFormProcessor" method="execute" windowType="popup"/>
+         <includeFilter name="updateActionValidator" />         
+		 <includeFilter name="disabledPrincipalActionsFilter"/>
+       </action>      
+       <action name="saveAsNewUser" ajax="row">
+         <description>Actions menu item to make a save as new user from selected user</description>      
+         <command class="com.ptc.windchill.principal.user.processor.CreateUserFormProcessor" method="execute" windowType="popup"/>
+       </action>
+      <action name="editAttributesWizStepForUser">
+         <description>Wizard step for group edit wizard</description>      
+         <command windowType="wizard_step"/>
+      </action>
+       <action name="defineProfileMemberWizStep" resourceBundle="com.ptc.windchill.principal.user.userActionsRB">
+         <description>Profiles wizard step for user PA create and edit wizard</description>      
+         <command windowType="wizard_step"/>
+       </action>
+       <action name="readOnlyProfileMember" resourceBundle="com.ptc.windchill.principal.user.userActionsRB">
+         <description>Profiles wizard step for user PA create and edit wizard</description>      
+         <component name="principaladmin.principal.listPAProfileMembers" windowType="page"/>
+       </action>
+      <action name="attributeVisibilityReport" resourceBundle="com.ptc.windchill.principal.user.userActionsRB">
+         <description>Display of attributes user has visibility to on User detail page from PA</description>      
+         <component name="principaladmin.user.attributeVisibilityReport" windowType="page"/>
+      </action>
+      <action name="setLocalTimeZoneForUser" enabledwhensuspended="true">
+         <description>Is this action still used?</description>
+         <command class="com.ptc.netmarkets.user.NmUserCommands" method="setLocalTimeZoneForUser" windowType="popup"/>
+      </action>
+	  
+	  
+	  
+        <!-- <action name="changePassword" checkaccess="true">
+         <description>Allows the user to change their password.  Is only available if the system property to allow it is set.</description>
+         <command class="com.ptc.netmarkets.user.NmPasswordCommands" method="changePassword" windowType="popup"/>
+         <access name="update"/>
+      </action>-->
+	  <action name="changePassword" checkaccess="true">
+         <description>Allows the user to change their password.  Is only available if the system property to allow it is set.</description>
+         <command class="ext.HHT.singleSignOn.CusNmPasswordCommands" method="changePassword" windowType="popup"/>
+         <access name="update"/>
+      </action>
+	  
+	  
+	  
+	  
+      <action name="changePasswordStep" afterJS="after">
+         <description>The wizard step for change password action.</description>
+         <command windowType="wizard_step"/>
+         <includeFilter name="readOnlyLdapActionValidator" />
+      </action>
+    
+      <action name="editPasswordAttributeWizStep" afterJS="afterPassword">
+         <description>The wizard step for change password action.</description>
+         <component name="com.ptc.windchill.user.editPasswordAttributeWizStep" windowType="wizard_step"/>
+      </action>
+      <action name="updatePhoto" checkaccess="true">
+          <description>Allows the user to modify the photo that is used in their profile and information pages.</description>
+          <command class="com.ptc.netmarkets.user.NmUserCommands" method="updatePhoto" windowType="popup"/>
+          <access name="update"/>
+      </action>
+      <action name="updatePhotoStep">
+         <description>The wizard step for changing photo action.</description>
+         <command windowType="wizard_step"/>
+      </action>
+      
+      <action name="updateSignatureStep">
+         <description>The wizard step for changing signature action.</description>
+         <command windowType="wizard_step"/>
+      </action>
+      
+
+   </objecttype>
+
+   <objecttype name="group" class="wt.org.WTGroup" resourceBundle="com.ptc.windchill.principal.group.GroupActionsRB">
+      <action name="create">
+         <description>Create a group.</description>
+         <command class="com.ptc.windchill.principal.group.processor.CreateGroupFormProcessor" method="execute" windowType="popup"/>
+      </action>
+
+      <action name="createFromPA" ajax="row">
+         <description>Create a group from the Participant Administrator.</description>
+         <command class="com.ptc.windchill.principal.group.processor.CreateGroupFormProcessor" method="execute" windowType="popup"/>
+      </action>
+      
+      <action name="defineGroupMemberWizStep">
+         <description>Wizard step for group PA create and edit wizard</description>      
+         <component name="principaladmin.group.listPAGroupMembers" windowType="wizard_step"/>
+      </action>
+      
+      <action name="defineGroupGroupWizStep">
+         <description>Wizard step for PA create and edit wizards.  This step is to display groups in a table that the user or group being created should be added to on create or edit.</description>      
+         <component name="principaladmin.group.listPAGroups" windowType="wizard_step"/>
+      </action>
+      
+      <action name="copyToGroup" multiselect="true" selectRequired="true">
+         <command class="com.ptc.windchill.principal.group.processor.CopyGroupFormProcessor" method="execute" onClick="onClickValidation( event, &apos;copyToGroup&apos; )" windowType="no_content"/>
+      </action>
+      
+      <action name="pasteToGroup" ajax="row">
+         <command class="com.ptc.windchill.principal.group.processor.PasteToGroupFormProcessor" method="execute"/>
+      </action>
+      
+      <action name="delete_list" selectRequired="true">
+         <command class="com.ptc.windchill.principal.group.processor.DeleteGroupFormProcessor" method="execute" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE&apos;)"/>
+      </action>
+
+      <action name="deleteGroups" selectRequired="true">
+         <command class="com.ptc.windchill.principal.group.processor.DeleteGroupFormProcessor" method="execute" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE&apos;)"/>
+      </action>
+
+      <action name="updateGroup" ajax="row">
+         <description>Launch a wizard to edit a group.</description>
+         <command class="com.ptc.windchill.principal.group.processor.EditGroupFormProcessor" method="update" windowType="popup"/>
+         <includeFilter name="updateActionValidator" />
+         <includeFilter name="participantAdminActionFilter" />
+		 <includeFilter name="disconnectedPrincipalActionsFilter"/>         
+		 <includeFilter name="disabledPrincipalActionsFilter"/>
+      </action>
+      
+      <action name="editFromPA" ajax="row">
+         <description>Launch a wizard to edit a group from the Participant Administrator.</description>
+         <command class="com.ptc.windchill.principal.group.processor.EditGroupFormProcessor" method="update" windowType="popup"/>
+         <includeFilter name="participantAdminActionFilter"/>         
+         <includeFilter name="updateActionValidator" />
+         <includeFilter name="disconnectedPrincipalActionsFilter"/>
+		 <includeFilter name="disabledPrincipalActionsFilter"/>
+      </action>
+      <action name="recompute">
+         <description>Recompute all container teams where this group is a member.</description>
+         <command class="com.ptc.windchill.principal.group.GroupCommands" method="recomputeGroup" onClick="JCAConfirm(event,&apos;com.ptc.windchill.principal.group.groupResource.CONFIRM_GROUP_RECOMPUTE&apos;)"/>
+         <includeFilter name="participantAdminActionFilter"/>
+         <includeFilter name="disconnectedPrincipalActionsFilter"/>
+		 <includeFilter name="disabledPrincipalActionsFilter"/>
+      </action>
+      
+      <action name="editAttributesWizStepForGroup">
+         <description>Wizard step for group edit wizard</description>      
+         <command windowType="wizard_step"/>
+      </action>
+      
+      <action name="addGroupsToGroup">
+         <command class="com.ptc.windchill.principal.group.GroupCommands" method="addGroupsToGroup" windowType="popup"/>
+         <includeFilter name="groupsTableActionFilter" />
+      </action>
+      
+      <action name="addUsersToGroup">
+         <description>Toolbar action to add a user to a group.</description>       
+         <command class="com.ptc.windchill.principal.group.GroupCommands" method="addUsers" windowType="popup"/>
+         <includeFilter name="groupsTableActionFilter" />
+      </action>
+      
+      <action name="addMembersToList" ajax="row">
+         <description>Toolbar action to add members to a group on the member tab of the group create/edit wizard.</description>       
+         <command class="com.ptc.windchill.enterprise.picker.principal.PrincipalCommands" method="addPrincipal" windowType="popup"/>
+      </action>
+      
+       <action name="addGroupToList" ajax="row">
+         <description>Toolbar action to add a group on the group tab of PA create/edit wizards.</description>       
+         <command class="com.ptc.windchill.enterprise.picker.principal.PrincipalCommands" method="addPrincipal" windowType="popup"/>
+		<includeFilter name="disconnectedPrincipalActionsFilter"/>
+       </action>
+       
+       <action name="addProfileToList" ajax="row">
+          <description>Toolbar action to add a profile to a user on the profiles tab of the user create/edit wizard.</description>       
+          <command class="com.ptc.windchill.principal.group.GroupCommands" method="addProfile" windowType="popup"/>
+		  <includeFilter name="disconnectedPrincipalActionsFilter"/>
+       </action>
+       
+      <action name="readOnlyPAGroupMembers" resourceBundle="com.ptc.windchill.principal.group.GroupActionsRB">
+         <description>ReadOnly table for info pages. This table will display the members of the group.</description>
+         <command windowType="wizard_step" url="netmarkets/jsp/group/groupMembersInfo.jsp"/>
+      </action>
+      
+      <action name="readOnlyPAGroups" resourceBundle="com.ptc.windchill.principal.group.GroupActionsRB">
+         <description>ReadOnly table for info pages.  This is to display groups in a table that the user or group being viewed is a member of.</description>      
+         <component name="principaladmin.group.listPAGroups" windowType="page"/>
+      </action> 
+      
+      <action name="profileActions" resourceBundle="com.ptc.windchill.principal.group.GroupActionsRB">
+         <description>Table displaying action settings for the profile.</description>      
+         <component name="roleAccess.netmarkets.profile.actions" windowType="page"/>
+      </action>
+
+      <action name="profileAttributes" resourceBundle="com.ptc.windchill.principal.group.GroupActionsRB">
+         <description>Table displaying attribute settings for the profile.</description>      
+         <component name="roleAccess.profile.attributes" windowType="page"/>
+      </action>
+
+      <action name="profileMembers" resourceBundle="com.ptc.windchill.principal.group.GroupActionsRB">
+         <description>Table displaying the members of the profile.</description>      
+         <component name="netmarkets.profile.members" windowType="page"/>
+      </action>
+
+       <action name="addGroupsFromUser" ajax="row">
+         <description>Toolbar action to add a user's immediate parent groups on the group tab of PA create/edit wizards.</description>       
+         <command class="com.ptc.windchill.principal.group.GroupCommands" method="addGroupsFromUser" windowType="popup"/>
+			 <includeFilter name="disconnectedPrincipalActionsFilter"/>
+       </action>
+       
+       <action name="addProfilesFromUser" ajax="row">
+         <description>Toolbar action to add a user's profiles on the profile tab of PA create/edit wizards.</description>       
+         <command class="com.ptc.windchill.principal.group.GroupCommands" method="addProfilesFromUser" windowType="popup"/>
+ 		<includeFilter name="disconnectedPrincipalActionsFilter"/>
+       </action>
+       
+       <action name="updateRole" ajax="row" multiselect="true" selectRequired="true">
+          <command windowType="popup" class="com.ptc.windchill.enterprise.team.processor.EditTeamRoleProcessor" method="execute"/>
+          <includeFilter name="projectM4D"/>
+       </action>
+       
+       <action name="update_Role_Table" afterJS="setNextStepDirty">
+           <component name="group.updateTeamRole" windowType="wizard_step" />
+       </action>
+
+       <action name="moveGroupToWindchill" ajax="row" multiselect="true" selectRequired="true">
+         <description>Move Groups from Directory Server to Windchill</description>
+         <command class="com.ptc.windchill.principal.group.GroupCommands" method="moveGroupToWindchill" onClick="postSelectValidation(event,'moveGroupToWindchillValidator')"/>
+         <includeFilter name="deleteFromWindchillAndDSActionValidator"/>
+         <includeFilter name="readOnlyLdapActionValidator"/>
+         <includeFilter name="disconnectedPrincipalActionsFilter"/>
+      </action>
+   </objecttype>
+   
+   <objecttype name="organization" class="wt.org.WTOrganization" resourceBundle="com.ptc.windchill.principal.org.OrganizationActionsRB">
+      <action name="singleOrgPicker" ajax="component">
+         <command class="com.ptc.windchill.principal.org.OrganizationCommands" method="returnFromFindOrgs" windowType="popup" url="netmarkets/jsp/org/findOrgs.jsp"/>
+      </action>
+      <action name="createFromPA" ajax="row">
+          <description>Create a WTOrg from the Participant Administrator.</description>
+          <command class="com.ptc.windchill.principal.org.processor.CreateWTOrgFormProcessor" method="execute" windowType="popup"/>
+      </action>
+      <action name="editFromPA">
+          <description>Edit a WTOrg from the Participant Administrator.</description>
+          <command class="com.ptc.windchill.principal.org.processor.EditWTOrgFormProcessor" method="update" windowType="popup"/>
+          <includeFilter name="updateActionValidator" />
+		  <includeFilter name="disconnectedPrincipalActionsFilter"/>
+		  <includeFilter name="disabledPrincipalActionsFilter"/>
+      </action>
+   </objecttype>
+
+</listofactions>

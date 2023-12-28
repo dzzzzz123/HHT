@@ -26,6 +26,9 @@ public class ClassificationNumber {
 	 * @param part
 	 */
 	public static String process(WTPart part) {
+		if (part == null) {
+			return "";
+		}
 		String suffix = pUtil.getValueByKey("formal.number.suffix");
 		String endItemTypeName = pUtil.getValueByKey("subType.internal.endItem");
 		String classInternalName = pUtil.getValueByKey(part, "iba.internal.HHT_Classification");
@@ -38,7 +41,12 @@ public class ClassificationNumber {
 			// 对部件输出的新编码进行校验
 			if (newNumber.length() == 15) {
 				newNumber = part.getSource().toString().equals(buy) ? "6" + newNumber.substring(1) : newNumber;
-				PartUtil.changePartNumber(part, newNumber);
+				try {
+					PartUtil.changePartNumber(part, newNumber);
+				} catch (Exception e) {
+					e.printStackTrace();
+					return oldNumber + " 所生成的新编码不符合规范,且新编号为 " + newNumber + "\r\n 请检查是否存在相同的编号";
+				}
 			} else {
 				return oldNumber + " 所生成的新编码不符合规范,且新编号为 " + newNumber + "\r\n";
 			}

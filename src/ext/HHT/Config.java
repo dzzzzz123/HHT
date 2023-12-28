@@ -1,5 +1,9 @@
 package ext.HHT;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import ext.ait.util.PropertiesUtil;
 import wt.iba.value.IBAHolder;
 
@@ -95,6 +99,14 @@ public class Config {
 		return properties.getValueByKey("iba.internal.HHT_Classification");
 	}
 
+	public static String getHHT_ProductNumber() {
+		return properties.getValueByKey("iba.internal.HHT_ProductNumber");
+	}
+
+	public static String getModelSpecifications() {
+		return properties.getValueByKey("iba.internal.ModelSpecifications");
+	}
+
 	public static String getHHT_Classification(IBAHolder ibaHolder) {
 		return properties.getValueByKey(ibaHolder, "iba.internal.HHT_Classification");
 	}
@@ -109,6 +121,14 @@ public class Config {
 
 	public static String getModelSpecifications(IBAHolder ibaHolder) {
 		return properties.getValueByKey(ibaHolder, "iba.internal.ModelSpecifications");
+	}
+
+	public static String getHHT_Supplier(IBAHolder ibaHolder) {
+		return properties.getValueByKey(ibaHolder, "iba.internal.HHT_Supplier");
+	}
+
+	public static String getHHT_DoneEffort(IBAHolder ibaHolder) {
+		return properties.getValueByKey(ibaHolder, "iba.internal.HHT_DoneEffort");
 	}
 
 	public static String getBuy() {
@@ -131,6 +151,13 @@ public class Config {
 		return properties.getValueByKey("packaging.library.name");
 	}
 
+	public static Set<String> getStructureNodes() {
+		String nodes = properties.getValueByKey("structure.need.nodes");
+		Set set = new HashSet<>();
+		set.addAll(Arrays.asList(nodes.split("/")));
+		return set;
+	}
+
 	public static void setHHT_MaterialGroup(IBAHolder ibaHolder, String str) {
 		properties.setValueByKey(ibaHolder, "iba.internal.HHT_MaterialGroup", str);
 	}
@@ -141,5 +168,17 @@ public class Config {
 
 	public static void setHHT_ProjectNum(IBAHolder ibaHolder, String str) {
 		properties.setValueByKey(ibaHolder, "iba.internal.HHT_ProjectNum", str);
+	}
+
+	public static void setHHT_DoneEffort(IBAHolder ibaHolder, String str) {
+		properties.setValueByKey(ibaHolder, "iba.internal.HHT_DoneEffort", str);
+	}
+
+	public static String getHHT_PojectYear() {
+		return properties.getValueByKey("iba.internal.HHT_PojectYear");
+	}
+
+	public static String getHHT_PojectYear(IBAHolder ibaHolder) {
+		return properties.getValueByKey(ibaHolder, "iba.internal.HHT_PojectYear");
 	}
 }

@@ -1,0 +1,1958 @@
+<?xml version="1.0"?>
+<!DOCTYPE listofactions SYSTEM 'actions.dtd'>
+<listofactions>
+   <objecttype name="sharingFilter" class="wt.filter.NavigationCriteria">
+      <action name="viewFilter" enabledwhensuspended="true" renderType="GENERAL">
+        <command class="" method="" windowType="popup" url="netmarkets/jsp/sharingFilter/viewSharingFilter.jsp"/>
+      </action>
+      <action name="viewFilterStep" enabledwhensuspended="true" renderType="GENERAL">
+        <component name="netmarkets.project.sharingFilter.table" viewFilterStep="wizard_step"/>
+        <command windowType="wizard_step"/> 
+      </action>
+   </objecttype>
+
+   <objecttype name="report" class="com.ptc.netmarkets.report.NmReportTemplate">
+
+   </objecttype>
+
+   <objecttype name="scmi" class="wt.fc.Persistable">
+      <action name="view"/>
+   </objecttype>
+
+   <objecttype name="part" class="wt.part.WTPart">
+      <action name="softattribute_step" preloadWizardPage="false">
+         <command class="" method="" windowType="wizard_step"/>
+      </action>
+
+      <action name="copy" multiselect="true">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="no_content"/>
+      </action>
+      <action name="Product View">
+         <command class="com.ptc.netmarkets.part.ProductViewHelper" method="startProductView"/>
+      </action>
+      <action name="view" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="view" windowType="page"/>
+      </action>
+      <action name="viewProductStructure">
+         <command class="part" method="viewProductStructure" windowType="page"/>
+      </action>
+      <action name="addReferences">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="addReferences"/>
+      </action>
+      <action name="addUses">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="addUses"/>
+      </action>
+      <action name="addPartUses">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="addPartUses"/>
+      </action>
+      <action name="addPartReferences">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="addPartUses"/>
+      </action>
+      <action name="removeReferences">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="removeReferences"/>
+      </action>
+      <action name="removeUses">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="removeUses"/>
+      </action>
+      <action name="cut" multiselect="true">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="delete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE&apos;)"/>
+      </action>
+      <action name="delete" multiselect="true" uicomponent="DELETE" ajax="row" ajaxActionClass="netmarkets/jsp/object/delete.jsp">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="delete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE&apos;)"/>
+      </action>
+      <action name="download">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="download" windowType="popup"/>
+      </action>
+      <action name="updatequantityandunits">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="updateQuantityAndUnits" windowType="popup"/>
+      </action>
+      <action name="list_paste">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="list_paste"/>
+      </action>
+      <action name="list_paste_references">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="list_paste_references"/>
+      </action>
+      <action name="list_paste_described">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="list_paste_described"/>
+      </action>
+      <action name="relatedDoc_search">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="search" windowType="popup"/>
+      </action>
+      <action name="list_delete" uicomponent="DELETE" ajax="row" ajaxActionClass="netmarkets/jsp/object/delete.jsp">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="list_delete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE&apos;)"/>
+      </action>
+      <action name="list_delete_references">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="list_delete_references"/>
+      </action>
+      <action name="list_delete_described">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="list_delete_described"/>
+      </action>
+      <action name="part_reference_search">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="referenceSearch" windowType="popup"/>
+      </action>
+      <action name="search">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="search"/>
+      </action>
+      <action name="viewParent">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="viewParent"/>
+      </action>
+      <action name="updateAttachments">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="updateAttachments" windowType="popup"/>
+      </action>
+   </objecttype>
+   <objecttype name="epmdocument" class="wt.epm.EPMDocument">
+      <action name="copy" multiselect="true">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="copy" windowType="no_content"/>
+      </action>
+      <action name="Product View">
+         <command class="com.ptc.netmarkets.part.ProductViewHelper" method="startProductView"/>
+      </action>
+      <action name="openinproe">
+         <command onClick="getProELinkFromServer(true)" url="netmarkets/jsp/part/download.jsp?openInProe=true" windowType="page"/>
+      </action>
+      <action name="view" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="view" windowType="page"/>
+      </action>
+      <action name="checkin" ajax="row">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="checkIn" windowType="popup"/>
+      </action>
+      <action name="viewProductStructure">
+         <command class="part" method="viewProductStructure" windowType="page"/>
+      </action>
+      <action name="addReferences">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="addReferences"/>
+      </action>
+      <action name="addUses">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="addUses"/>
+      </action>
+      <action name="addPartUses">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="addPartUses"/>
+      </action>
+      <action name="addPartReferences">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="addPartUses"/>
+      </action>
+      <action name="removeReferences">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="removeReferences"/>
+      </action>
+      <action name="removeUses">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="removeUses"/>
+      </action>
+      <action name="cut" multiselect="true">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="delete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE&apos;)"/>
+      </action>
+      <action name="delete" multiselect="true" uicomponent="DELETE" ajax="row" ajaxActionClass="netmarkets/jsp/object/delete.jsp">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="delete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE&apos;)"/>
+      </action>
+      <action name="download">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="download" windowType="popup"/>
+      </action>
+      <action name="update">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="rename" windowType="popup"/>
+      </action>
+      <action name="list_paste">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="list_paste"/>
+      </action>
+      <action name="list_paste_references">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="list_paste"/>
+      </action>
+      <action name="list_delete" uicomponent="DELETE" ajax="row" ajaxActionClass="netmarkets/jsp/object/delete.jsp">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="list_delete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE&apos;)"/>
+      </action>
+      <action name="list_delete_references">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="list_delete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE&apos;)"/>
+      </action>
+      <action name="part_reference_search">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="referenceSearch" windowType="popup"/>
+      </action>
+      <action name="search">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="search"/>
+      </action>
+      <action name="viewParent">
+         <command class="com.ptc.netmarkets.part.NmPartCommands" method="viewParent"/>
+      </action>
+      <action name="WFCHECKOUT" renderType="PDM" uicomponent="ADD_TO_WORKSPACE">
+         <command windowType="page" class="java.lang.Object" method="WFCHECKOUT"/>
+      </action>
+      <action name="WFDOWNLOAD" renderType="PDM" uicomponent="ADD_TO_WORKSPACE">
+         <command windowType="page" class="java.lang.Object" method="WFDOWNLOAD"/>
+      </action>
+   </objecttype>
+
+   <!-- The following &lt;objecttype name=&quot;document&quot; class=&quot;wt.doc.WTDocument&quot;&gt; has been moved to \wcEnterprise\DocumentManagement\src_web\config\actions\DocumentManagement-actions.xml -->
+
+
+   <objecttype name="project" class="wt.projmgmt.admin.Project2">
+      
+      <action name="createProplProject" ajax="row" uicomponent="CREATE_PROJECT" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+          <!-- <command class="com.ptc.netmarkets.project.processor.CreatePROPLProjectFormProcessor" method="execute" windowType="popup"/> -->
+          <command class="ext.HHT.project.CustomCreatePROPLProjectFormProcessor" method="execute" windowType="popup"/>
+      </action>
+      <action name="quickcreate" preloadWizardPage="true" required="true" afterJS="quickcreateStepAfterJS">
+         <command windowType="wizard_step"/>
+      </action>
+      <action name="createProplProgram" ajax="row" uicomponent="CREATE_PROGRAM" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+          <command url="netmarkets/jsp/project/createProplProject.jsp?pseudoType=2" class="com.ptc.netmarkets.project.processor.CreatePROPLProjectFormProcessor" method="execute" windowType="popup"/>
+      </action>
+
+      <action name="createProjectTeam" preloadWizardPage="false" afterJS="showBackButton" postloadJS="projectCreatedNextStepPostloadJS" required="false">
+         <command windowType="wizard_step"/>
+      </action>
+      <action name="createInvitation" preloadWizardPage="false" required="false">
+         <command windowType="wizard_step"/>
+      </action>
+      <action name="defineDetails" preloadWizardPage="false" required="false">
+         <command windowType="wizard_step"/>
+      </action>
+      <action name="attributes" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command windowType="page"/>
+      </action>
+      <action name="defineProjectItemWizStep" preloadWizardPage="false" required="false">
+         <command windowType="wizard_step"/>
+      </action>
+      <action name="setAttributesWizStep" preloadWizardPage="true" required="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command windowType="wizard_step"/>
+      </action>
+      <action name="createProjectFolders" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="createProjectFolders" windowType="popup"/>
+      </action> 
+      <action name="update" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="update" windowType="popup"/>
+      </action>
+      <action name="updateProjectPROPL" ajax="row" enabledwhensuspended="true" uicomponent="EDIT_PROJECT" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.processor.EditPROPLProjectFormProcessor" method="execute" windowType="popup"/>
+      </action>
+      <action name="editProjectAttributesWizStep" id="editProjectAttributesWizStep" preloadWizardPage="true" required="true">
+         <command windowType="wizard_step"/>
+      </action>
+      <action name="updateProgramPROPL" ajax="row" enabledwhensuspended="true" uicomponent="EDIT_PROGRAM" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.processor.EditPROPLProjectFormProcessor" method="execute" windowType="popup"/>
+      </action>
+      <action name="updateInvitation" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="updateInvitation" windowType="popup"/>
+         <includeFilter name="projectM4D"/>
+      </action>
+      <action name="delete" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="delete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE_PROJECT&apos;)"/>
+      </action>
+      <action name="deleteProject" ajax="row" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="delete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE_PROJECT&apos;)"/>
+      </action>
+      <action name="deleteProgram" ajax="row" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="delete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE_PROGRAM&apos;)"/>
+      </action>
+      <action name="removeContent" ajax="row" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="removeContent" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_REMOVE&apos;)"/>
+      </action>
+      <action name="restore" ajax="row" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="restore"/>
+      </action>
+      <action name="start" ajax="row" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="start" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_START&apos;)"/>
+      </action>
+      <action name="startProgram" ajax="row" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="start" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_START_PROGRAM&apos;)"/>
+      </action>
+      <action name="stop" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="stop"/>
+      </action>
+      <action name="suspend" ajax="row" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="suspend" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_SUSPEND&apos;)"/>
+      </action>
+      <action name="suspendProgram" ajax="row" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="suspend" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_SUSPEND_PROGRAM&apos;)"/>
+      </action>
+      <action name="cancel" ajax="component" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="cancel" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_CANCEL1&apos;)"/>
+      </action>
+      <action name="cancelProgram" ajax="row" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="cancel" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_CANCEL1_PROGRAM&apos;)"/>
+      </action>
+      <action name="complete" ajax="component" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="complete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_COMPLETE&apos;)"/>
+      </action>
+      <action name="completeProgram" ajax="row" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="complete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_COMPLETE_PROGRAM&apos;)"/>
+      </action>
+      <action name="view" enabledwhensuspended="true" uicomponent="PROJECT_TAB" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="project" method="view" windowType="page"/>
+      </action>
+      <action name="addRoles_step" required="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" windowType="wizard_step"/>
+      </action>
+      <action name="importProject" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.model.NmObjectCommands" method="importObjects" windowType="popup"/>
+      </action>
+      <action name="export_project_objects" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="exportProjectObjectsNew" windowType="popup"/>
+      </action>
+      <action name="export_project_objects_step" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="exportProjectObjectsNew" windowType="wizard_step"/>
+      </action>
+     <action name="export_roles" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="exportRoles"/>
+      </action>
+      <action name="export_team" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="exportTeam"/>
+      </action>
+      <action name="export_project_files" enabledwhensuspended="true" uicomponent="EXPORT_FILE_STRUCTURE" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="exportDocumentFiles"/>
+      </action>
+      <action name="export_project_node" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="exportProjectNode"/>
+      </action>
+      <action name="export_projectPlan" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="exportProjectPlan"/>
+      </action>
+      <action name="export_deliverables" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="exportDeliverables"/>
+      </action>
+      <action name="save_project_as_project" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="saveProjectAsNewProject" windowType="popup"/>
+      </action>
+      <action name="save_project_as_project_step" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="saveProjectAsNewProject" windowType="wizard_step"/>
+      </action>
+      <action name="save_program_as_program" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command url="netmarkets/jsp/project/save_project_as_project.jsp" class="com.ptc.netmarkets.project.NmProjectCommands" method="saveProjectAsNewProject" windowType="popup"/>
+      </action>
+      <action name="save_project_as_template" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="saveProjectAsInternalTemplate" windowType="popup"/>
+      </action>
+      <action name="save_project_as_template_step" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="saveProjectAsInternalTemplate" windowType="wizard_step"/>
+      </action>
+      <action name="export_project_as_template" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="exportProjectAsTemplate" windowType="popup"/>
+      </action>
+      <action name="export_project_as_template_step">
+         <command class="" method="" windowType="wizard_step"/>
+      </action>
+      <action name="registerInCAD" cad="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="registerInCAD"/>
+      </action>
+      <action name="registerInUWGM" cad="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="registerInCAD"/>
+      </action>
+      <action name="removeUsersFromProject" ajax="row" ajaxActionClass="netmarkets/jsp/object/delete.jsp" selectRequired="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="removeUsersFromProject" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_REMOVE&apos;)"/>
+      </action>
+      <action name="removeUsersFromProjectRow" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="removeUsersFromProject" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_REMOVE&apos;)"/>
+      </action>
+      <action name="resyncWithGroups" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.project.NmProjectCommands" method="resyncWithGroups"/>
+         <includeFilter name="projectM4D"/>
+      </action>
+      <action name="list2" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="project" method="list2" windowType="page"/>
+      </action>
+      <action name="list3" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="project" method="list3" windowType="page"/>
+      </action>
+      <action name="importProjectTemplate" resourceBundle="com.ptc.windchill.principal.template.TemplateActionsRB">
+         <command url="netmarkets/jsp/templates/import.jsp" class="com.ptc.windchill.principal.template.processor.ImportContainerTemplateFormProcessor" method="execute" windowType="popup"/>
+      </action>
+      <action name="importProgramTemplate" resourceBundle="com.ptc.windchill.principal.template.TemplateActionsRB">
+         <command url="netmarkets/jsp/templates/import.jsp?pseudoType=2" class="com.ptc.windchill.principal.template.processor.ImportContainerTemplateFormProcessor" method="execute" windowType="popup"/>
+      </action>
+      <action name="createProjectTemplate" enabledwhensuspended="true" resourceBundle="com.ptc.windchill.principal.template.TemplateActionsRB">
+         <command url="netmarkets/jsp/templates/create.jsp" class="com.ptc.windchill.principal.template.processor.CreateContainerTemplateFormProcessor" method="execute" windowType="popup"/>
+      </action>
+      <action name="createProgramTemplate" enabledwhensuspended="true" resourceBundle="com.ptc.windchill.principal.template.TemplateActionsRB">
+         <command url="netmarkets/jsp/templates/create.jsp?pseudoType=2" class="com.ptc.windchill.principal.template.processor.CreateContainerTemplateFormProcessor" method="execute" windowType="popup"/>
+      </action>
+      <action name="importFolder" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command url="netmarkets/jsp/project/importFolder.jsp" class="com.ptc.netmarkets.project.processor.ImportFolderFormProcessor" method="execute" windowType="popup"/>
+      </action>
+      <action name="importFolder_step">
+         <command windowType="wizard_step"/>
+      </action>
+   </objecttype>
+
+   <objecttype name="role" class="com.ptc.netmarkets.role.NmRole">
+      <action name="removeRoleFromProject" uicomponent="PROJECT_MODIFY_TEAM" ajax="row">
+         <command class="com.ptc.netmarkets.role.NmRoleCommands" method="removeRoleFromProject" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_REMOVE&apos;)"/>
+      </action>
+      <action name="removeRoleFromOrg" ajax="page" selectRequired="true">
+         <command class="com.ptc.netmarkets.role.NmRoleCommands" method="removeRoleFromOrg" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_REMOVE&apos;)"/>
+      </action>
+   </objecttype>
+
+   <objecttype name="group" class="wt.org.WTGroup" resourceBundle="com.ptc.windchill.principal.group.GroupActionsRB">
+      <action name="removeGroup" ajax="row">
+         <command class="com.ptc.netmarkets.group.NmGroupCommands" method="removeGroup" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_REMOVE&apos;)"/>
+      </action>
+      <action name="removeOrg" ajax="row"> 
+         <command class="com.ptc.netmarkets.group.NmGroupCommands" method="removeGroup" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_REMOVE&apos;)"/>
+      </action>
+      <action name="removeUser" ajax="row">
+         <command class="com.ptc.netmarkets.group.NmGroupCommands" method="removeUser" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_REMOVE&apos;)"/>
+      </action>
+   </objecttype>
+   <objecttype name="orgcontainer" class="wt.inf.container.OrgContainer" resourceBundle="com.ptc.netmarkets.org.orgResource">
+      <action name="orgContainerApplyButton" id="PJL_wizard_apply">
+         <description>Custom apply button to clear fields on org container create wizard.</description>
+         <command class="" method="" windowType="page" url="javascript:onOrgContainerApply();"/>
+      </action>
+   </objecttype>
+   <objecttype name="forum" class="wt.workflow.forum.DiscussionForum">
+      <action name="create">
+         <command class="com.ptc.netmarkets.forum.NmForumCommands" method="create" windowType="popup"/>
+         <includeFilter name="projectM4D"/>
+      </action>
+      <action name="subscribe">
+         <command class="com.ptc.netmarkets.forum.NmForumCommands" method="subscribe"/>
+         <includeFilter name="projectM4D"/>
+      </action>
+      <action name="unsubscribe">
+         <command class="com.ptc.netmarkets.forum.NmForumCommands" method="unsubscribe"  onClick="postSelectValidation(event,'unsubscribe')"/>
+      </action>
+      <action name="discuss" uicomponent="PROJECT_ALL_FORUMS">
+         <component name="netmarkets.forum.discussion" windowType="page"/>
+         <includeFilter name="hideForChangeTemplates"/>
+      </action>
+      <action name="discuss_foundation">
+         <command class="com.ptc.netmarkets.forum.NmForumCommands" method="discuss" windowType="page"/>
+      </action>
+      <action name="discussTable" uicomponent="PROJECT_ALL_FORUMS">
+         <component name="netmarkets.forum.discussion" windowType="page"/>
+      </action>
+      <action name="view">
+         <command class="forum" method="view" windowType="page"/>
+      </action>
+      <action name="list">
+         <command windowType="page"/>
+      </action>
+      <action name="list_delete" ajax="component" ajaxActionClass="netmarkets/jsp/object/delete.jsp" selectRequired="true">
+         <includeFilter name="projectM4D"/>
+         <command class="com.ptc.netmarkets.forum.NmForumCommands" method="list_delete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE&apos;)"/>
+      </action>
+      <action name="list_close" selectRequired="true">
+      	<command class="com.ptc.netmarkets.forum.NmForumCommands" method="list_close" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_CLOSE_TOPIC&apos;)"/>
+      </action>
+   </objecttype>
+   <objecttype name="forumTopic" class="wt.workflow.forum.DiscussionTopic" resourceBundle="com.ptc.netmarkets.forumTopic.forumTopicResource">
+      <action name="create">
+         <command class="com.ptc.netmarkets.forumTopic.processors.CreateTopicFormProcessor" method="execute" windowType="popup"/>
+         <includeFilter name="projectM4D"/>
+      </action>
+	  <action name="create_name_step">
+         <command windowType="wizard_step" required="true"/>
+      </action>
+      <action name="editTopic">
+         <command class="com.ptc.netmarkets.forumTopic.processors.EditTopicFormProcessor" method="execute" windowType="popup"/>
+		 <includeFilter name="projectM4D"/>
+      </action>
+      <action name="editTopic_step" ajax="page">
+         <command windowType="wizard_step" required="true"/>
+		 <component name="editTopic.attributes" windowType="wizard_step"/>
+      </action>
+      <action name="addMeAsRecipient">
+         <command class="com.ptc.netmarkets.forumTopic.processors.AddOrRemoveMeFormProcessor" method="execute"/>
+		 <includeFilter name="projectM4D"/>
+      </action>
+      <action name="removeMeFromRecipient">
+         <command class="com.ptc.netmarkets.forumTopic.processors.AddOrRemoveMeFormProcessor" method="execute"/>
+		 <includeFilter name="projectM4D"/>
+      </action>
+      <action name="addParticipants" ajax="row">
+      	<command class="com.ptc.windchill.enterprise.picker.principal.PrincipalCommands" method="addPrincipal" windowType="popup"/>
+      </action>
+      <action name="addParticipants_step">
+      	<command windowType="wizard_step"/>
+      </action>
+      <action name="close">
+        <command class="com.ptc.netmarkets.forumTopic.NmTopicCommands" method="close" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.forumTopic.forumTopicResource.CONFIRM_CLOSE_TOPIC&apos;)"/>
+      </action>
+      <action name="create_topic_step" ajax="page">
+		<command windowType="wizard_step" required="true"/>
+         <component name="createTopic.attributes" windowType="wizard_step"/>
+      </action>
+      <action name="subscribe">
+         <command class="com.ptc.netmarkets.forumTopic.NmTopicCommands" method="subscribe"/>
+      </action>
+      <action name="unsubscribe">
+         <command class="com.ptc.netmarkets.forumTopic.NmTopicCommands" method="unsubscribe"/>
+      </action>
+      <action name="topicDetails">
+         <command url="/netmarkets/jsp/forum/discussionThread.jsp" windowType="popup"/>
+      </action>
+      <action name="viewDiscussionThread">
+         <command url="/netmarkets/jsp/forum/viewDiscussionThread.jsp" windowType="popup"/>
+      </action>
+      <action name="participationView" resourceBundle="com.ptc.netmarkets.forum.forumResource">
+         <command windowType="popup"/>
+      </action>
+      <action name="commentsTable" resourceBundle="com.ptc.netmarkets.forumTopic.forumTopicResource">
+        <component name="forumtopic.comments.list" windowType="page"/>
+      </action>
+      <action name="view" resourceBundle="com.ptc.netmarkets.forumTopic.forumTopicResource">
+        <command url="/app/#ptc1/tcomp/infoPage" windowType="popup"/>
+      </action>
+      <action name="delete" ajax="row" ajaxActionClass="netmarkets/jsp/object/delete.jsp" multiselect="true" selectRequired="true"> 	  	  	  	         
+        <command class="com.ptc.netmarkets.forumTopic.NmTopicCommands" method="delete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE&apos;)"/>
+      </action>
+   </objecttype>
+   <objecttype name="forumPosting" class="wt.workflow.forum.DiscussionPosting" resourceBundle="com.ptc.netmarkets.forumPosting.forumPostingResource">
+         <action name="create">
+            <command class="com.ptc.netmarkets.forumPosting.processors.CreatePostingFormProcessor" method="execute" windowType="popup"/>
+            <includeFilter name="projectM4D"/>
+         </action>
+         <action name="posting_details_step" preloadWizardPage="false">
+            <command windowType="wizard_step" required="true"/>
+            <component name="netmarkets.forumPosting.discussionPosting.postingDetails" windowType="wizard_step"/>
+         </action>
+         <action name="posting_attachments_step" preloadWizardPage="false" hidden="true">
+            <command windowType="wizard_step"/>
+            <component name="netmarkets.forumPosting.discussionPosting.postingAttachments" windowType="wizard_step"/>
+         </action>
+         <action name="posting_links_step" preloadWizardPage="false">
+            <command windowType="wizard_step"/>
+            <component name="netmarkets.forumPosting.discussionPosting.postingLinks" windowType="wizard_step"/>
+         </action>
+         <action name="reply">
+            <command class="com.ptc.netmarkets.forumPosting.processors.CreatePostingFormProcessor" method="execute" windowType="popup"/>
+         </action>
+         <action name="reply_posting_details_step">
+            <command windowType="wizard_step" required="true"/>
+            <component name="netmarkets.forumPosting.discussionPosting.replyPostingDetails" windowType="wizard_step"/>
+         </action>
+         <action name="create_name_step">
+            <command windowType="wizard_step" required="true"/>
+         </action>
+      	<action name="editDraft">
+      	   <command class="com.ptc.netmarkets.forumPosting.processors.EditDraftFormProcessor" method="execute" windowType="popup"/>
+      	</action>
+      	<action name="update_name_step">
+      	   <command windowType="wizard_step" required="true"/>
+           <component name="netmarkets.forumPosting.discussionPosting.update_name" windowType="wizard_step"/>
+      	</action>
+      	<action name="edit_attachment_step">
+      	   <command windowType="wizard_step"/>
+		   <component name="netmarkets.forumPosting.discussionPosting.postingAttachments" windowType="wizard_step"/>
+      	</action>
+      	<action name="edit_links_step">
+			<command windowType="wizard_step"/>
+			<component name="netmarkets.forumPosting.discussionPosting.postingLinks" windowType="wizard_step"/>
+      	</action>
+      	<action name="saveDraftButton" id="PJL_wizard_saveDraft">
+			<command class="" method="" onClick="saveThisAsDraft()"/>
+      	</action>
+         <action name="delete" ajax="row" ajaxActionClass="netmarkets/jsp/object/delete.jsp" multiselect="true" selectRequired="true">
+            <command class="com.ptc.netmarkets.forumPosting.NmPostingCommands" method="delete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE&apos;)"/>
+         </action>
+         <action name="subscribe">
+            <command class="com.ptc.netmarkets.forumPosting.NmPostingCommands" method="subscribe"/>
+         </action>
+         <action name="unsubscribe">
+            <command class="com.ptc.netmarkets.forumPosting.NmPostingCommands" method="unsubscribe"/>
+         </action>
+         <action name="view">
+            <command class="forumPosting" method="view" windowType="page"/>
+         </action>
+
+         <action name="search_for_attachments">
+            <command class="com.ptc.netmarkets.forumPosting.NmPostingCommands" method="search" windowType="popup"/>
+         </action>
+         <action name="attachToPosting">
+            <command class="com.ptc.netmarkets.model.NmObjectCommands" method="saveOidForCaller"/>
+         </action>
+   </objecttype>
+   <objecttype name="notebook" class="wt.workflow.notebook.Notebook">
+         <action name="reference" enabledwhensuspended="true" uicomponent="PROJECT_ALL_NOTEBOOKS">
+            <component name="netmarkets.notebookfolder.referenceNotebook" windowType="page"/>
+            <includeFilter name="hideForChangeTemplates"/>
+         </action>
+   </objecttype>
+   <objecttype name="notebookfolder" class="com.ptc.netmarkets.notebookfolder.NmNotebookFolder">
+      <action name="create" resourceBundle="com.ptc.netmarkets.notebookfolder.notebookfolderResource">
+         <command class="com.ptc.netmarkets.notebookfolder.processors.CreateFolderFormProcessor" method="execute" windowType="popup"/>
+         <includeFilter name="projectM4D"/>
+      </action>
+      <action name="create_notebookfolder_step" resourceBundle="com.ptc.netmarkets.notebookfolder.notebookfolderResource">
+         <component name="createNotebookFolder.attributes" windowType="wizard_step"/>
+      </action>
+      <action name="delete" multiselect="true" ajax="row" selectRequired="true" uicomponent="DELETE" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.netmarkets.notebookfolder.NmNotebookFolderCommands" method="delete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE&apos;)"/>
+         <includeFilter name="projectM4D"/>
+      </action>
+      <action name="cut" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.notebookfolder.NmNotebookFolderCommands" method="cut" windowType="no_content"/>
+      </action>
+      <action name="copy" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.notebookfolder.NmNotebookFolderCommands" method="copy" windowType="no_content"/>
+      </action>
+      <action name="paste" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.notebookfolder.NmNotebookFolderCommands" method="paste"/>
+      </action>
+      <action name="notebook_list_paste" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.notebookfolder.notebookfolderResource">
+         <command class="com.ptc.netmarkets.notebookfolder.NmNotebookFolderCommands" method="list_paste"/>
+      </action>
+      <action name="rename" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.notebookfolder.processors.RenameFolderFormProcessor" method="execute" windowType="popup"/>
+      </action>
+      <action name="rename_step" enabledwhensuspended="true">
+         <command class="" method="" windowType="wizard_step" url="netmarkets/jsp/notebookfolder/rename_step"/>
+      </action>
+      <action name="list" enabledwhensuspended="true">
+         <command windowType="page"/>
+      </action>
+   </objecttype>
+   <objecttype name="bookmark" class="wt.workflow.notebook.Bookmark">
+
+      <action name="bookmarkIt" enabledwhensuspended="true" uicomponent="ADD_TO_NOTEBOOK" resourceBundle="com.ptc.netmarkets.bookmark.bookmarkResource">
+         <command class="com.ptc.netmarkets.bookmark.NmBookmarkCommands" method="bookmarkIt_chng" windowType="popup"/>
+         <includeFilter name="manAuthorized" />
+      </action>
+
+      <action name="bookmarkIt_step" enabledwhensuspended="true" uicomponent="ADD_TO_NOTEBOOK" resourceBundle="com.ptc.netmarkets.bookmark.bookmarkResource">
+         <command windowType="popup"/>
+      </action>
+
+      <action name="edit_bk" resourceBundle="com.ptc.netmarkets.bookmark.bookmarkResource">
+         <command class="com.ptc.netmarkets.bookmark.processors.EditBookmarkFormProcessor" method="execute" windowType="popup"/>
+      </action>
+      <action name="edit_bk_step" afterJS="validateEditBookmarkWizardEntries">
+               <command windowType="wizard_step" required="true"/>
+      </action>
+      <action name="addWCObject">
+         <command class="com.ptc.netmarkets.model.NmObjectCommands" method="saveOidForCaller"/>
+      </action>
+      <action name="import_bk" resourceBundle="com.ptc.netmarkets.notebookfolder.notebookfolderResource">
+         <command class="com.ptc.netmarkets.bookmark.processors.UploadFileFormProcessor" method="execute" windowType="popup"/>
+      </action>
+      <action name="import_bk_step" afterJS="validateUploadWizardEntries" resourceBundle="com.ptc.netmarkets.notebookfolder.notebookfolderResource">
+         <command windowType="wizard_step" required="true"/>
+      </action>
+      <action name="add_to_hotlist" ajax="row" multiselect="true" uicomponent="ADD_TO_HOT_LINK" selectRequired="true">
+         <command class="com.ptc.netmarkets.bookmark.NmBookmarkCommands" method="add_to_hotlist"/>
+         <includeFilter name="projectM4D"/>
+      </action>
+      <action name="view" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.bookmark.NmBookmarkCommands" method="view" windowType="page"/>
+         <access name="read"/>
+      </action>
+      <action name="add_link_network" ajax="true">
+         <command class="com.ptc.netmarkets.bookmark.processors.CreateLinkFormProcessor" method="execute" windowType="popup"/>
+         <includeFilter name="projectM4D"/>
+      </action>
+      <action name="add_link" ajax="row" uicomponent="CREATE_LINK">
+         <command class="com.ptc.netmarkets.bookmark.processors.CreateLinkFormProcessor" method="execute" windowType="popup"/>
+         <includeFilter name="projectM4D"/>
+      </action>
+
+       <action name="create" ajax="component" enabledwhensuspended="true" uicomponent="CREATE_LINK" resourceBundle="com.ptc.netmarkets.bookmark.bookmarkResource">
+         <command class="com.ptc.netmarkets.bookmark.processors.CreateLinkFormProcessor" method="execute" windowType="popup"/>
+         <includeFilter name="projectM4D"/>
+        </action>
+
+         <action name="create_name_step_link" resourceBundle="com.ptc.netmarkets.bookmark.bookmarkResource">
+            <command windowType="wizard_step" required="true"/>
+         </action>
+
+         <action name="delete" ajax="row" uicomponent="DELETE" resourceBundle="com.ptc.netmarkets.notebookfolder.notebookfolderResource">
+             <command class="com.ptc.netmarkets.bookmark.NmBookmarkCommands" method="delete"  onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE&apos;)"/>
+               <includeFilter name="hideFromNonAgreementMgrs"/>
+             <includeFilter name="disableDeleteManagedCollection"/>
+         </action>
+
+   </objecttype>
+
+   <objecttype name="workitem" class="wt.workflow.work.WorkItem">
+      <action name="trackTask" ajax="row" uicomponent="WORKITEM_OPEN_TASK_ASSISTANT">
+         <command class="com.ptc.netmarkets.work.NmWorkItemCommands" method="trackTask"/>
+      </action>
+      <action name="promptTaskbarOption" ajax="row" uicomponent="WORKITEM_OPEN_TASK_ASSISTANT">
+         <command url="netmarkets/jsp/workitem/promptTaskbarOption.jsp" class="com.ptc.netmarkets.work.NmWorkItemCommands" method="trackTask" windowType="popup"/>
+      </action>
+      <action name="promptTaskbarOption_step" checkaccess="true">
+         <command url="netmarkets/jsp/workitem/promptTaskbarOption_step.jsp" windowType="wizard_step"/>
+      </action>
+      <action name="promptTaskbarOption_yes" ajax="page">
+         <command class="com.ptc.netmarkets.work.NmWorkItemCommands" method="trackTask"/>
+      </action>
+      <action name="promptTaskbarOption_no" ajax="page">
+         <command class="com.ptc.netmarkets.work.NmWorkItemCommands" method="trackTask"/>
+      </action>
+      <action name="taskbarWizard">
+         <command class="com.ptc.netmarkets.work.NmWorkItemCommands" method="complete" windowType="popup"/>
+      </action>
+      <action name="taskbarWizard_step" checkaccess="true">
+         <command windowType="wizard_step"/>
+      </action>
+
+      <action name="wiz_save" ajax="page">
+         <command class="" method="" windowType="page" onClick="saveClicked()"/>
+      </action>
+      <action name="wiz_complete" ajax="page">
+         <command class="" method="" windowType="page" onClick="completeClicked()"/>
+      </action>
+
+      <action name="wiz_close" ajax="page">
+         <command class="com.ptc.netmarkets.work.NmWorkItemCommands" method="closeTaskbar"/>
+      </action>
+      <action name="setupParticipant" resourceBundle="wt.workflow.worklist.worklistResource" uicomponent="SETUP_PARTICIPANT_TAB">
+         <command windowType="page" url="netmarkets/jsp/work/SetupParticipantsMVC.jsp?showComponent=table"/>
+      </action>
+      <action name="adhocActivities" resourceBundle="wt.workflow.worklist.worklistResource" uicomponent="ADHOC_ACTIVITIES_TAB">
+         <command windowType="page" url="netmarkets/jsp/work/adhocActivities.jsp"/>
+      </action>
+      <action name="routingStatus" resourceBundle="wt.workflow.worklist.worklistResource" uicomponent="WORKITEM_RELATED_TAB">
+         <command windowType="page"/>
+      </action>
+      <action name="attributes" resourceBundle="wt.workflow.worklist.worklistResource">
+         <!-- command  class="com.ptc.netmarkets.work.NmWorkItemCommands" method="save" windowType="page"/-->
+         <component name="workitem.details.attributes" windowType="page"/>
+      </action>
+	   <action name="saveComplete" resourceBundle="wt.workflow.worklist.worklistResource">
+         <!-- command  class="com.ptc.netmarkets.work.NmWorkItemCommands" method="save" windowType="page"/-->
+          <command url="netmarkets/jsp/customtemplates/taskCompletion.jsp"/>
+      </action>
+      <action name="addMultipleObjects" ajax="row" resourceBundle="wt.workflow.worklist.worklistResource">
+            <command class="com.ptc.windchill.enterprise.workflow.WizardCommands" method="addMultipleObjects" onClick="disableAdhocActivityTable()"/>
+      </action>
+      <action name="notebook" resourceBundle="wt.workflow.worklist.worklistResource" uicomponent="WORKITEM_OPEN_TASK_ASSISTANT">
+         <command windowType="page"/>
+      </action>
+      <action name="discussions" resourceBundle="wt.workflow.worklist.worklistResource" uicomponent="WORKITEM_OPEN_TASK_ASSISTANT">
+         <command windowType="page"/>
+      </action>
+      <action name="taskFormTemplate" resourceBundle="wt.workflow.worklist.worklistResource">
+         <command windowType="page"/>
+      </action>
+	  <action name="workflowTaskPboAction" resourceBundle="wt.workflow.worklist.worklistResource">
+		<component name="workflowTask.pboAction"/>
+	  <includeFilter name="configurableTypeBaseFilter"/>
+      </action>
+      <action name="workItemActivityVariables" resourceBundle="wt.workflow.worklist.worklistResource">
+         <component name="workitem.activityVariables"/>
+      </action>
+      <action name="workItemSignOffComponent" resourceBundle="wt.workflow.worklist.worklistResource">
+         <component name="workitem.signOffVariables"/>
+      </action>      
+
+   </objecttype>
+
+
+   <objecttype name="work" class="wt.workflow.work.WorkItem">
+      <action name="view" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.work.NmWorkItemCommands" method="view" windowType="page"/>
+      </action>
+      <action name="view_open" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.work.NmWorkItemCommands" method="view" windowType="page"/>
+      </action>
+      <action name="view_complete" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.work.NmWorkItemCommands" method="view" windowType="page"/>
+      </action>
+      <!-- <action name="complete" enabledwhensuspended="true" ajax="row" uicomponent="WORKITEM_COMPLETE">
+         <command class="com.ptc.netmarkets.work.NmWorkItemCommands" method="complete" onClick="completeTaskEnableTextBox()"/>
+      </action> -->
+	  <action name="complete" enabledwhensuspended="true" ajax="row" uicomponent="WORKITEM_COMPLETE">
+         <command class="ext.alphai.workflow.CustomNmWorkItemCommands" method="complete" onClick="completeTaskEnableTextBox()"/>
+      </action>
+      <action name="moreActivities">
+         <command url="servlet/TypeBasedIncludeServlet"/>
+      </action>
+      <action name="update" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.work.NmWorkItemCommands" method="update"/>
+      </action>
+      <!-- <action name="save" enabledwhensuspended="true" ajax="row" uicomponent="WORKITEM_SAVE"> 
+         <command class="com.ptc.netmarkets.work.NmWorkItemCommands" method="save" onClick="EnableTextBox()"/>
+      </action>-->
+	  <action name="save" enabledwhensuspended="true" ajax="row" uicomponent="WORKITEM_SAVE">
+         <command class="ext.plm.work.CustNmWorkItemCommands" method="save" onClick="EnableTextBox()"/>
+      </action>
+     <action name="startAct" enabledwhensuspended="true" ajax="page">
+           <command class="com.ptc.netmarkets.work.NmWorkItemCommands" method="startAdhocFromTaskDetails" onClick="validateAdhocActivityAssignee()"/>
+      </action>
+      <action name="reassign" uicomponent="WORKITEM_REASSIGN">
+         <command class="com.ptc.netmarkets.work.NmWorkItemCommands" method="reassign" windowType="popup"/>
+      </action>
+      <action name="reassign_step" checkaccess="true">
+         <command windowType="wizard_step"/>
+      </action>
+      <action name="reassignSearchUser" checkaccess="true">
+         <command windowType="popup"/>
+      </action>
+      <action name="multireassign" selectRequired="true" multiselect="true" uicomponent="WORKITEM_MULTI_REASSIGN">
+         <includeFilter name="projectM4D"/>
+         <command class="com.ptc.netmarkets.work.NmWorkItemCommands" method="multireassign" windowType="popup"/>
+      </action>
+      <action name="updateDeadline" uicomponent="WORKITEM_EDIT_DEADLINE">
+         <command class="com.ptc.netmarkets.work.NmWorkItemCommands" method="updateDeadline" windowType="popup"/>
+      </action>
+      <action name="accept" ajax="page" uicomponent="WORKITEM_ACCEPT">
+         <command class="com.ptc.netmarkets.work.NmWorkItemCommands" method="accept"/>
+      </action>
+      <action name="unaccept" ajax="page" uicomponent="WORKITEM_DECLINE">
+         <command class="com.ptc.netmarkets.work.NmWorkItemCommands" method="unaccept"/>
+      </action>
+      <action name="multiaccept" selectRequired="true" multiselect="true" uicomponent="WORKITEM_MULTI_ACCEPT">
+         <includeFilter name="projectM4D"/>
+         <command class="com.ptc.netmarkets.work.NmWorkItemCommands" method="multiaccept"/>
+      </action>
+      <action name="multiunaccept" selectRequired="true" multiselect="true" uicomponent="WORKITEM_MULTI_DECLINE">
+         <includeFilter name="projectM4D"/>
+         <command class="com.ptc.netmarkets.work.NmWorkItemCommands" method="multiunaccept"/>
+      </action>
+      <action name="searchWorkItems" enabledwhensuspended="true" uicomponent="GLOBAL_SEARCH">
+      <command class="com.ptc.netmarkets.search.NmSearchCommands" method="" onClick="launchSearchPage(event)" windowType="page"/>
+         <includeFilter name="projectM4D"/>
+      </action>
+      <action name="updateDeadline_step" afterJS="updateDeadline_validateBeforeSubmit">
+         <command windowType="wizard_step"/>
+      </action>
+
+      <action name="workflowTaskbar">
+         <command class="com.ptc.netmarkets.work.NmWorkItemCommands" method="complete" windowType="page"/>
+      </action>
+
+      <action name="removeUserFromRole" selectRequired="true" multiselect="true">
+         <command class="com.ptc.netmarkets.work.NmWorkItemCommands" method="removeUserFromRole" onClick="JCAConfirm(event,'com.ptc.netmarkets.util.utilResource.CONFIRM_REMOVE')"/>
+      </action>
+
+      <action name="addUsersToRole">
+         <command class="com.ptc.netmarkets.work.NmWorkItemCommands" method="addUsersToRole" windowType="popup"/>
+      </action>
+
+   </objecttype>
+
+   <objecttype name="software" class="">
+      <action name="list" enabledwhensuspended="true">
+         <command windowType="page"/>
+      </action>
+   </objecttype>
+   <objecttype name="register" class="">
+      <action name="register" enabledwhensuspended="true">
+         <command windowType="page"/>
+      </action>
+   </objecttype>
+   <objecttype name="public" class="">
+      <action name="home" enabledwhensuspended="true">
+         <command windowType="page"/>
+      </action>
+   </objecttype>
+   <objecttype name="help" class="">
+      <action name="list" enabledwhensuspended="true">
+         <command windowType="page"/>
+      </action>
+      <action name="listAdmin" enabledwhensuspended="true">
+         <command windowType="page"/>
+      </action>
+   </objecttype>
+   <objecttype name="projmgmt" class="">
+      <action name="multiupdate" multiselect="true" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+         <command class="com.ptc.projectmanagement.plan.processors.EditMultipleActivityFormProcessor" method="execute" url="netmarkets/jsp/projmgmt/edit_epp_objects.jsp" windowType="popup"/>
+      </action>
+      <action name="edit_epp_objects_step" multiselect="true" resourceBundle="">
+         <command class="" url="" windowType="popup"/>
+      </action>
+      <action name="OkButton" id="PJL_wizard_ok" resourceBundle="com.ptc.netmarkets.projmgmt.projmgmtActionsRB">
+       <command class="" method="" onClick="window.close()"/>
+      </action>
+   </objecttype>    
+<objecttype name="meeting" class="wt.meeting.Meeting" resourceBundle="com.ptc.netmarkets.meeting.meetingResourceActionsRB">
+      <action name="create" ajax="row">
+          <command class="com.ptc.netmarkets.meeting.processor.MeetingFormProcessor" method="execute" windowType="popup"/>
+         <includeFilter name="projectM4D"/>
+      </action>
+      <action name="cancel" uicomponent="DELETE" selectRequired="true">
+         <includeFilter name="projectM4D"/>
+         <command class="com.ptc.netmarkets.meeting.NmMeetingCommands" method="cancel" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_CANCEL2&apos;)"/>
+      </action>
+      <action name="host">
+         <command class="com.ptc.netmarkets.meeting.NmMeetingCommands" method="host" windowType="popup" onClick="postSelectValidation(event,'host')"/>
+      </action>
+      <action name="join" resourceBundle="com.ptc.netmarkets.meeting.meetingResource">
+         <command class="com.ptc.netmarkets.meeting.NmMeetingCommands" method="join" windowType="popup"/>
+      </action>
+      <action name="join_meeting" resourceBundle="com.ptc.netmarkets.meeting.meetingResource">
+         <command windowType="popup"/>
+      </action>
+      <action name="update">
+       <command class="com.ptc.netmarkets.meeting.processor.EditMeetingFormProcessor" method="execute" windowType="popup"/>
+         <includeFilter name="projectM4D"/>
+
+      </action>
+      <action name="add_minutes">
+         <command class="com.ptc.netmarkets.meeting.NmMeetingCommands" method="addMinutes" windowType="popup"/>
+      </action>
+      <action name="add_minutes_page">
+         <command windowType="popup"/>
+      </action>
+      <action name="view_subject_items" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.meeting.NmMeetingCommands" method="viewSubjectItems" windowType="popup"/>
+      </action>
+      <action name="view" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.meeting.NmMeetingCommands" method="view" windowType="page"/>
+      </action>
+
+     <!--  <action name="defineItemWizStep" required="true" afterJS="validateMeetingType" preloadWizardPage="false">
+                                  <command windowType="wizard_step"/>
+      </action> -->
+      <action name="defineItemWizStepForEdit" preloadWizardPage="true" hidden="true">
+                                        <command windowType="wizard_step"/>
+      </action>
+      <action name="setParticipantsWizStep" preloadWizardPage="false">
+                <component name="netmarkets.meeting.participantsTable" windowType="wizard_step"/>
+      </action>
+      <action name="setObjectsWizStep" preloadWizardPage="false">
+                <component name="netmarkets.meeting.meetingObjectsTable" windowType="wizard_step"/>
+      </action>
+      <action name="addMeetingObject" ajax="row" renderType="GENERAL">
+          <command windowType="popup"/>
+      </action>
+      <action name="setMeetingAttributesWizStep" afterJS="validateMeetingFields" preloadWizardPage="false" required="true">
+            <component name="wt.meeting.setAttributesStep" windowType="wizard_step"/>
+      </action>
+      <action name="editMeetingAttributesWizStep" afterJS="validateMeetingFields">
+          <component name="wt.meeting.setAttributesStep" windowType="wizard_step"/>
+      </action>
+       <action name="addParticipant" ajax="row">
+               <command class="com.ptc.windchill.enterprise.picker.principal.PrincipalCommands" method="addPrincipal" windowType="popup"/>
+       </action>
+      <action name="outlookUpdate">
+                <command class="com.ptc.netmarkets.meeting.NmMeetingCommands" method="update"/>
+      </action>
+
+      <!-- meeting related objects tables  -->
+      <action name="relatedMeetingAgendas">
+      	 <component name="meeting.agendaTable" windowType="page"/>
+      </action>
+      
+      <action name="relatedMeetingMinutes">
+      	 <component name="meeting.minutesTable" windowType="page"/>
+      </action>
+      
+      <action name="relatedMeetingSubjects" resourceBundle="com.ptc.netmarkets.meeting.meetingResourceActionsRB">
+      	 <component name="meeting.subjectsTable" windowType="page"/>
+      </action>
+      
+      <action name="relatedMeetingParticipants">
+      	 <component name="meeting.participantsTable" windowType="page"/>
+      </action>
+	  
+	  <action name="relatedMeetings">
+      	 <component name="meeting.relatedMeetingsToObjects" windowType="page"/>
+		 <supportedTypes>
+            <type value="wt.part.WTPart" />
+            <type value="wt.doc.WTDocument" />
+            <type value="wt.epm.EPMDocument" />
+            <type value="wt.change2.WTChangeIssue" />
+            <type value="wt.change2.WTVariance" />
+            <type value="wt.change2.WTChangeRequest2" />
+            <type value="wt.change2.WTChangeOrder2" />
+	  	 </supportedTypes>
+      </action>
+      
+      <!-- meeting minutes actions  -->
+      <action name="addMinutes" ajax="component">
+         <command class="com.ptc.netmarkets.meeting.processor.MinutesAddFormProcessor" url="/netmarkets/jsp/meeting/addRelatedDocuments.jsp" windowType="popup"/>
+      </action>	
+      <action name="removeMinutes" ajax="component" selectRequired="true" multiselect="true">
+         <command class="com.ptc.netmarkets.meeting.processor.MinutesRemoveFormProcessor" method="execute"/>
+      </action>	
+      <action name="pasteMinutes" ajax="component">
+         <command class="com.ptc.netmarkets.meeting.processor.MinutesPasteFormProcessor" method="execute"/>
+      </action>	
+      <action name="pasteSelectedMinutes" ajax="component">
+         <command class="com.ptc.netmarkets.meeting.processor.MinutesPasteSelectedFormProcessor" url="netmarkets/jsp/meeting/pasteSelectedObjects.jsp" windowType="popup"/>
+      </action>	 
+      
+      <!-- meeting agenda actions  -->
+      <action name="removeAgenda" ajax="component" selectRequired="true" multiselect="true">
+         <command class="com.ptc.netmarkets.meeting.processor.AgendaRemoveFormProcessor" method="execute"/>
+      </action>
+      <action name="addAgenda" ajax="component">
+         <command class="com.ptc.netmarkets.meeting.processor.AgendaAddFormProcessor" url="netmarkets/jsp/meeting/addRelatedDocuments.jsp" windowType="popup"/>
+      </action>
+      <action name="pasteAgenda" ajax="component">
+         <command class="com.ptc.netmarkets.meeting.processor.AgendaPasteFormProcessor" method="execute"/>
+      </action>
+      <action name="pasteSelectedAgenda" ajax="component">
+         <command class="com.ptc.netmarkets.meeting.processor.AgendaPasteSelectedFormProcessor" url="netmarkets/jsp/meeting/pasteSelectedObjects.jsp" windowType="popup"/>
+      </action>
+	  
+	  <!-- meeting participants table actions -->
+      <action name="addParticipantToTable" ajax="component">
+         <command class="com.ptc.netmarkets.meeting.processor.ParticipantAddFormProcessor" windowType="popup"/>
+      </action>
+      <action name="removeParticipantFromTable" selectRequired="true" multiselect="true" ajax="component">
+         <command class="com.ptc.netmarkets.meeting.processor.ParticipantRemoveFormProcessor" method="execute"/>
+      </action>
+      
+      <!-- meeting related objects actions -->
+      <action name="addSubject" ajax="component">
+         <command class="com.ptc.netmarkets.meeting.processor.SubjectAddFormProcessor" url="netmarkets/jsp/meeting/addRelatedSubjects.jsp" windowType="popup"/>
+      </action>
+      <action name="removeSubject" selectRequired="true" multiselect="true" ajax="component">
+         <command class="com.ptc.netmarkets.meeting.processor.SubjectRemoveFormProcessor" method="execute"/>
+      </action>
+      <action name="pasteSubject" ajax="component">
+         <command class="com.ptc.netmarkets.meeting.processor.SubjectPasteFormProcessor" method="execute"/>
+      </action>
+      <action name="pasteSelectedSubject" ajax="component">
+         <command class="com.ptc.netmarkets.meeting.processor.SubjectPasteSelectedFormProcessor" url="netmarkets/jsp/meeting/pasteSelectedObjects.jsp" windowType="popup"/>
+      </action>
+   </objecttype>
+
+   <objecttype name="actionitem" class="wt.meeting.actionitem.DiscreteActionItem">
+      <action name="view" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.actionitem.actionitemResource">
+         <command class="com.ptc.netmarkets.deliverable.NmActionItemCommands" method="view" windowType="page"/>
+      </action>
+      <action name="list" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.actionitem.actionitemResource">
+        <component name="netmarkets.actionitem.list" windowType="page"/>
+      </action>
+      <action name="list_user" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.actionitem.NMActionItemOview" method="list_user" windowType="page"/>
+      </action>
+      <action name="create" uicomponent="PROJECT_ACTION_ITEM" ajax="component" resourceBundle="com.ptc.netmarkets.actionitem.actionitemResource">
+         <command class="com.ptc.netmarkets.actionitem.processors.CreateActionItemFormProcessor" method="execute" windowType="popup" url="netmarkets/jsp/actionitem/create_action_item"/>
+         <includeFilter name="projectM4D"/>
+      </action>
+     <action name="create_action_item_basic_step" ajax="true">
+         <command class="" method="" windowType="wizard_step"/>
+         <component name="netmarkets.actionitem.attributes"
+                windowType="wizard_step" />
+      </action>
+     <action name="create_action_item_advanced_step" ajax="true" preloadWizardPage="false">
+         <command class="" method="" windowType="wizard_step"/>
+         <component name="netmarkets.actionitem.moreattributes"
+                windowType="wizard_step" />
+      </action>
+      <action name="create_action_item_step_1" ajax="true">
+         <command class="" method="" windowType="wizard_step" url="netmarkets/jsp/actionitem/create_action_item_step_1"/>
+      </action>
+      <action name="create_action_item_step_2" ajax="true">
+               <command class="" method="" windowType="wizard_step" url="netmarkets/jsp/actionitem/create_action_item_step_2"/>
+      </action>
+      <action name="update" ajax="component" resourceBundle="com.ptc.netmarkets.actionitem.actionitemResource">
+         <command class="com.ptc.netmarkets.actionitem.processors.EditActionItemFormProcessor" method="execute" windowType="popup" url="netmarkets/jsp/actionitem/edit_action_item"/>
+         <includeFilter name="projectM4D"/>
+      </action>
+      <action name="edit_action_item_basic_step" ajax="true">
+         <command class="" method="" windowType="wizard_step"/>
+         <component name="netmarkets.actionitem.attributes"
+                windowType="wizard_step" />
+      </action>
+      <action name="edit_action_item_advanced_step" ajax="true">
+         <command class="" method="" windowType="wizard_step"/>
+         <component name="netmarkets.actionitem.moreattributes"
+                windowType="wizard_step" />
+      </action>
+      <action name="delete" uicomponent="DELETE" selectRequired="true" ajaxActionClass="netmarkets/jsp/object/delete.jsp" resourceBundle="com.ptc.netmarkets.actionitem.actionitemResource">
+            <command class="com.ptc.netmarkets.actionitem.NmActionItemCommands" method="list_delete" onClick="validateListDeletionForTableActionItem(event,'delete')"/>
+      </action>
+      <action name="edit_action_item_step_1" ajax="true">
+         <command class="" method="" windowType="wizard_step" url="netmarkets/jsp/actionitem/edit_action_item_step_1"/>
+      </action>
+      <action name="edit_action_item_step_2" ajax="true">
+               <command class="" method="" windowType="wizard_step" url="netmarkets/jsp/actionitem/edit_action_item_step_2"/>
+      </action>
+      <action name="delete_row" ajax="page" resourceBundle="com.ptc.netmarkets.actionitem.actionitemResource">
+         <command class="com.ptc.netmarkets.actionitem.NmActionItemCommands" method="rowDelete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE&apos;)"/>
+      </action>
+      <action name="subscribe" resourceBundle="com.ptc.netmarkets.actionitem.actionitemResource">
+         <command class="com.ptc.netmarkets.actionitem.NmActionItemCommands" method="subscribe"/>
+      </action>
+      <action name="unsubscribe" resourceBundle="com.ptc.netmarkets.actionitem.actionitemResource">
+         <command class="com.ptc.netmarkets.actionitem.NmActionItemCommands" method="unsubscribe"/>
+      </action>
+      <action name="importFromExcelXML" uicomponent="PROJECT_ACTION_ITEM" checkaccess="true" resourceBundle="com.ptc.netmarkets.actionitem.actionitemResource">
+         <command class="com.ptc.netmarkets.actionitem.NmActionItemCommands" method="importFromExcelXML" windowType="popup"/>
+         <access name="create"/>
+         <includeFilter name="projectM4D"/>
+      </action>
+      <action name="importFromExcelXML_step" checkaccess="true" resourceBundle="com.ptc.netmarkets.actionitem.actionitemResource">
+         <command class="" method="" windowType="wizard_step"/>
+      </action>
+      <action name="exportToExcelXML" multiselect="true" ajax="row" resourceBundle="com.ptc.netmarkets.actionitem.actionitemResource">
+         <command url="netmarkets/jsp/plan/pjlDownload?objecttype=actionitem&amp;action=exportToExcelXML_internal&amp;export=actionItem" windowType="popup"/>
+         <access name="read"/>
+         <includeFilter name="projectM4D"/>
+      </action>
+	  <action name="exportToExcelXML_internal">
+         <command url="/servlet/pjldownloadhelper"/>
+      </action>
+      <action name="editInExcel" multiselect="true" ajax="row" resourceBundle="com.ptc.netmarkets.actionitem.actionitemResource">
+         <includeFilter name="projectM4D"/>
+         <command url="netmarkets/jsp/plan/pjlDownload?objecttype=actionitem&amp;action=editInExcel_internal&amp;export=editInExcel" windowType="popup"/>
+      </action>
+      <action name="editInExcel_internal">
+         <command url="/servlet/pjldownloadhelper"/>
+      </action>
+      <action name="downloadExcelTemplate" multiselect="true" ajax="page" resourceBundle="com.ptc.netmarkets.actionitem.actionitemResource">
+         <includeFilter name="projectM4D"/>
+         <command url="netmarkets/jsp/plan/pjlDownload?objecttype=actionitem&amp;action=downloadExcelTemplate_internal&amp;export=downloadExcelTemplate" windowType="popup"/>
+      </action>	  
+      <action name="downloadExcelTemplate_internal">
+         <command url="/servlet/pjldownloadhelper"/>
+      </action>
+      <action name="paste" multiselect="true" resourceBundle="com.ptc.netmarkets.actionitem.actionitemResource">
+         <includeFilter name="projectM4D"/>
+         <command class="com.ptc.netmarkets.actionitem.NmActionItemCommands" method="paste"/>
+      </action>
+      <action name="removeAssociation" multiselect="true" selectRequired="true" resourceBundle="com.ptc.netmarkets.actionitem.actionitemResource">
+         <command class="com.ptc.netmarkets.actionitem.NmActionItemCommands" method="removeAssociation"/>
+      </action>
+      <action name="identify" checkaccess="true" resourceBundle="com.ptc.netmarkets.actionitem.actionitemResource" afterJS="validateName2">
+         <command windowType="wizard_step"/>
+      </action>
+      <action name="additionalAttributesStep" checkaccess="true" resourceBundle="com.ptc.netmarkets.actionitem.actionitemResource">
+         <command windowType="wizard_step"/>
+      </action>
+      <action name="relatedActionItems" uicomponent="THIRD_LEVEL_RELATED_ACTION_ITEMS" resourceBundle="com.ptc.netmarkets.actionitem.actionitemResource">
+         <component name="netmarkets.actionitem.list" windowType="page"/>
+      </action>
+      <action name="actionItemSubjects" resourceBundle="com.ptc.netmarkets.actionitem.actionitemResource">
+         <command class="" method="" url="netmarkets/jsp/actionitem/actionItemSubjects.jsp"/>
+      </action>
+   </objecttype>
+   <objecttype name="workflow" class="wt.workflow.engine.WfProcess">
+      <action name="processHistory" uicomponent="PROJECT_ROUTE_STATUS">
+         <command class="" method="" windowType="page"/>
+         <includeFilter name="PartAlternateRepNav"/>
+      </action>
+      <action name="getTeam">
+              <command windowType="page" url="netmarkets/jsp/workflow/processHistory.jsp?tlnAction=processHistory&amp;tlnType=workflow"/>
+      </action>
+      <action name="editTeam">
+            <command url="netmarkets/jsp/workflow/updateRoute.jsp?fromEditTeam=true" class="com.ptc.netmarkets.workflow.NmWorkflowCommands" method="updateRoute" windowType="popup"/>
+      </action>
+      <action name="openProcessManager" uicomponent="OPEN_PROCESS_MANAGER">
+          <command url="netmarkets/jsp/process/info.jsp" windowType="popup"/>
+      </action>
+      <action name="openProcessMonitor" uicomponent="OPEN_PROCESS_MONITOR">
+                <command class="" method="" windowType="popup"/>
+      </action>
+      <action name="route" uicomponent="PROJECT_ROUTE">
+         <command class="com.ptc.netmarkets.workflow.NmWorkflowCommands" method="route" windowType="popup"/>
+         <includeFilter name="hideForNewObjectInWorkspace"/>
+         <includeFilter name="sandboxSharingValidationSimple"/>
+         <includeFilter name="projectM4D"/>
+      </action>
+      <action name="updateRoute" uicomponent="PROJECT_ROUTE" ajax="page">
+         <command class="com.ptc.netmarkets.workflow.NmWorkflowCommands" method="updateRoute" windowType="popup"/>
+      </action>
+      <action name="showFullTeam" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.workflow.NmWorkflowCommands" method="addUserToAdHocTeam" windowType="normal"/>
+      </action>
+      <action name="showAdHocTeam" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.workflow.NmWorkflowCommands" method="addUserToAdHocTeam" windowType="normal"/>
+      </action>
+      <action name="terminate" ajax="page" uicomponent="PROJECT_ROUTE">
+         <command class="com.ptc.netmarkets.workflow.NmWorkflowCommands" method="terminate" windowType="normal" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.TERMINATE_CONFIRMATION&apos;)"/>
+      </action>
+      <action name="terminateProcess" ajax="page" uicomponent="TERMINATE_PROCESS">
+         <command class="com.ptc.netmarkets.workflow.NmWorkflowCommands" method="terminate" windowType="normal" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.TERMINATE_CONFIRMATION&apos;)"/>
+      </action>
+      <action name="addExternalRecipient" uicomponent="PROJECT_ROUTE">
+         <command class="com.ptc.netmarkets.workflow.NmWorkflowCommands" method="addExternalRecipient" windowType="normal"/>
+      </action>
+
+      <action name="multiTerminateProc" multiselect="true" selectRequired="true" resourceBundle="com.ptc.netmarkets.workflow.workflowResource">
+         <command class="com.ptc.netmarkets.workflow.NmWorkflowCommands" method="terminateProcess" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.P_TERMINATE_CONFIRMATION&apos;)"/>
+      </action>
+      <action name="multiDeleteProcess" multiselect="true" selectRequired="true" resourceBundle="com.ptc.netmarkets.workflow.workflowResource">
+         <command class="com.ptc.netmarkets.workflow.NmWorkflowCommands" method="delete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.P_DELETE_CONFIRMATION&apos;)"/>
+      </action>
+      <action name="multiSubscribeProcess" multiselect="true" selectRequired="true" resourceBundle="com.ptc.netmarkets.workflow.workflowResource">
+         <command class="com.ptc.netmarkets.workflow.NmWorkflowCommands" method="subscribe" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.P_SUBSCRIBE_CONFIRMATION&apos;)"/>
+      </action>
+
+      <action name="terminateProc" resourceBundle="com.ptc.netmarkets.workflow.workflowResource">
+         <command class="com.ptc.netmarkets.workflow.NmWorkflowCommands" method="terminateProcess" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.P_TERMINATE_CONFIRMATION&apos;)"/>
+      </action>
+      <action name="deleteProcess" resourceBundle="com.ptc.netmarkets.workflow.workflowResource">
+         <command class="com.ptc.netmarkets.workflow.NmWorkflowCommands" method="delete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.P_DELETE_CONFIRMATION&apos;)"/>
+      </action>
+      <action name="subscribeProcess" resourceBundle="com.ptc.netmarkets.workflow.workflowResource">
+         <command class="com.ptc.netmarkets.workflow.NmWorkflowCommands" method="subscribe" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.P_SUBSCRIBE_CONFIRMATION&apos;)"/>
+      </action>
+
+      <action name="route_step1" preloadWizardPage="false" afterJS="afterStep1" required="true">
+        <command windowType="wizard_step"/>
+      </action>
+      <action name="route_team_step2" afterVK="checkRouteTeam" afterJS="PTC.wizard.saveTableData.writeAllTableRows" preloadWizardPage="false" required="true">
+            <command windowType="wizard_step"/>
+      </action>
+      <action name="route_instructions_step3" preloadWizardPage="false">
+            <command windowType="wizard_step"/>
+      </action>
+      <action name="route_deadline_step4" preloadWizardPage="false">
+            <command windowType="wizard_step"/>
+      </action>
+    <action name="route_extParticipants_step5" preloadWizardPage="false">
+            <command windowType="wizard_step"/>
+      </action>
+
+    <action name="addObject" ajax="row">
+        <command class="com.ptc.core.components.forms.WizardCommands" method="addObject"/>
+    </action>
+
+    <action name="addMultipleObjects" ajax="row">
+        <command class="com.ptc.core.components.forms.WizardCommands" method="addMultipleObjects"/>
+    </action>
+    <action name="remove" renderType="GENERAL" selectRequired="true">
+        <command windowType="no_content" onClick="removeRows(event)"/>
+    </action>
+
+   </objecttype>
+   <objecttype name="lifecycle" class="wt.lifecycle.LifeCycleTemplate" resourceBundle="com.ptc.netmarkets.lifecycle.lifecycleResource">
+      <action name="setState" ajax="row">
+         <command class="com.ptc.netmarkets.lifecycle.NmLifeCycleCommands" method="setState" windowType="popup"/>
+         <includeFilter name="hideForNewObjectInWorkspace"/>
+         <includeFilter name="sandboxSharingValidationSimple"/>
+         <includeFilter name="hideFromNonAgreementMgrs"/>
+         <includeFilter name="hideSBHiddenFilter"/>
+         <includeFilter name="manAuthorized" />
+         <includeFilter name="DisableActionForPendingRefreshFilter"/>
+      </action>
+      <action name="reassignLC" multiselect="true" selectRequired="true" ajax="row">
+         <command class="com.ptc.netmarkets.lifecycle.NmLifeCycleCommands" method="reassignLC" windowType="popup"/>
+         <includeFilter name="hideForNewObjectInWorkspace"/>
+         <includeFilter name="sandboxSharingValidationSimple"/>
+         <includeFilter name="projectM4D"/>
+         <includeFilter name="ghostEpmDoc"/>
+         <includeFilter name="manAuthorized" />
+      </action>
+      <action name="Reassign_Step1">
+         <command windowType="wizard_step"/>
+      </action>
+   </objecttype>
+   <objecttype name="team" class="wt.team.TeamTemplate">
+      <action name="resetTeam" multiselect="true" selectRequired="true">
+          <command class="com.ptc.netmarkets.lifecycle.NmLifeCycleCommands" method="resetTeam" windowType="popup"/>
+          <includeFilter name="hideForNewObjectInWorkspace"/>
+          <includeFilter name="sandboxSharingValidationSimple"/>
+          <includeFilter name="projectM4D"/>
+      </action>
+      <action name="resetTeam_Step">
+         <command windowType="wizard_step"/>
+      </action>
+   </objecttype>
+   <objecttype name="rule" class="wt.rule.Rule">
+      <action name="create">
+         <command class="com.ptc.netmarkets.rule.NmRuleCommands" method="create" windowType="popup"/>
+      </action>
+      <action name="update">
+         <command class="com.ptc.netmarkets.rule.NmRuleCommands" method="update" windowType="popup"/>
+      </action>
+      <action name="enable">
+         <command class="com.ptc.netmarkets.rule.NmRuleCommands" method="enable"/>
+      </action>
+      <action name="enable_rule">
+         <command class="com.ptc.netmarkets.rule.NmRuleCommands" method="enable"/>
+      </action>
+      <action name="disable">
+         <command class="com.ptc.netmarkets.rule.NmRuleCommands" method="disable"/>
+      </action>
+      <action name="disable_rule">
+         <command class="com.ptc.netmarkets.rule.NmRuleCommands" method="disable"/>
+      </action>
+      <action name="download" ajax="page">
+         <command class="com.ptc.netmarkets.rule.NmRuleCommands" method="download"/>
+      </action>
+      <action name="requestDownloadComposite">
+         <command class="com.ptc.netmarkets.rule.NmRuleCommands" method="requestDownloadComposite" windowType="popup"/>
+      </action>
+      <action name="downloadComposite">
+         <command class="com.ptc.netmarkets.rule.NmRuleCommands" method="downloadComposite"/>
+      </action>
+      <action name="downloadDTD" ajax="page">
+         <command class="com.ptc.netmarkets.rule.NmRuleCommands" method="downloadDTD"/>
+      </action>
+      <action name="viewpopup" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.user.NmRuleCommands" method="view" windowType="popup"/>
+      </action>
+      <action name="deleteRuleInfo">
+         <command class="com.ptc.netmarkets.rule.NmRuleCommands" method="delete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE&apos;)"/>
+      </action>
+   </objecttype>
+   <objecttype name="product" class="wt.pdmlink.PDMLinkProduct">
+      <action name="ADMINPRODUCT" enabledwhensuspended="true" renderType="PDM">
+         <command class="wt.pdmlink.PDMLinkProduct" method="ADMINPRODUCT" windowType="popup"/>
+      </action>
+      <action name="UPDATEPRODUCTFORM" renderType="PDM">
+         <command class="wt.pdmlink.PDMLinkProduct" method="UPDATEPRODUCTFORM" windowType="popup"/>
+      </action>
+      <action name="view" enabledwhensuspended="true" renderType="PDM" uicomponent="PRODUCT_TAB">
+         <command class="wt.pdmlink.PDMLinkProduct" method="list" windowType="page"/>
+      </action>
+      <action name="ObjProps" enabledwhensuspended="true" renderType="PDM">
+         <command class="" method="ObjProps" windowType="page"/>
+      </action>
+      <action name="list2" enabledwhensuspended="true">
+         <command class="wt.pdmlink.PDMLinkProduct" method="list2" windowType="page"/>
+      </action>
+      <action name="list3" enabledwhensuspended="true">
+         <command class="wt.pdmlink.PDMLinkProduct" method="list3" windowType="page"/>
+      </action>
+      <action name="endItem" enabledwhensuspended="true" renderType="PDM">
+         <command class="" method="endItem" windowType="page"/>
+      </action>
+      <action name="endItemAccessError" enabledwhensuspended="true" renderType="PDM">
+         <command class="" method="endItemAccessError" windowType="page"/>
+      </action>
+      <action name="changeMonitor" enabledwhensuspended="true" renderType="PDM" uicomponent="CHANGE_MONITOR_SUB_TAB">
+         <command class="" method="changeMonitor" windowType="page"/>
+      </action>
+      <action name="save_product_as_template" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.product.NmProductCommands" method="saveProductAsInternalTemplate" windowType="popup"/>
+      </action>
+      <action name="export_product_as_template" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.product.NmProductCommands" method="exportProductAsTemplate" windowType="popup"/>
+      </action>
+      <action name="createProductTemplate" enabledwhensuspended="true" resourceBundle="com.ptc.windchill.principal.template.TemplateActionsRB">
+         <command url="netmarkets/jsp/templates/create.jsp" class="com.ptc.windchill.principal.template.processor.CreateContainerTemplateFormProcessor" method="execute" windowType="popup"/>
+      </action>
+      <action name="importProductTemplate" resourceBundle="com.ptc.windchill.principal.template.TemplateActionsRB">
+         <command url="netmarkets/jsp/templates/import.jsp" class="com.ptc.windchill.principal.template.processor.ImportContainerTemplateFormProcessor" method="execute" windowType="popup"/>
+      </action>
+   <action name="createProductPlanTemplate" enabledwhensuspended="true" resourceBundle="com.ptc.windchill.principal.template.TemplateActionsRB">
+	 <command url="netmarkets/jsp/productplantemplates/create.jsp" class="com.ptc.netmarkets.productplantemplates.CreateNewProductPlanTemplateFormProcessor" method="execute" windowType="popup"/>
+   </action>
+   <action name="createProductPlanTemplate_step" enabledwhensuspended="true">
+	 <command url="netmarkets/jsp/productplantemplates/create_step.jsp" windowType="wizard_step"/>
+   </action>
+   <action name="importProductPlanTemplate" resourceBundle="com.ptc.windchill.principal.template.TemplateActionsRB">
+     	<command url="netmarkets/jsp/templates/import.jsp" class="com.ptc.netmarkets.productplantemplates.ImportPlanTemplateFormProcessor" method="execute" windowType="popup"/>
+   </action>
+   </objecttype>
+   <objecttype name="change" class="wt.change2.ChangeItem">
+      <action name="view_DELETEME" renderType="GENERAL">
+         <command class="change" method="netmarkets/jsp/change/list2.jsp" windowType="page"/>
+      </action>
+      <action name="ObjProps" enabledwhensuspended="true" renderType="PDM">
+         <command class="" method="ObjProps" windowType="page"/>
+      </action>
+      <action name="view" enabledwhensuspended="true" uicomponent="CHANGE_TAB">
+         <command class="change" method="list" windowType="page"/>
+      </action>
+      <action name="list2" enabledwhensuspended="true">
+         <command class="change" method="list2" windowType="page"/>
+      </action>
+      <action name="list3" enabledwhensuspended="true">
+         <command class="change" method="list3" windowType="page"/>
+      </action>
+      <action name="listChangeRequests2" enabledwhensuspended="true">
+         <command class="change" method="listChangeRequests2" windowType="page"/>
+      </action>
+      <action name="listChangeNotices2" enabledwhensuspended="true">
+         <command class="change" method="listChangeNotices2" windowType="page"/>
+      </action>
+      <action name="ChangeMonitor" enabledwhensuspended="true" renderType="PDM">
+         <command method="ChangeMonitor" windowType="page"/>
+      </action>
+      <action name="changeMonitor2" enabledwhensuspended="true" renderType="PDM">
+         <command class="wt.change2.WTChangeIssue" method="changeMonitor2" windowType="page"/>
+      </action>
+      <action name="changeMonitor3" enabledwhensuspended="true" renderType="PDM">
+         <command class="wt.change2.WTChangeIssue" method="changeMonitor3" windowType="page"/>
+      </action>
+   </objecttype>
+   <objecttype name="library" class="wt.inf.library.WTLibrary">
+      <action name="ADMINREPO" enabledwhensuspended="true" renderType="PDM">
+         <command class="wt.inf.library.WTLibrary" method="ADMINREPO" windowType="popup"/>
+      </action>
+      <action name="CREATELIBRARYFORM" enabledwhensuspended="true" renderType="PDM" uicomponent="CREATE_LIBRARY_CONTEXT">
+         <command method="CREATELIBRARYFORM" windowType="popup"/>
+      </action>
+      <action name="UPDATELIBRARYFORM" enabledwhensuspended="true" renderType="PDM">
+         <command method="UPDATELIBRARYFORM" windowType="popup"/>
+      </action>
+      <action name="view" enabledwhensuspended="true" renderType="PDM" uicomponent="LIBRARY_TAB">
+         <command class="wt.inf.library.WTLibrary" method="list" windowType="page"/>
+      </action>
+      <action name="ObjProps" enabledwhensuspended="true" renderType="PDM">
+         <command class="" method="ObjProps" windowType="page"/>
+      </action>
+      <action name="list2" enabledwhensuspended="true">
+         <command class="wt.inf.library.WTLibrary" method="list2" windowType="page"/>
+      </action>
+      <action name="list3" enabledwhensuspended="true">
+         <command class="wt.inf.library.WTLibrary" method="list3" windowType="page"/>
+      </action>
+      <action name="changeMonitor" enabledwhensuspended="true" renderType="PDM" uicomponent="CHANGE_MONITOR_SUB_TAB">
+         <command class="" method="changeMonitor" windowType="page"/>
+      </action>
+      <action name="save_library_as_template" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.library.NmLibraryCommands" method="saveLibraryAsInternalTemplate" windowType="popup"/>
+      </action>
+      <action name="export_library_as_template" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.library.NmLibraryCommands" method="exportLibraryAsTemplate" windowType="popup"/>
+      </action>
+      <action name="createLibraryTemplate" enabledwhensuspended="true" resourceBundle="com.ptc.windchill.principal.template.TemplateActionsRB">
+         <command url="netmarkets/jsp/templates/create.jsp" class="com.ptc.windchill.principal.template.processor.CreateContainerTemplateFormProcessor" method="execute" windowType="popup"/>
+      </action>
+      <action name="importLibraryTemplate" resourceBundle="com.ptc.windchill.principal.template.TemplateActionsRB">
+         <command url="netmarkets/jsp/templates/import.jsp" class="com.ptc.windchill.principal.template.processor.ImportContainerTemplateFormProcessor" method="execute" windowType="popup"/>
+      </action>
+   </objecttype>
+   <objecttype name="productplantemplates" class="com.ptc.netmarkets.productplantemplates.ProductPlanTemplate" resourceBundle="com.ptc.netmarkets.templates.templatesResource">
+
+		<action enabledwhensuspended="true" name="enable">
+			<command class="com.ptc.netmarkets.productplantemplates.ProductPlanTemplateCommands" method="enable"/>
+		</action>
+		<action name="disable" enabledwhensuspended="true">
+			<command class="com.ptc.netmarkets.productplantemplates.ProductPlanTemplateCommands" method="disable"/>
+		</action>
+		<action name="deletePlanTemplate" >
+			<command class="com.ptc.netmarkets.productplantemplates.ProductPlanTemplateCommands" method="deletePlanTemplate" onClick="JCAConfirm(event,'com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE')"/>
+		</action>
+		<action name="download_template">
+         <command url="netmarkets/jsp/plan/pjlDownload?objecttype=productplantemplates&amp;action=download_template_internal&amp;export=downloadPlanTemplate" windowType="popup"/>
+      </action>
+	  <action name="download_template_internal">
+         <command url="/servlet/pjldownloadhelper"/>
+      </action>
+      <action name="updatePlanTemplate" enabledwhensuspended="true">
+		 <command url="netmarkets/jsp/productplantemplates/update.jsp" class="com.ptc.netmarkets.productplantemplates.EditPlanTemplateFormProcessor" method="execute" windowType="popup"/>
+      </action>
+      <action name="updatePlanTemplate_step" enabledwhensuspended="true">
+		 <command url="netmarkets/jsp/productplantemplates/update_step.jsp" windowType="wizard_step"/>         
+      </action>      
+   </objecttype>
+   <objecttype name="taskformtemplates" class="com.ptc.netmarkets.workflow.taskformtemplates.NmTaskFormTemplate">
+      <action name="create" enabledwhensuspended="true"  resourceBundle="com.ptc.netmarkets.workflow.taskformtemplates.taskformtemplatesResource">
+         <command class="com.ptc.netmarkets.workflow.taskformtemplates.NmTaskFormTemplateCommands" method="create" windowType="popup"/>
+      </action>
+    <action id="create_step" name="create_step" required="true">
+          <command windowType="wizard_step"/>
+    </action>
+      <action id="next_step" name="next_step" required="true">
+          <command windowType="wizard_step"/>
+      </action>
+      <action name="download" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.workflow.taskformtemplates.NmTaskFormTemplateCommands" method="download" windowType="new"/>
+      </action>
+      <action name="update" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.workflow.taskformtemplates.NmTaskFormTemplateCommands" method="update" windowType="popup"/>
+      </action>
+
+	  <action name="checkoutAndEdit" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.workflow.taskformtemplates.taskformtemplatesResource">
+         <command class="com.ptc.netmarkets.workflow.taskformtemplates.NmTaskFormTemplateCommands" method="update" windowType="popup" url="/netmarkets/jsp/taskformtemplates/create.jsp?action=checkoutAndEdit"/>
+		  <access name="update"/>
+      </action>
+
+      <action name="view" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.workflow.taskformtemplates.NmTaskFormTemplateCommands" method="view" windowType="page"/>
+      </action>
+      <action name="saveas" enabledwhensuspended="true" resourceBundle="com.ptc.netmarkets.workflow.taskformtemplates.taskformtemplatesResource">
+         <command class="com.ptc.netmarkets.workflow.taskformtemplates.NmTaskFormTemplateCommands" method="saveas" windowType="popup"
+		 url="/netmarkets/jsp/taskformtemplates/saveas.jsp"/>
+		 <access name="update"/>
+      </action>
+
+	 <action id="saveas_step" name="saveas_step" required="true">
+          <command windowType="wizard_step"/>
+     </action>
+
+     <action name="checkin" checkaccess="true" resourceBundle="com.ptc.netmarkets.workflow.taskformtemplates.taskformtemplatesResource">
+            <command class="com.ptc.netmarkets.workflow.taskformtemplates.NmTaskFormTemplateCommands" method="update" windowType="popup"/>
+		  <access name="update"/>
+      </action>
+
+	  <action id="checkin_step" name="checkin_step" required="true">
+          <command windowType="wizard_step"/>
+		</action>
+
+	   <action name="edit" checkaccess="true" resourceBundle="com.ptc.netmarkets.workflow.taskformtemplates.taskformtemplatesResource">
+           <command class="com.ptc.netmarkets.workflow.taskformtemplates.NmTaskFormTemplateCommands" method="update" windowType="popup" url="/netmarkets/jsp/taskformtemplates/create.jsp?action=edit"/>
+		  <access name="update"/>
+      </action>
+
+	   <action name="checkinButton" checkaccess="true" resourceBundle="com.ptc.netmarkets.workflow.taskformtemplates.taskformtemplatesResource">
+           <command class="com.ptc.netmarkets.workflow.taskformtemplates.NmTaskFormTemplateCommands" method="update"  onClick="onEditSubmit('checkinButton')"/>
+      </action>
+
+	   <action name="editButton" checkaccess="true" resourceBundle="com.ptc.netmarkets.workflow.taskformtemplates.taskformtemplatesResource">
+           <command class="com.ptc.netmarkets.workflow.taskformtemplates.NmTaskFormTemplateCommands" method="update"  onClick="onEditSubmit('editButton')" />
+         <access name="update"/>
+      </action>
+      <action name="delete" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.workflow.taskformtemplates.NmTaskFormTemplateCommands" method="delete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE&apos;)"/>
+      </action>
+      <action name="list" enabledwhensuspended="true">
+         <command windowType="page"/>
+      </action>
+      <action name="enable" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.workflow.taskformtemplates.NmTaskFormTemplateCommands" method="enable"/>
+      </action>
+      <action name="disable" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.workflow.taskformtemplates.NmTaskFormTemplateCommands" method="disable"/>
+      </action>
+
+	  <action name="exportTaskFormTemplate" selectRequired="true" resourceBundle="com.ptc.netmarkets.workflow.taskformtemplates.taskformtemplatesResource">
+		   <command  url="netmarkets/jsp/taskformtemplates/exportTaskFormTemplate.jsp" 
+			 class="com.ptc.netmarkets.workflow.taskformtemplates.NmTaskFormTemplateCommands" method="exportTaskFormTemplate" windowType="popup"  onClick="postSelectValidation(event,'exportTaskFormTemplate')" />
+		 </action>
+
+	 <action name="exportTaskFormTemplate_step" enabledwhensuspended="true">
+         <command windowType="wizard_step"/>
+     </action>
+
+  <action name="importTaskFormTemplate" resourceBundle="com.ptc.netmarkets.workflow.taskformtemplates.taskformtemplatesResource">
+	   <command  url="netmarkets/jsp/taskformtemplates/importTaskFormTemplate.jsp" 
+		 class="com.ptc.netmarkets.workflow.taskformtemplates.NmTaskFormTemplateCommands" method="importTaskFormTemplate" windowType="popup"/>
+     </action>
+     
+	 <action name="importTaskFormTemplate_step" enabledwhensuspended="true">
+         <command windowType="wizard_step"/>
+     </action>
+
+      <action name="deleteLatestIterationOfTaskFormTemplate" enabledwhensuspended="true"  resourceBundle="com.ptc.netmarkets.workflow.taskformtemplates.taskformtemplatesResource">
+         <command class="com.ptc.netmarkets.workflow.taskformtemplates.NmTaskFormTemplateCommands" method="deleteLatestIteration" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.workflow.taskformtemplates.taskformtemplatesResource.CONFIRM_DELETE_LATEST_ITERATION&apos;)"/>
+      </action>
+
+
+	 <action name="viewTaskFormTemplate" resourceBundle="com.ptc.netmarkets.workflow.taskformtemplates.taskformtemplatesResource">
+		<command url="/netmarkets/jsp/taskformtemplates/info.jsp" windowType="page"/>
+      </action>
+
+	      <action name="attributes" resourceBundle="com.ptc.netmarkets.workflow.taskformtemplates.taskformtemplatesResource">
+         <component name="taskformtemplates.details.attributes" windowType="page"/>
+      </action>
+
+	     <action name="iterationHistory" resourceBundle="com.ptc.netmarkets.workflow.taskformtemplates.taskformtemplatesResource">
+			 <component name="taskformTemplate.iterationHistory" windowType="page"/>
+      </action>
+
+	   <action name="workflowTaskTabInfo" resourceBundle="com.ptc.netmarkets.workflow.taskformtemplates.taskformtemplatesResource">
+           <command windowType="page" url="/netmarkets/jsp/taskformtemplates/workflowTaskTabInfo.jsp"/>
+      
+      </action>
+
+   </objecttype>
+
+
+   <objecttype name="templates" class="wt.inf.template.DefaultWTContainerTemplate" resourceBundle="com.ptc.windchill.principal.template.TemplateActionsRB">
+      <action name="create" enabledwhensuspended="true">
+         <command class="" method="" windowType="popup"/>
+      </action>
+      <action name="create_step">
+         <command class="" method="" windowType="wizard_step"/>
+      </action>
+      <action name="saveas_step">
+         <command class="" method="" windowType="wizard_step"/>
+      </action>
+      <action name="download_template" enabledwhensuspended="true">
+         <command url="servlet/AttachmentsDownloadDirectionServlet/all" windowType="popup"/>
+      </action>
+      <action name="update" enabledwhensuspended="true">
+         <command url="netmarkets/jsp/templates/update.jsp" class="com.ptc.windchill.principal.template.processor.EditContainerTemplateFormProcessor" method="execute" windowType="popup"/>
+         <includeFilter name="disableForCheckedoutTemplates"/>
+         <includeFilter name="updateTemplates"/>
+      </action>
+      <action name="update_step">
+         <command class="" method="" windowType="wizard_step"/>
+      </action>
+      <action name="import_step">
+         <command class="" method="" windowType="wizard_step"/>
+      </action>
+      <action name="view" enabledwhensuspended="true" resourceBundle="com.ptc.windchill.principal.template.TemplateActionsRB">
+         <command class="com.ptc.netmarkets.templates.NmTemplatesCommands" method="view" windowType="page"/>
+      </action>
+      <action name="saveas" enabledwhensuspended="true" ajax="component">
+         <command class="com.ptc.windchill.principal.org.OrganizationCommands" method="saveas" windowType="popup"/>
+		 <includeFilter name="saveasTemplates"/>
+      </action>
+      <action name="delete" enabledwhensuspended="true">
+         <command class="com.ptc.netmarkets.templates.NmTemplatesCommands" method="delete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE&apos;)"/>
+      </action>
+      <action name="list" enabledwhensuspended="true">
+         <command windowType="page"/>
+      </action>
+      <action name="enable" enabledwhensuspended="true" ajax="row">
+         <command class="com.ptc.netmarkets.templates.NmTemplatesCommands" method="enable"/>
+      </action>
+      <action name="disable" enabledwhensuspended="true" ajax="row">
+         <command class="com.ptc.netmarkets.templates.NmTemplatesCommands" method="disable"/>
+      </action>
+
+      <action name="attributePanel">
+          <description>Attributes for Context Templates.</description>
+
+          <component name="attributesTable" typeBased="true" windowType="page"/>
+      </action>
+
+   </objecttype>
+   <objecttype name="saveas" class="">
+      <action name="pasteAsCopy" enabledwhensuspended="true" ajax="row" uicomponent="PASTE">
+         <command windowType="popup" class="com.ptc.windchill.pdmlink.object.operations.pasteAsCopy.forms.PasteFormProcessor" method="execute" url="netmarkets/jsp/object/pasteAsCopy/cutOrPaste.jsp"/>
+         <includeFilter name="hideFromNonAgreementMgrs"/>
+         <moreurlinfo>height=600,width=1100</moreurlinfo>
+      </action>
+   </objecttype>
+
+   <!-- The following &lt;objecttype name=&quot;roleAccess&quot; class=&quot;com.ptc.netmarkets.roleAccess.UIAccess&quot;&gt; has been moved to \ProjectLink\RoleAccess\src_web\config\actions\RoleAccess-actions.xml -->
+
+   <objecttype name="sandbox" class="java.lang.Object">
+      <action name="SBAddToPrj" uicomponent="ADD_TO_PROJECT" enabledwhensuspended="true" renderType="PDM" installType="PDM|PJL" multiselect="true" selectRequired="true" resourceBundle="wt.dataops.sandbox.sandboxActionsResource">
+         <command windowType="popup" class="java.lang.Object" method="SBAddToPrj"/>
+         <includeFilter name="sandboxSharingValidationSimple"/>
+         <includeFilter name="ghostEpmDoc"/>
+         <!--includeFilter name="manAuthorized" /-->
+         <includeFilter name="hideAdhocVersionFilter"/>
+      </action>
+      <action name="SBUpdatePrj" enabledwhensuspended="true" renderType="PDM" installType="PDM|PJL" resourceBundle="wt.dataops.sandbox.sandboxActionsResource">
+         <command windowType="popup" class="java.lang.Object" method="SBUpdatePrj"/>
+         <access name="update"/>
+      </action>
+      <action name="updateShareMultiSelect" selectRequired="true" multiselect="true" enabledwhensuspended="true" renderType="PDM" installType="PDM|PJL" resourceBundle="wt.dataops.sandbox.sandboxActionsResource">
+          <command windowType="popup" class="java.lang.Object"/>
+      </action>
+      <action name="updateShare" selectRequired="true" enabledwhensuspended="true" renderType="PDM" installType="PDM|PJL" resourceBundle="wt.dataops.sandbox.sandboxActionsResource">
+          <command windowType="popup" class="java.lang.Object"/>
+      </action>
+      <action name="projectRevision" installType="PDM|PJL" resourceBundle="com.ptc.core.ui.navigationRB">
+            <component name="interoperability.projectRevision"/>
+            <includeFilter name="hideForChangeTemplates"/> 	
+            <includeFilter name="hideForEmptyVariantSpecFilter"/>   		
+      </action>
+   </objecttype>
+
+   <objecttype name="classification" class="">
+     <action name="clfPicker" ajax="row">
+         <command onClick="setClassificationRadioButton()" windowType="new"/>
+      </action>
+      <action name="clfPicker_tree">
+          <command windowType="wizard_step"/>
+      </action>
+   </objecttype>
+
+   <objecttype name="ocmp">
+    <action name="wtObjCompare" selectRequired="true">
+      <command windowType="popup"/>
+      <moreurlinfo>height=600,width=750</moreurlinfo>
+      <includeFilter name="DisableActionForPendingRefreshFilter"/>
+    </action>
+    <action name="wtObjCompareMultiple" selectRequired="true" multiselect="true">
+      <command windowType="popup" onClick="PTC.objCompare.validateCompareAction(event,table)" url="netmarkets/jsp/ocmp/wtObjCompare.jsp"/>
+      <moreurlinfo>height=600,width=750</moreurlinfo>
+    </action>
+  </objecttype>
+  <objecttype name="ccsManager" class="com.ptc.netmarkets.ccsManager.NmCCSCommands">
+        <action name="ccsList" enabledwhensuspended="true" uicomponent="CCS_MANAGER">
+            <command class="com.ptc.netmarkets.ccsManager.NmCCSCommands" method="getAllSites" windowType="page"/>
+        </action>
+        <action name="registerCCSWizard">
+            <command class="com.ptc.netmarkets.ccsManager.NmCCSCommands" method="registerCCS" windowType="popup"/>
+        </action>
+        <action name="registerCCS">
+            <command url="netmarkets/jsp/ccsManager/registerCCS.jsp" windowType="wizard_step"/>
+        </action>
+        <action name="delete" multiselect="true" selectRequired="true">
+            <command class="com.ptc.netmarkets.ccsManager.NmCCSCommands" method="delete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE&apos;)"/>
+        </action>
+        <action name="deleteCCS">
+            <command class="com.ptc.netmarkets.ccsManager.NmCCSCommands" method="deleteCCS" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE&apos;)"/>
+        </action>
+        <action name="editCCSWizard">
+            <command class="com.ptc.netmarkets.ccsManager.NmCCSCommands" method="editCCS" windowType="popup"/>
+        </action>
+        <action name="takeOffline">
+            <command class="com.ptc.netmarkets.ccsManager.NmCCSCommands" method="takeOffline"/>
+        </action>
+        <action name="takeOnline">
+            <command class="com.ptc.netmarkets.ccsManager.NmCCSCommands" method="takeOnline"/>
+        </action>
+        <action name="toggleReadOnly">
+            <command class="com.ptc.netmarkets.ccsManager.NmCCSCommands" method="toggleReadOnly"/>
+        </action>
+        <action name="editRootFolders">
+            <command url="netmarkets/jsp/ccsManager/editRootFolders.jsp" windowType="wizard_step"/>
+        </action>
+        <action name="editRootFoldersWizard">
+            <command class="com.ptc.netmarkets.ccsManager.NmCCSCommands" method="editRootFolders" windowType="popup"/>
+        </action>
+        <action name="addRootFolderWizard">
+            <command class="com.ptc.netmarkets.ccsManager.NmCCSCommands" method="addRootFolder" windowType="popup"/>
+        </action>
+        <action name="addRootFolder">
+            <command url="netmarkets/jsp/ccsManager/addRootFolder.jsp" windowType="wizard_step"/>
+        </action>
+        <action name="deleteRootFolders" selectRequired="true">
+            <command class="com.ptc.netmarkets.ccsManager.NmCCSCommands" method="delete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE&apos;)"/>
+        </action>
+        <action name="deleteRootFolder">
+            <command class="com.ptc.netmarkets.ccsManager.NmCCSCommands" method="deleteRootFolder" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_DELETE&apos;)"/>
+        </action>
+
+  </objecttype>
+
+  <objecttype name="wfExecObject" class="wt.workflow.engine.WfExecutionObject">
+
+      <action name="restartComponent">
+       <command class="com.ptc.netmarkets.workflow.NmWorkflowCommands" method="performComponentRestart" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_COMPONENT_RESTART&apos;)"/>
+      </action>
+
+      <!--<action name="viewError">
+       <command class="com.ptc.netmarkets.workflow.NmWorkflowCommands" method=""/>
+      </action> -->
+
+      <action name="completeComponent">
+       <command class="com.ptc.netmarkets.workflow.NmWorkflowCommands" method="performComponentComplete" windowType="popup" url="/netmarkets/jsp/workflow/completeComponent.jsp"/>
+      </action>
+
+      <action name="deleteComponent">
+       <command class="com.ptc.netmarkets.workflow.NmWorkflowCommands" method="performComponentDelete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_COMPONENT_DELETE&apos;)"/>
+      </action>
+
+      <action name="deleteMultipleComponent" selectRequired="true">
+       <includeFilter name="projectM4D"/>
+       <command class="com.ptc.netmarkets.workflow.NmWorkflowCommands" method="performComponentMultiDelete" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_COMPONENT_DELETE&apos;)"/>
+      </action>
+
+      <action name="completeComponent_step" id="completeComponent_step" preloadWizardPage="false" required="true" resourceBundle="com.ptc.core.ui.componentRB">
+         <command windowType="wizard_step" url="servlet/TypeBasedIncludeServlet?contextAction=completeComponent_step"/>
+     </action>
+
+  </objecttype>
+   <!-- Edit Properties Component -->
+  <objecttype name="object" class="" resourceBundle="com.ptc.windchill.enterprise.object.editPropertiesRB">
+     <action name="editProperties" selectRequired="true">
+         <command class="" method="" url="/netmarkets/jsp/object/editProperties.jsp" onClick="getTableId(event)" windowType="popup"/>
+      </action>
+     <action name="editPropertiesWizard" id="editPropertiesWizard" hidden="true" required="true" preloadWizardPage="false">
+        <command class="" method="" windowType="popup"/>
+      </action>
+     <action name="OkButton">
+       <command class="" method="" onClick="applyAndClose()"/>
+      </action>
+     <action name="ApplyButton">
+       <command class="" method="" onClick="applyValue()"/>
+      </action>
+     <action name="CancelButton">
+       <command class="" method="" onClick="resetValues()"/>
+      </action>
+     <action name="SetDefaultButton">
+       <command class="" method="" onClick="setDefault()"/>
+      </action>
+  </objecttype>
+
+  <!-- Favorites actions -->
+  <objecttype name="object" class="java.lang.Object" resourceBundle="com.ptc.netmarkets.favorites.favoritesResource">
+    <action name="addToFavorites" multiselect="true" selectRequired="true">
+      <command class="com.ptc.netmarkets.favorites.commands.FavoritesCommands" method="addToFavorites"/>
+    </action>
+    <action name="removeFromFavorites" multiselect="true" selectRequired="true">
+      <command class="com.ptc.netmarkets.favorites.commands.FavoritesCommands" method="removeFromFavorites" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.util.utilResource.CONFIRM_REMOVE&apos;)"/>
+    </action>
+    <action name="removeFromFavoritesInfoPage">
+      <command class="com.ptc.netmarkets.favorites.commands.FavoritesCommands" method="removeFromFavorites" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.favorites.favoritesResource.CONFIRM_REMOVE&apos;)"/>
+    </action>
+  </objecttype>
+<!-- Added action definition to open new initiate workflow AngularJS applet -->
+  <objecttype name="wfTemplateAdmin" class="wt.workflow.definer.WfProcessTemplate" resourceBundle="com.ptc.netmarkets.workflow.InitiateWorkflowRB">
+	<action name="initiateWfProcessTemplateNew">
+       <command onClick="openApplet('initiateWfProcessTemplate')"/>
+     </action>
+  </objecttype>
+<!-- Added actions definition for new workflow definer AngularJS applet -->
+  <objecttype name="wfTemplateAdmin" class="wt.workflow.definer.WfProcessTemplate" resourceBundle="com.ptc.netmarkets.workflow.workflowTemplateAdminResource">
+     <action name="newWfProcessTemplate">
+       <command url="apps/wfdefiner/index.jsp" windowType="popup"/>
+       <moreurlinfo>width=1200,height=700</moreurlinfo>
+     </action>
+     <action name="editWfProcessTemplate" selectRequired="true">
+       <command url="apps/wfdefiner/index.jsp" windowType="popup"/>
+       <moreurlinfo>width=1200,height=700</moreurlinfo>
+     </action>
+     <action name="checkoutAndEditWfProcessTemplate" selectRequired="true">
+       <command url="/netmarkets/jsp/workflow/WfTemplateEditor.jsp?action=editWfProcessTemplate" windowType="popup"/>
+     </action>
+     <action name="viewWfProcessTemplate" selectRequired="true">
+       <command url="apps/wfdefiner/index.jsp" windowType="popup"/>
+       <moreurlinfo>width=1200,height=700</moreurlinfo>
+     </action>
+     <action name="viewWorkFlowProcessTemplate" selectRequired="true">
+       <command onClick="initiateIFrame('WfTemplateEditorApplet', 'viewWfProcessTemplate')"/>
+     </action>
+     <action name="deleteWfProcessTemplate" selectRequired="true">
+       <command class="com.ptc.netmarkets.workflow.templatesAdmin.NmWfTemplateAdminCommands" method="deleteWfProcessTemplate" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.work.workResource.CONFIRM_DELETE_TEMPLATE_MSG&apos;)"/>
+     </action>
+     <action name="renameWfProcessTemplate" selectRequired="true">
+       <command class="com.ptc.netmarkets.workflow.templatesAdmin.NmWfTemplateAdminCommands" method="renameWfProcessTemplate" windowType="popup"/>
+     </action>
+     <action name="renameWfProcessTemplate_step" checkaccess="true">
+         <command windowType="wizard_step"/>
+     </action>
+     <action name="toggleEnabledWfProcessTemplate" selectRequired="true">
+       <command class="com.ptc.netmarkets.workflow.templatesAdmin.NmWfTemplateAdminCommands" method="toggleEnabledWfProcessTemplate"/>
+     </action>
+     <action name="moveWfProcessTemplate" selectRequired="true">
+       <command class="com.ptc.netmarkets.workflow.templatesAdmin.NmWfTemplateAdminCommands" method="moveWfProcessTemplate" windowType="popup"/>
+     </action>
+     <action name="moveWfProcessTemplate_step" checkaccess="true">
+         <command windowType="wizard_step"/>
+     </action>
+     <action name="saveasWfProcessTemplate" selectRequired="true">
+       <command class="com.ptc.netmarkets.workflow.templatesAdmin.NmWfTemplateAdminCommands" method="saveasWfProcessTemplate" windowType="popup"/>
+     </action>
+     <action name="saveasWfProcessTemplate_step" checkaccess="true">
+         <command windowType="wizard_step"/>
+     </action>
+     <action name="checkoutWfProcessTemplate" selectRequired="true">
+       <command class="com.ptc.netmarkets.workflow.templatesAdmin.NmWfTemplateAdminCommands" method="checkoutWfProcessTemplate"/>
+     </action>
+     <action name="checkinWfProcessTemplate" selectRequired="true">
+        <command class="com.ptc.netmarkets.workflow.templatesAdmin.NmWfTemplateAdminCommands" method="checkinWfProcessTemplate" windowType="popup"/>
+     </action>
+     <action name="checkinWfProcessTemplate_step" checkaccess="true">
+         <command windowType="wizard_step"/>
+     </action>
+     <action name="undoCheckoutWfProcessTemplate" selectRequired="true">
+       <command class="com.ptc.netmarkets.workflow.templatesAdmin.NmWfTemplateAdminCommands" method="undoCheckoutWfProcessTemplate" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.work.workResource.CONFIRM_UNDOCHECKOUT_MSG&apos;)"/>
+     </action>
+     <action name="iterationHistoryOfWfProcessTemplate">
+        <command url="/netmarkets/jsp/wfTemplateAdmin/iterationHistoryOfWfProcessTemplate.jsp" windowType="popup"/>
+     </action>
+     <action name="iterationHistoryOfWfProcessTemplate_step" checkaccess="true">
+        <component name="workflow.iteration.history" windowType="wizard_step"/>
+     </action>
+     <action name="deleteLatestIterationOfWfProcessTemplate">
+       <command class="com.ptc.netmarkets.workflow.templatesAdmin.NmWfTemplateAdminCommands" method="deleteLatestIterationOfWfProcessTemplate" windowType="popup"/>
+     </action>
+     <action name="deleteLatestIterationOfWfProcessTemplate_step" checkaccess="true">
+         <command windowType="wizard_step"/>
+     </action>
+     <action name="importWfProcessTemplate">
+       <command class="com.ptc.netmarkets.workflow.templatesAdmin.NmWfTemplateAdminCommands" method="importWfProcessTemplate" windowType="popup"/>
+     </action>
+     <action name="importWfProcessTemplate_step" checkaccess="true">
+         <command windowType="wizard_step"/>
+     </action>
+     <action name="exportWfProcessTemplate" selectRequired="true">
+       <command class="com.ptc.netmarkets.workflow.templatesAdmin.NmWfTemplateAdminCommands" method="exportWfProcessTemplate" windowType="popup"/>
+     </action>
+     <action name="exportWfProcessTemplate_step" checkaccess="true">
+         <command windowType="wizard_step"/>
+     </action>
+     <action name="externalizeExprOfWfProcessTemplate">
+       <command url="/apps/externalizeexpression/index.jsp" windowType="popup"/>
+     </action>
+  </objecttype>
+
+<objecttype name="teamTemplate" class="wt.team.TeamTemplate"
+   resourceBundle="com.ptc.netmarkets.workflow.TeamTemplateAdminResource">
+       <action name="newTeamTemplate">
+       <command url="/apps/teamtemplate/index.jsp?action=new" windowType="popup"/>
+       </action>
+       <action name="editTeamTemplate" selectRequired="true">
+       <command url="/apps/teamtemplate/index.jsp?action=edit" windowType="popup"/>
+       </action>
+       
+      
+     <action name="deleteTeamTemplate" selectRequired="true">
+       <command class="com.ptc.netmarkets.workflow.templatesAdmin.NmTeamTemplateAdminCommands" method="deleteTeamTemplates" onClick="PTC.team.utils.selectRequiredAndConfirmation(event,target,table)"/>
+     </action>
+     <action name="renameTeamTemplate" selectRequired="true">
+       <command class="com.ptc.netmarkets.workflow.templatesAdmin.NmTeamTemplateAdminCommands" method="renameTeamTemplate" windowType="popup"/>
+     </action>
+           
+	<action name="renameTeamTemplate_step" checkaccess="true">
+         <command windowType="wizard_step"/>
+     </action>
+	 
+     <action name="saveasTeamTemplate" selectRequired="true">
+       <command class="com.ptc.netmarkets.workflow.templatesAdmin.NmTeamTemplateAdminCommands" method="saveasTeamTemplate" windowType="popup"/>
+     </action>
+
+	 <action name="saveasTeamTemplate_step" checkaccess="true">
+         <command windowType="wizard_step"/>
+     </action>
+   </objecttype>
+
+  <!-- LifeCycle Template Listing, actions for "lifecycle template admin row actions" model -->
+  <objecttype name="lifecycleTemplateAdmin" class="wt.lifecycle.LifeCycleTemplate" resourceBundle="com.ptc.netmarkets.templates.LifeCycleTemplateActionsRB">
+     <action name="newLifeCycleTemplate" selectRequired="false">
+        <command url="/apps/LifeCycleAdmin/index.jsp" windowType="popup"/>
+     </action>
+     <action name="viewLifeCycleTemplate" selectRequired="true">
+        <command url="/apps/LifeCycleAdmin/index.jsp" windowType="popup"/>
+     </action>
+     <action name="editLifeCycleTemplate" selectRequired="true">
+       <command url="/apps/LifeCycleAdmin/index.jsp" windowType="popup"/>
+     </action>
+     <action name="viewInformationLifeCycleTemplate" selectRequired="true">
+       <command onClick="initiateIFrame('LifeCycleAdminApplet','viewLifeCycleTemplate')"/>
+     </action>
+     <action name="moveLifeCycleTemplate" selectRequired="true">
+       <command class="com.ptc.netmarkets.lifecycle.admin.NmLifeCycleTemplateAdminCommands" method="moveLifeCycleTemplate" windowType="popup"/>
+     </action>
+     <action name="moveLifeCycleTemplate_step" checkaccess="true">
+       <command windowType="wizard_step"/>
+     </action>
+     <action name="checkoutAndEditLifeCycleTemplate" selectRequired="true">
+       <command url="/netmarkets/jsp/lifecycle/LifeCycleTemplateEditor.jsp?action=editLifeCycleTemplate" windowType="popup"/>
+     </action>
+     <action name="deleteLifeCycleTemplate" selectRequired="true">
+       <command class="com.ptc.netmarkets.lifecycle.admin.NmLifeCycleTemplateAdminCommands" method="deleteLifeCycleTemplate" onClick="confirmDelete(event)"/>
+     </action>
+     <action name="deleteSelectedLifeCycleTemplateIteration" selectRequired="true">
+       <command class="com.ptc.netmarkets.lifecycle.admin.NmLifeCycleTemplateAdminCommands" method="deleteSelectedLifeCycleTemplateIteration" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.templates.LifeCycleTemplateActionsRB.CONFIRM_SINGLE_DELETE&apos;)"/>
+     </action>
+     <action name="checkoutLifeCycleTemplate" selectRequired="true">
+       <command class="com.ptc.netmarkets.lifecycle.admin.NmLifeCycleTemplateAdminCommands" method="checkoutLifeCycleTemplate"/>
+     </action>
+     <action name="undoCheckoutLifeCycleTemplate" selectRequired="true">
+       <command class="com.ptc.netmarkets.lifecycle.admin.NmLifeCycleTemplateAdminCommands" method="undoCheckoutLifeCycleTemplate" onClick="JCAConfirm(event,&apos;com.ptc.netmarkets.templates.templatesResource.CONFIRM_UNDO_CHECKOUT&apos;)"/>
+     </action>
+     <action name="checkinLifeCycleTemplate" selectRequired="true">
+        <command class="com.ptc.netmarkets.lifecycle.admin.NmLifeCycleTemplateAdminCommands" method="checkinLifeCycleTemplate" windowType="popup"/>
+     </action>
+     <action name="checkinLifeCycleTemplate_step" checkaccess="true">
+         <command windowType="wizard_step"/>
+     </action>
+     <action name="renameLifeCycleTemplate" selectRequired="true">
+       <command class="com.ptc.netmarkets.lifecycle.admin.NmLifeCycleTemplateAdminCommands" method="renameLifeCycleTemplate" windowType="popup"/>
+     </action>
+     <action name="renameLifeCycleTemplate_step" checkaccess="true">
+         <command windowType="wizard_step"/>
+     </action>
+     <action name="saveasLifeCycleTemplate" selectRequired="true">
+        <command class="com.ptc.netmarkets.lifecycle.admin.NmLifeCycleTemplateAdminCommands" method="saveasLifeCycleTemplate" windowType="popup"/>
+     </action>
+     <action name="saveasLifeCycleTemplate_step" checkaccess="true">
+        <command windowType="wizard_step"/>
+     </action>
+     <action name="deleteLatestIterationOfLifeCycleTemplate" selectRequired="true">
+        <command class="com.ptc.netmarkets.lifecycle.admin.NmLifeCycleTemplateAdminCommands" method="deleteLatestIterationOfLifeCycleTemplate" onClick="confirmDeleteLatestIteration(event)"/>
+     </action>
+     <action name="iterationHistoryLifeCycleTemplate">
+        <command windowType="popup"/>
+     </action>
+     <action name="iterationHistoryLifeCycleTemplate_step" checkaccess="true">
+        <component name="lifecycle.iteration.history" windowType="wizard_step" />
+     </action>
+     <action name="importLifeCycleTemplate">
+       <command class="com.ptc.netmarkets.lifecycle.admin.NmLifeCycleTemplateAdminCommands" method="importLifeCycleTemplate" windowType="popup"/>
+     </action>
+     <action name="importLifeCycleTemplate_step" checkaccess="true">
+         <command windowType="wizard_step"/>
+     </action>
+     <action name="exportLifeCycleTemplate" selectRequired="true">
+       <command class="com.ptc.netmarkets.lifecycle.admin.NmLifeCycleTemplateAdminCommands" method="exportLifeCycleTemplate" windowType="popup"/>
+     </action>
+     <action name="exportLifeCycleTemplate_step" checkaccess="true">
+         <command windowType="wizard_step"/>
+     </action>
+  </objecttype>
+  
+  <!-- LifeCycle Template Listing, actions for "lifecycle template admin row actions" model -->
+  <objecttype name="lifecycleTemplateAdminIterationHistory" class="wt.lifecycle.LifeCycleTemplate" resourceBundle="com.ptc.netmarkets.templates.LifeCycleTemplateActionsRB">
+     <action name="viewLifeCycleTemplate" selectRequired="true">
+       <command onClick="initiateIFrame('LifeCycleAdminApplet','viewLifeCycleTemplate')"/>
+     </action>
+     <action name="viewInformationLifeCycleTemplate" selectRequired="true">
+       <command onClick="initiateIFrame('LifeCycleAdminApplet','viewLifeCycleTemplate')"/>
+     </action>
+     <action name="deleteSelectedLifeCycleTemplateIteration" selectRequired="true">
+       <command class="com.ptc.netmarkets.lifecycle.admin.NmLifeCycleTemplateAdminCommands" method="deleteSelectedLifeCycleTemplateIteration" onClick="validateDelete(event)"/>
+     </action>
+     <action name="iterationHistoryLifeCycleTemplate_step" checkaccess="true">
+		<component name="lifecycle.iteration.history" windowType="wizard_step"/>
+     </action>
+  </objecttype>
+</listofactions>

@@ -159,7 +159,8 @@ public class SignatureHelper implements RemoteAccess {
 				if ((wtprincipal instanceof WTUser)) {
 					userName = ((WTUser) wtprincipal).getFullName();
 					// name = ((WTUser) wtprincipal).getName();
-					name = ((WTUser) wtprincipal).getFullName();
+					name = ((WTUser) wtprincipal).getName();
+					System.out.println("qqqqqqqqqqqqq" + name);
 				} else if ((wtprincipal instanceof WTGroup)) {
 					userName = ContainerTeamHelper.getDisplayName((WTGroup) wtprincipal, null);
 				}

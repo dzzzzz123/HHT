@@ -43,6 +43,8 @@ public class SendSAPPartEntity {
 	private String HHT_INValue;
 	private String ClassDescription;
 	private String ClassPartDescription;
+	private String HHT_SapMark;
+	private String Source;
 
 	public SendSAPPartEntity() {
 	}
@@ -57,7 +59,7 @@ public class SendSAPPartEntity {
 			String hHT_FinishedSeries, String hHT_Industry, String hHT_ProductDevelopmentType,
 			String hHT_CustomizedProductIdentifier, String hHT_SupplierSku, String hHT_SerialNumber, String hHT_Factory,
 			String hHT_Price, String hHT_PriceUnit, String hHT_INValue, String classDescription,
-			String classPartDescription) {
+			String classPartDescription, String hHT_SapMark, String source) {
 		super();
 		PartType = partType;
 		HHT_Classification = hHT_Classification;
@@ -100,6 +102,8 @@ public class SendSAPPartEntity {
 		HHT_INValue = hHT_INValue;
 		ClassDescription = classDescription;
 		ClassPartDescription = classPartDescription;
+		HHT_SapMark = hHT_SapMark;
+		Source = source;
 	}
 
 	public String getPartType() {
@@ -430,6 +434,22 @@ public class SendSAPPartEntity {
 		ClassPartDescription = classPartDescription;
 	}
 
+	public String getHHT_SapMark() {
+		return HHT_SapMark;
+	}
+
+	public void setHHT_SapMark(String hHT_SapMark) {
+		HHT_SapMark = hHT_SapMark;
+	}
+
+	public String getSource() {
+		return Source;
+	}
+
+	public void setSource(String source) {
+		Source = source;
+	}
+
 	@Override
 	public String toString() {
 		return "SendSAPPartEntity [PartType=" + PartType + ", HHT_Classification=" + HHT_Classification + ", Number="
@@ -448,7 +468,8 @@ public class SendSAPPartEntity {
 				+ HHT_CustomizedProductIdentifier + ", HHT_SupplierSku=" + HHT_SupplierSku + ", HHT_SerialNumber="
 				+ HHT_SerialNumber + ", HHT_Factory=" + HHT_Factory + ", HHT_Price=" + HHT_Price + ", HHT_PriceUnit="
 				+ HHT_PriceUnit + ", HHT_INValue=" + HHT_INValue + ", ClassDescription=" + ClassDescription
-				+ ", ClassPartDescription=" + ClassPartDescription + "]";
+				+ ", ClassPartDescription=" + ClassPartDescription + ", HHT_SapMark=" + HHT_SapMark + ", Source="
+				+ Source + "]";
 	}
 
 }

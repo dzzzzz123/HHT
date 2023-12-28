@@ -113,8 +113,8 @@ public class SupplyChainService {
 	public static String setVar(WTObject pbo) {
 		ArrayList<WTPart> parts = (ArrayList<WTPart>) CommonUtil.getListFromPBO(pbo, WTPart.class);
 		List<Entity> entities = new ArrayList<>();
-		entities.add(SupplyChainService.requestSupplyChain("{ \"I_MATNR\": \"230820014A\" }"));
-		entities.add(SupplyChainService.requestSupplyChain("{ \"I_MATNR\": \"230820014A\" }"));
+//		entities.add(SupplyChainService.requestSupplyChain("{ \"I_MATNR\": \"230820014A\" }"));
+//		entities.add(SupplyChainService.requestSupplyChain("{ \"I_MATNR\": \"230820014A\" }"));
 		for (WTPart part : parts) {
 			entities.add(requestSupplyChain("{ \"I_MATNR\": \"" + part.getNumber() + "\" }"));
 		}

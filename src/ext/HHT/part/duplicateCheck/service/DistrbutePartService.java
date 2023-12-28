@@ -29,7 +29,7 @@ public class DistrbutePartService {
 		} else if (StringUtils.isNotBlank(classification)) {
 			if (classification.startsWith("1")) {
 				distrbuteParts(part, classification, "electrical");
-			} else if (classification.startsWith("2")) {
+			} else if (classification.startsWith("2") && Config.getStructureNodes().contains(classification)) {
 				distrbuteParts(part, classification, "structure");
 			} else if (classification.startsWith("3")) {
 				distrbuteParts(part, classification, "packaging");

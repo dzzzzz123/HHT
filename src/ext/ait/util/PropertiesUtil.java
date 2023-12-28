@@ -125,7 +125,6 @@ public class PropertiesUtil implements RemoteAccess {
 	 */
 	public void setValueByKey(IBAHolder ibaHolder, String key, String IBAValue) {
 		String IBAKey = getValueByKey(key);
-		System.out.println("IBAKey: " + IBAKey);
 		try {
 			IBAUtil ibaUtil = new IBAUtil(ibaHolder);
 			ibaUtil.setIBAAttribute4AllType(ibaHolder, IBAKey, IBAValue);

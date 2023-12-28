@@ -80,7 +80,9 @@ public class AfterEDRloader {
 					HashMap<String, Vector<String[]>> signInfo = WorkFlowUtil.getSignInfo(self);
 					System.out.println("002-resignPDF : signature information from process var [reviewer]: "
 							+ new JSONObject(signInfo).toJSONString());
-					PDFSign.signPDFVisualization(doc, signInfo, "PDF文档");
+					if (signInfo != null || signInfo.size() != 0) {
+						PDFSign.signPDFVisualization(doc, signInfo, "PDF文档");
+					}
 					// 2020-5-31 解决pdf表示法无法在creo view直接打开的问题，方案是重置一下生命周期状态.
 					// --2023-11-27qqqqqqqqqqqq取消重置生命周期
 //					WTList list = new WTArrayList();
@@ -107,35 +109,6 @@ public class AfterEDRloader {
 		System.out.println("002-resignPDF() END");
 		return ret;
 
-	}
-
-	/***
-	 * 
-	 * @description @param @return @throws
-	 */
-	private static WfProcess getSignProcess(List<WfProcess> processList) {
-		WfProcess wfprocess = null;
-		if (processList == null || processList.size() == 0) {
-			return null;
-		}
-		for (WfProcess wfProcess2 : processList) {
-			//
-//			WfState state = wfProcess2.getState();
-			/*
-			 * if( !WfState.CLOSED_COMPLETED_EXECUTED.equals(state)) { continue; }
-			 */
-			if (wfprocess != null) {
-				Timestamp startTime2 = wfProcess2.getStartTime();
-				Timestamp startTime = wfprocess.getStartTime();
-				if (startTime2 != null && startTime != null && startTime2.after(startTime)) {
-					wfprocess = wfProcess2;
-				}
-			} else {
-				wfprocess = wfProcess2;
-			}
-		}
-
-		return wfprocess;
 	}
 
 	public static WfProcess getWfProcess(Persistable persistable) throws WTException {
@@ -185,5 +158,40 @@ public class AfterEDRloader {
 			processList.add(wfprocess);
 		}
 		return getSignProcess(processList);
+	}
+
+	/***
+	 * 
+	 * @description @param @return @throws
+	 */
+	private static WfProcess getSignProcess(List<WfProcess> processList) {
+		WfProcess wfprocess = null;
+		if (processList == null || processList.size() == 0) {
+			return null;
+		}
+		for (WfProcess wfProcess2 : processList) {
+			//
+//			WfState state = wfProcess2.getState();
+			/*
+			 * if( !WfState.CLOSED_COMPLETED_EXECUTED.equals(state)) { continue; }
+			 */
+			if (wfprocess != null) {
+				Timestamp startTime2 = wfProcess2.getStartTime();
+				Timestamp startTime = wfprocess.getStartTime();
+				HashMap<String, Vector<String[]>> signInfo = WorkFlowUtil.getSignInfo(wfprocess);
+				System.out.println("startTime2: " + startTime2);
+				System.out.println("startTime: " + startTime);
+				System.out.println("signInfo: " + signInfo);
+				if (startTime2 != null && startTime != null && startTime2.after(startTime)
+						&& (signInfo.size() != 0 || signInfo != null)) {
+					System.out.println("qqqqqqqqqqqqqqqqqqq66");
+					wfprocess = wfProcess2;
+				}
+			} else {
+				wfprocess = wfProcess2;
+			}
+		}
+
+		return wfprocess;
 	}
 }

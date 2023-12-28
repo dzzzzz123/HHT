@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,6 +20,8 @@ import ext.ait.util.PartUtil;
 import ext.ait.util.VersionUtil;
 import ext.sap.Config;
 import wt.change2.WTChangeOrder2;
+import wt.fc.ObjectReference;
+import wt.fc.Persistable;
 import wt.fc.collections.WTCollection;
 import wt.part.WTPart;
 import wt.part.WTPartUsageLink;
@@ -33,16 +37,16 @@ public class SendBOM2SAPService {
 	 */
 	public static BOMEntity getBOMEntity(WTPart part) {
 		BOMEntity bom = new BOMEntity();
-		String stlan = getStlan(part);
 		List<BOMBodyEntity> body = getBodyEntitiesByBOM(part);
 		bom.setNumber(part.getNumber());
 		bom.setName(part.getName());
 		bom.setHHT_BasicQuantity(Config.getHHT_BasicQuantity(part));
 		bom.setUnit(Config.getValue(part.getDefaultUnit().toString()));
-		bom.setVersion(VersionUtil.getVersion(part));
+		bom.setVersion(StringUtils.substring(VersionUtil.getVersion(part), 0, 1));
 		bom.setFactory(part.getViewName());
 		bom.setECNNumber(geECNNumber(part));
-		bom.setStlan(stlan);
+//		bom.setStlan(getStlan(part));
+		bom.setStlan("1");
 		bom.setBOMBody(body);
 		return bom;
 	}
@@ -69,19 +73,22 @@ public class SendBOM2SAPService {
 					list.add(subEntity);
 				}
 				entity.setHHT_SubstituteGroup(substituteGroupStr);
+				entity.setHHT_Strategies("1");
+				entity.setHHT_UsagePossibility("100");
 				substituteGroup++;
 			} else {
 				entity.setHHT_SubstituteGroup(Config.getHHT_SubstituteGroup(link));
+				entity.setHHT_Strategies("");
+				entity.setHHT_UsagePossibility("");
 			}
 			entity.setName(part.getName());
 			entity.setNumber(part.getNumber());
-			entity.setVersion(VersionUtil.getVersion(part));
+			entity.setVersion(StringUtils.substring(VersionUtil.getVersion(part), 0, 1));
 			entity.setUnit(Config.getValue(part.getDefaultUnit().toString()));
 			entity.setQuantity(String.valueOf(link.getQuantity().getAmount()));
 			entity.setReferenceDesignatorRange(PartUtil.getPartUsesOccurrence(link));
 			entity.setHHT_Priority(Config.getHHT_Priority(link));
-			entity.setHHT_Strategies("1");
-			entity.setHHT_UsagePossibility("100");
+
 			entity.setHHT_MatchGroup(Config.getHHT_MatchGroup(link));
 			list.add(entity);
 		}
@@ -102,7 +109,7 @@ public class SendBOM2SAPService {
 			BOMBodyEntity entity = new BOMBodyEntity();
 			entity.setName(part.getName());
 			entity.setNumber(part.getNumber());
-			entity.setVersion(VersionUtil.getVersion(part));
+			entity.setVersion(StringUtils.substring(VersionUtil.getVersion(part), 0, 1));
 			entity.setUnit(Config.getValue(part.getDefaultUnit().toString()));
 			entity.setHHT_Strategies("1");
 			entity.setHHT_UsagePossibility("0");
@@ -226,9 +233,13 @@ public class SendBOM2SAPService {
 		try {
 			WTCollection conllection = RelatedChangesQueryCommands.getRelatedResultingChangeNotices(part);
 			for (Object object : conllection) {
-				if (object instanceof WTChangeOrder2) {
-					WTChangeOrder2 wtChangeOrder2 = (WTChangeOrder2) object;
-					return wtChangeOrder2.getNumber();
+				if (object instanceof ObjectReference) {
+					ObjectReference pn = (ObjectReference) object;
+					Persistable object2 = pn.getObject();
+					if (object2 instanceof WTChangeOrder2) {
+						WTChangeOrder2 wtChangeOrder2 = (WTChangeOrder2) object2;
+						return wtChangeOrder2.getNumber();
+					}
 				}
 			}
 		} catch (WTException e) {

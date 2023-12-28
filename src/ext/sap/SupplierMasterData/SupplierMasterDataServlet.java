@@ -62,6 +62,40 @@ public class SupplierMasterDataServlet implements Controller {
 		return supplierList;
 	}
 
+	public static List<SupplierEntity> getSuppliers(String displayName) {
+		if (StringUtils.isBlank(displayName)) {
+			return getAllSupplier();
+		}
+		List<SupplierEntity> supplierList = new ArrayList<>();
+		String sql = "SELECT * FROM CUS_SUPPLIER WHERE DISPLAYNAME LIKE ?";
+		WTConnection connection = null;
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		try {
+			connection = CommonUtil.getWTConnection();
+			statement = connection.prepareStatement(sql);
+			displayName = "%" + displayName + "%";
+			statement.setString(1, displayName);
+			String fullSql = sql;
+			fullSql = fullSql.replaceFirst("\\?", "'" + displayName + "'");
+			System.out.println("--------当前执行查询操作的SQL语句为--------");
+			System.out.println(fullSql);
+			resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				SupplierEntity entity = new SupplierEntity();
+				entity.setInternalName(resultSet.getString("INTERNALNAME"));
+				entity.setDisplayName(resultSet.getString("DISPLAYNAME"));
+				entity.setCreateTime(resultSet.getString("CREATETIME"));
+				supplierList.add(entity);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			CostCenterServlet.closeResources(statement, resultSet);
+		}
+		return supplierList;
+	}
+
 	public static void insertORUpdate(SupplierEntity entity) {
 		SupplierEntity tempEntity = selectSupplier(entity.getInternalName());
 		int i = StringUtils.isNotBlank(tempEntity.getInternalName()) ? updateSupplier(entity) : insertSupplier(entity);

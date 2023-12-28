@@ -1,6 +1,7 @@
 package ext.HHT.BOMDiff;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import ext.ait.util.CommonUtil;
@@ -25,5 +26,10 @@ public class Service {
 		List<WTPart> listB = PartUtil.getAllBomByPart(partB);
 
 		return list;
+	}
+
+	public static HashMap<String, WTPart> processBOM(List<WTPart> list) {
+		HashMap<String, WTPart> map = new HashMap<>();
+		return map;
 	}
 }

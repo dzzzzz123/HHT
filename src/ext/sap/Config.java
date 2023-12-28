@@ -1,5 +1,7 @@
 package ext.sap;
 
+import org.apache.commons.lang3.StringUtils;
+
 import ext.ait.util.ClassificationUtil;
 import ext.ait.util.PropertiesUtil;
 import wt.iba.value.IBAHolder;
@@ -136,7 +138,15 @@ public class Config {
 	}
 
 	public static String getHHT_ModelSpecification(WTPart part) {
-		return properties.getValueByKey(part, "iba.internal.HHT_ModelSpecification");
+		String HHT_ModelSpecification = properties.getValueByKey(part, "iba.internal.HHT_ModelSpecification");
+		String ModelSpecifications = properties.getValueByKey(part, "iba.internal.ModelSpecifications");
+		if (StringUtils.isNotBlank(ModelSpecifications)) {
+			return ModelSpecifications;
+		} else if (StringUtils.isNotBlank(HHT_ModelSpecification)) {
+			return HHT_ModelSpecification;
+		} else {
+			return "";
+		}
 	}
 
 	public static String getHHT_CommodityName(WTPart part) {
@@ -148,7 +158,15 @@ public class Config {
 	}
 
 	public static String getHHT_Year(WTPart part) {
-		return properties.getValueByKey(part, "iba.internal.HHT_Year");
+		String HHT_Year = properties.getValueByKey(part, "iba.internal.HHT_Year");
+		String Time = properties.getValueByKey(part, "iba.internal.Time");
+		if (StringUtils.isNotBlank(Time)) {
+			return Time;
+		} else if (StringUtils.isNotBlank(HHT_Year)) {
+			return HHT_Year;
+		} else {
+			return "";
+		}
 	}
 
 	public static String getLargeScreenSize(WTPart part) {
@@ -199,10 +217,6 @@ public class Config {
 		return properties.getValueByKey(part, "iba.internal.HHT_SerialNumber");
 	}
 
-	public static String getHHT_ProjectNum(IBAHolder ibaHolder) {
-		return properties.getValueByKey(ibaHolder, "iba.internal.HHT_ProjectNum");
-	}
-
 	public static void setHHT_Price(WTPart part, String IBAValue) {
 		properties.setValueByKey(part, "iba.internal.HHT_Price", IBAValue);
 	}
@@ -211,12 +225,28 @@ public class Config {
 		properties.setValueByKey(part, "iba.internal.HHT_PriceUnit", IBAValue);
 	}
 
+	public static void setHHT_Brand(WTPart part, String IBAValue) {
+		properties.setValueByKey(part, "iba.internal.HHT_Brand", IBAValue);
+	}
+
 	public static String getSourceBuy() {
 		return properties.getValueByKey("source.buy");
 	}
 
 	public static String getJsonVar() {
 		return properties.getValueByKey("masterData.json.var");
+	}
+
+	public static String getHHT_ProjectNum(IBAHolder project) {
+		return properties.getValueByKey(project, "iba.internal.HHT_ProjectNum");
+	}
+
+	public static String getHHT_SapMark(IBAHolder part) {
+		return properties.getValueByKey(part, "iba.internal.HHT_SapMark");
+	}
+
+	public static void setHHT_SapMark(WTPart part, String IBAValue) {
+		properties.setValueByKey(part, "iba.internal.HHT_SapMark", IBAValue);
 	}
 
 }
