@@ -27,6 +27,13 @@ http://www.ptc.com/schema/mvc http://www.ptc.com/schema/mvc/mvc-10.0.xsd">
 	<bean id="UserAccess" class="ext.HHT.singleSignOn.UserAccess"/>
 	<!-- SAP主数据返参数表格 -->
 	<bean class="ext.sap.masterData.mvc.ResultTableBuilder"/>
+	<!-- BOM返参数表格 -->
+	<bean class="ext.sap.BOM.mvc.ResultTableBuilder"/>
 	<!-- 策采核价表格 -->
 	<bean class="ext.sap.purchase.PurchaseAlterTable"/>
+	<!-- 项目工时基于项目的表格/改写项目-计划infopage -->
+	<bean class="ext.HHT.project.workHours.project.CustomTableBuilder"/>
+	<!-- <bean class="ext.HHT.project.workHours.project.PlanBuilder"/> -->
+	<!--停用账户-->
+	<bean id="SystemUserServlet" class="ext.sys.SystemUser.SystemUserServlet"/>
 </beans>

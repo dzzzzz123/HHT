@@ -120,14 +120,14 @@ public class UpdateProductCatalogProcessor extends DefaultObjectFormProcessor {
 					newWtPart.setName(mapList.get(0).get("CPX") == null ? "" : mapList.get(0).get("CPX"));
 					newWtPart.setNumber(key);
 					cpxWtPart = createWtpartToLink(newWtPart, wtPart, "com.honghe_tech.HHT_ProductLine",
-							mapList.get(0).get("CPX"));
+							mapList.get(0).get("CPX"), mapList.get(0).get("PP"));
 				} else {
 					// 修改产品线
 					cpxWtPart = cpxWtList.get(0);
 					WTPartUsageLink link = PartUtil.getLinkByPart(wtPart, cpxWtPart);
 					if (link == null) {
 						createWtpartToLink(cpxWtPart, wtPart, "com.honghe_tech.HHT_ProductLine",
-								mapList.get(0).get("CPX"));
+								mapList.get(0).get("CPX"), mapList.get(0).get("PP"));
 					}
 
 					PartUtil.changePartName(cpxWtPart, mapList.get(0).get("CPX"));
@@ -150,14 +150,14 @@ public class UpdateProductCatalogProcessor extends DefaultObjectFormProcessor {
 						newWtPart.setName(cpxlList.get(0).get("XL") == null ? "" : cpxlList.get(0).get("XL"));
 						newWtPart.setNumber(cpxlKey);
 						cpxlWtPart = createWtpartToLink(newWtPart, cpxWtPart, "com.honghe_tech.HHT_ProductFamily",
-								cpxlList.get(0).get("CPX"));
+								cpxlList.get(0).get("CPX"), cpxlList.get(0).get("PP"));
 					} else {
 						// 修改产品系列
 						cpxlWtPart = cpxlWtList.get(0);
 						WTPartUsageLink link = PartUtil.getLinkByPart(cpxWtPart, cpxlWtPart);
 						if (link == null) {
 							createWtpartToLink(cpxlWtPart, cpxWtPart, "com.honghe_tech.HHT_ProductFamily",
-									cpxlList.get(0).get("CPX"));
+									cpxlList.get(0).get("CPX"), cpxlList.get(0).get("PP"));
 						}
 						PartUtil.changePartName(cpxlWtPart, cpxlList.get(0).get("XL"));
 
@@ -180,9 +180,8 @@ public class UpdateProductCatalogProcessor extends DefaultObjectFormProcessor {
 							wtPart = PartUtil.getWTPartByNumber(wtPart.getNumber());
 							newWtPart.setName(cpxList.get(0).get("CPBM") == null ? "" : cpxList.get(0).get("CPBM"));
 							newWtPart.setNumber(cpxKey);
-							Config.setHHT_Brand(newWtPart, cpxList.get(0).get("PP"));
 							newWtPart = createWtpartToLink(newWtPart, cpxlWtPart, "com.honghe_tech.HHT_ProductType",
-									mapList.get(0).get("CPX"));
+									mapList.get(0).get("CPX"), mapList.get(0).get("PP"));
 
 							for (int i = 0; i < cpxList.size(); i++) {
 								Map<String, String> cpwlMap = cpxList.get(i);
@@ -205,7 +204,7 @@ public class UpdateProductCatalogProcessor extends DefaultObjectFormProcessor {
 							WTPartUsageLink link = PartUtil.getLinkByPart(cpxlWtPart, updatePart);
 							if (link == null) {
 								createWtpartToLink(updatePart, cpxlWtPart, "com.honghe_tech.HHT_ProductType",
-										mapList.get(0).get("CPX"));
+										mapList.get(0).get("CPX"), mapList.get(0).get("PP"));
 							}
 
 							for (int i = 0; i < cpxList.size(); i++) {
@@ -311,7 +310,7 @@ public class UpdateProductCatalogProcessor extends DefaultObjectFormProcessor {
 
 	public static void appendLog(String log) {
 		SimpleDateFormat si = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String path = "/data/log/warning.txt";
+		String path = "" + "/warning.txt";
 		FileWriter writer = null;
 		try {
 			File file = new File(path);
@@ -326,7 +325,8 @@ public class UpdateProductCatalogProcessor extends DefaultObjectFormProcessor {
 		}
 	}
 
-	public static WTPart createWtpartToLink(WTPart son, WTPart parent, String type, String path) throws Exception {
+	public static WTPart createWtpartToLink(WTPart son, WTPart parent, String type, String path, String pp)
+			throws Exception {
 		appendLog("父编号:" + parent.getNumber() + "  子编号:" + son.getNumber() + " path:" + path);
 		System.out.println("======创建子件======");
 		switch (path) {
@@ -371,6 +371,7 @@ public class UpdateProductCatalogProcessor extends DefaultObjectFormProcessor {
 				Folder folder = ContainerUtil.getFolder(path, container);
 				FolderHelper.assignLocation((FolderEntry) son, (Folder) folder);
 				son = (WTPart) wt.fc.PersistenceHelper.manager.save(son);
+				Config.setHHT_Brand(son, pp);
 			}
 			if (!PersistenceUtil.isCheckOut(parent)) {
 				parent = (WTPart) PersistenceUtil.checkoutObj(parent);

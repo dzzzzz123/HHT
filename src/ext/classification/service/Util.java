@@ -3,6 +3,7 @@ package ext.classification.service;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
@@ -58,8 +59,7 @@ public class Util {
 				if (word.startsWith("[")) {
 					newStr += word.substring(1);
 				} else if (set.contains(word)) {
-					String temp = "";
-					temp = ibaUtil.getIBAValue(word);
+					String temp = ibaUtil.getIBAValue(word);
 					if (check(temp)) {
 						temp = ClassificationUtil.getDisplayByInternal(temp);
 					}
@@ -68,6 +68,33 @@ public class Util {
 					newStr += "";
 				}
 			}
+			// 去除出现的 无
+			char[] charArray = newStr.toCharArray();
+			Set<Integer> removeIndex = new HashSet<>();
+			int charArrayLen = charArray.length;
+			char wu = '无';
+			if (charArrayLen > 2) {
+				for (int i = 0; i < charArrayLen; i++) {
+					char currentChar = charArray[i];
+					boolean flag = wu == currentChar;
+					if (flag) {
+						if (i == 0) {
+							if (!checkHan(charArray[i + 1])) {
+								removeIndex.add(i);
+							}
+						} else if (i == charArrayLen - 1) {
+							if (!checkHan(charArray[i - 1])) {
+								removeIndex.add(i);
+							}
+						} else {
+							if (!checkHan(charArray[i - 1]) && !checkHan(charArray[i + 1])) {
+								removeIndex.add(i);
+							}
+						}
+					}
+				}
+			}
+			newStr = removeList(charArray, removeIndex);
 			// 去除掉多余的属性分隔符____
 			while (newStr.contains("__")) {
 				newStr = newStr.replace("__", "_");
@@ -115,9 +142,24 @@ public class Util {
 	public static boolean check(String input) {
 		Pattern pattern = Pattern.compile("[\\/*\\-+—_&$%@#]");
 		String processed = pattern.matcher(input).replaceAll("");
-		if (processed.matches("[a-zA-Z]+")) {
+		if (processed.matches("[a-zA-Z0-9]+")) {
 			return true;
 		}
 		return false;
+	}
+
+	public static boolean checkHan(char c) {
+		return Character.toString(c).matches("[\\u4e00-\\u9fa5a-zA-Z]");
+	}
+
+	public static String removeList(char[] array1, Set<Integer> removeIndex) {
+		StringBuffer result = new StringBuffer();
+		for (int i = 0; i < array1.length; i++) {
+			// 判断当前索引是否在数字数组中
+			if (!removeIndex.contains(i)) {
+				result.append(array1[i]);
+			}
+		}
+		return result.toString();
 	}
 }

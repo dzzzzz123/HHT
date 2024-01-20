@@ -22,8 +22,10 @@ import org.apache.logging.log4j.Logger;
 import ext.ait.util.CommonUtil;
 import ext.ait.util.PartUtil;
 import ext.ait.util.PersistenceUtil;
+import ext.ait.util.VersionUtil;
 import wt.fc.PersistenceHelper;
 import wt.fc.PersistenceServerHelper;
+import wt.fc.QueryResult;
 import wt.method.RemoteAccess;
 import wt.method.RemoteMethodServer;
 import wt.part.LineNumber;
@@ -36,9 +38,11 @@ import wt.part.WTPartMaster;
 import wt.part.WTPartSubstituteLink;
 import wt.part.WTPartUsageLink;
 import wt.pom.PersistenceException;
-import wt.pom.Transaction;
+import wt.query.QuerySpec;
+import wt.query.SearchCondition;
 import wt.util.WTException;
 import wt.util.WTRuntimeException;
+import wt.vc.VersionControlHelper;
 
 /**
  * bom树形结构导入
@@ -57,8 +61,8 @@ public class CreatBomTree implements RemoteAccess, Serializable {
 
 	public static Object invoke(String methodName, String className, Object instance, Class[] cla, Object[] obj) {
 		RemoteMethodServer rms = RemoteMethodServer.getDefault();
-		rms.setUserName("wcadmin");
-		rms.setPassword("wcadmin");
+		rms.setUserName("plm");
+		rms.setPassword("222");
 		try {
 			return rms.invoke(methodName, className, instance, cla, obj);
 		} catch (RemoteException e) {
@@ -70,6 +74,45 @@ public class CreatBomTree implements RemoteAccess, Serializable {
 		}
 	}
 
+	public static WTPartUsageLink createWtpartToLink(WTPart parent, WTPart son, Long number, Double amount, String unit)
+			throws Exception {
+		System.out.println("======创建子件======" + "父：" + parent.getNumber() + " 子:" + son.getNumber());
+		try {
+			// parent = PartUtil.getWTPartByNumber(parent.getNumber());
+			// parent = (WTPart) VersionUtil.getLastBigOne(parent);
+
+			// parent = checkGc(parent.getNumber(), parent.getViewName());
+			parent = PartUtil.getWTPartByNumberAndView(parent.getNumber(), parent.getViewName());
+
+			WTPartUsageLink link = new WTPartUsageLink();
+
+			if (number != null) {
+				LineNumber lineNumber = new LineNumber();
+				lineNumber.setValue(number);
+				link.setLineNumber(lineNumber);
+			}
+			Quantity quantity = new Quantity();
+			if (amount != null) {
+				quantity.setAmount(amount);
+			}
+			if (StringUtils.isNotBlank(unit)) {
+				QuantityUnit quantityUnit = QuantityUnit.toQuantityUnit(unit);
+				quantity.setUnit(quantityUnit);
+			}
+
+			link.setQuantity(quantity);
+			if (!PersistenceUtil.isCheckOut(parent)) {
+				parent = (WTPart) PersistenceUtil.checkoutObj(parent);
+			}
+			link.setUsedBy(parent);
+			link.setUses(son.getMaster());
+			link = (WTPartUsageLink) wt.fc.PersistenceHelper.manager.save(link);
+			return link;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
 	public static void ImportData() throws PersistenceException {
 		File file = new File("/data/log/warningPart.txt");
 		if (file.exists()) {
@@ -77,9 +120,9 @@ public class CreatBomTree implements RemoteAccess, Serializable {
 		}
 		// 查询数据库内容
 		List<Map<String, String>> resultList = excuteSql();
-		Transaction t = new Transaction();
+		// Transaction t = new Transaction();
 		try {
-			t.start();
+			// t.start();
 			if (resultList == null || resultList.isEmpty()) {
 				System.out.println("数据库数据为空");
 				return;
@@ -92,28 +135,24 @@ public class CreatBomTree implements RemoteAccess, Serializable {
 				// 获取该附件下的子件列表
 				List<Map<String, String>> sonList = dataMap.get(key);
 
-				System.out.println("--------number:" + keys[0]);
-				System.out.println("--------size:" + sonList.size());
-
 				// 如果找不到父件就跳过处理逻辑
-				WTPart part = PartUtil.getWTPartByNumber(keys[0]);
-				// || keys[1].equals(part.getViewName())
+				WTPart part = checkGc(keys[0], keys[1]);
 				if (part == null || sonList == null || sonList.isEmpty()) {
 					appendLog("（父）系统中没有此组件:" + key);
 					System.out.println("系统中无此编号||视图中无此编号:" + key);
 				} else {
+					System.out.println("是否检出：" + PersistenceUtil.isCheckOut(part));
 					// 查询该组件下的子件
 					List<Map<String, String>> sonList100 = sonList.stream().filter(obj -> "100".equals(obj.get("KNX")))
 							.collect(Collectors.toList());
 					if (sonList100 == null || sonList100.isEmpty()) {
-						appendLog("（父）此父件下面无编号:" + key);
 						System.out.println("此父件下面无编号" + key);
 					} else {
 						System.out.println("开始创建需要替代的子件======" + keys[0] + " size:" + sonList100.size());
 						for (int i = 0; i < sonList100.size(); i++) {
 							Map<String, String> obj = sonList100.get(i);
 							// 判断子件是否存在
-							WTPart bomZj = PartUtil.getWTPartByNumber(obj.get("BOMZJ"));
+							WTPart bomZj = checkGc(obj.get("BOMZJ"), keys[1]);
 							if (bomZj == null) {
 								appendLog("（父）:" + key + " （子）:" + obj.get("BOMZJ"));
 								System.out.println("子件不存在，不做处理");
@@ -144,7 +183,7 @@ public class CreatBomTree implements RemoteAccess, Serializable {
 								if (tdxList != null && !tdxList.isEmpty()) {
 									for (int j = 0; j < tdxList.size(); j++) {
 										Map<String, String> objDtx = tdxList.get(j);
-										WTPart bomZj1 = PartUtil.getWTPartByNumber(objDtx.get("BOMZJ"));
+										WTPart bomZj1 = checkGc(objDtx.get("BOMZJ"), keys[1]);
 										if (bomZj1 != null) {
 											List<WTPartSubstituteLink> dtLink = PartUtil
 													.getWTPartSubstituteLinks(uLink);
@@ -156,7 +195,6 @@ public class CreatBomTree implements RemoteAccess, Serializable {
 											String unitTd = objDtx.get("DW");
 											if (dtLink == null || dtLink.isEmpty()) {
 												System.out.println("============f:" + keys[0]);
-
 												System.out.println("=============s:" + objDtx.get("BOMZJ"));
 												createWTPartAlternateLink(uLink, bomZj1, ylTd, unitTd, hhLongTd);
 											} else {
@@ -165,7 +203,6 @@ public class CreatBomTree implements RemoteAccess, Serializable {
 													WTPartMaster master = (WTPartMaster) objLink.getRoleBObject();
 													System.out.println("==1:" + master.getNumber());
 													System.out.println("==2:" + objDtx.get("BOMZJ"));
-
 													return StringUtils.equals(master.getNumber(), bomZj1.getNumber());
 												}).collect(Collectors.toList());
 												if (count != null && count.size() > 0) {
@@ -196,7 +233,7 @@ public class CreatBomTree implements RemoteAccess, Serializable {
 						for (int i = 0; i < sonListNull.size(); i++) {
 							Map<String, String> obj = sonListNull.get(i);
 							// 判断子件是否存在
-							WTPart bomZj = PartUtil.getWTPartByNumber(obj.get("BOMZJ"));
+							WTPart bomZj = checkGc(obj.get("BOMZJ"), keys[1]);
 							if (bomZj == null) {
 								appendLog("（父）:" + key + " （子）:" + obj.get("BOMZJ"));
 								System.out.println("子件不存在，不做处理");
@@ -217,104 +254,80 @@ public class CreatBomTree implements RemoteAccess, Serializable {
 
 						}
 					}
-					if (PersistenceUtil.isCheckOut(part)) {
-						// 检入
-						PersistenceUtil.checkinObj(part);
-					}
-
+					PersistenceUtil.checkinObj(part);
 				}
+
 			}
 
 			System.out.println("执行完毕，清查看日志是否有错误信息");
 			appendLog("===================success===================");
 		} catch (Exception e) {
-			t.rollback();
+			// t.rollback();
 			e.printStackTrace();
 			System.out.println("程序异常:" + e);
 		} finally {
-			t.commit();
+			// t.commit();
 		}
 	}
 
-	public static void appendLog(String log) {
-		SimpleDateFormat si = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String path = "/data/log/warningPart.txt";
-		FileWriter writer = null;
+	public static WTPart checkGc(String number, String gc) {
+		// List<WTPart> partList = PartUtil.getWTPartListByNumber(number);
+        System.out.println("----test==================dafadsfasdfasd======================================");
+		List<WTPart> partList = new ArrayList<WTPart>();
+		QueryResult qr = null;
 		try {
-			File file = new File(path);
-			if (!file.exists()) {
-				file.createNewFile();
+			QuerySpec qs = new QuerySpec(WTPart.class);
+			SearchCondition scnumber = new SearchCondition(WTPart.class, wt.part.WTPart.NUMBER, SearchCondition.EQUAL,
+					number.toUpperCase());
+			qs.appendSearchCondition(scnumber);
+			qs.appendAnd();
+			SearchCondition sclatest = VersionControlHelper.getSearchCondition(wt.part.WTPart.class, true);
+			qs.appendSearchCondition(sclatest);
+			qr = PersistenceHelper.manager.find(qs);
+			while (qr != null && qr.hasMoreElements()) {
+				partList.add((WTPart) qr.nextElement());
 			}
-			writer = new FileWriter(path, true);
-			writer.write(si.format(new Date()) + log + "\n");
-			writer.close();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
+			return null;
 		}
+		appendLog("----数量" + partList.size());
+        for(int i=0;i<partList.size();i++){
+		 appendLog("----" + partList.get(i).getViewName());
+        }
+
+		List<WTPart> gcList = partList.stream().filter(part -> part.getViewName().equals(gc))
+				.collect(Collectors.toList());
+		if (gcList == null || gcList.isEmpty()) {
+			appendLog("视图中无此编号:" + number + " view:" + gc);
+			return null;
+		}
+		return gcList.get(0);
 	}
 
-	public static WTPartUsageLink createWtpartToLink(WTPart parent, WTPart son, Long number, Double amount, String unit)
-			throws Exception {
-		System.out.println("======创建子件======" + "父：" + parent.getNumber() + " 子:" + son.getNumber());
+	public static List<Map<String, String>> excuteSql() {
+		// 查询数据库内容
+		String sql = "SELECT GC,WLH,BOMXM,BOMZJ,YL,DW,DTX,KNX from BOMDATAINFO";
+		ResultSet resultSet = CommonUtil.excuteSelect(sql);
+		List<Map<String, String>> resultList = new ArrayList<>();
 		try {
-			parent = PartUtil.getWTPartByNumber(parent.getNumber());
-			WTPartUsageLink link = new WTPartUsageLink();
-
-			if (number != null) {
-				LineNumber lineNumber = new LineNumber();
-				lineNumber.setValue(number);
-				link.setLineNumber(lineNumber);
+			while (resultSet.next()) {
+				Map<String, String> result = new HashMap<String, String>();
+				result.put("GC", resultSet.getString("GC"));
+				result.put("WLH", resultSet.getString("WLH"));
+				result.put("BOMXM", resultSet.getString("BOMXM"));
+				result.put("BOMZJ", resultSet.getString("BOMZJ"));
+				result.put("YL", resultSet.getString("YL"));
+				result.put("DW", resultSet.getString("DW"));
+				result.put("DTX", resultSet.getString("DTX"));
+				result.put("KNX", resultSet.getString("KNX"));
+				resultList.add(result);
 			}
-			Quantity quantity = new Quantity();
-			if (amount != null) {
-				quantity.setAmount(amount);
-			}
-			if (StringUtils.isNotBlank(unit)) {
-				QuantityUnit quantityUnit = QuantityUnit.toQuantityUnit(unit);
-				quantity.setUnit(quantityUnit);
-			}
-
-			link.setQuantity(quantity);
-			if (!PersistenceUtil.isCheckOut(parent)) {
-				parent = (WTPart) PersistenceUtil.checkoutObj(parent);
-			}
-			link.setUsedBy(parent);
-			link.setUses(son.getMaster());
-			link = (WTPartUsageLink) wt.fc.PersistenceHelper.manager.save(link);
-			return link;
+			resultSet.close();
 		} catch (Exception e) {
-			throw e;
+			return null;
 		}
-	}
-
-	public static void UpdateLink(WTPart parent, WTPartUsageLink usageLink, Long number, Double amount, String dw)
-			throws Exception {
-		try {
-			System.out.println("修改单位：" + dw);
-			if (number != null) {
-				LineNumber lineNumber = new LineNumber();
-				lineNumber.setValue(number);
-				usageLink.setLineNumber(lineNumber);
-			}
-			if (amount != null || StringUtils.isNotBlank(dw)) {
-				Quantity quantity = new Quantity();
-				if (amount != null) {
-					quantity.setAmount(amount);
-				}
-				if (StringUtils.isNotBlank(dw)) {
-					QuantityUnit quantityUnit = QuantityUnit.toQuantityUnit(dw);
-					quantity.setUnit(quantityUnit);
-				}
-
-				usageLink.setQuantity(quantity);
-			}
-			if (!PersistenceUtil.isCheckOut(parent)) {
-				PersistenceUtil.checkoutObj(parent);
-			}
-			PersistenceServerHelper.update(usageLink);
-		} catch (Exception e) {
-			throw e;
-		}
+		return resultList;
 	}
 
 	public static void createWTPartAlternateLink(WTPartUsageLink usageLink, WTPart part, Double amout, String unit,
@@ -349,6 +362,34 @@ public class CreatBomTree implements RemoteAccess, Serializable {
 		}
 	}
 
+	public static void UpdateLink(WTPart parent, WTPartUsageLink usageLink, Long number, Double amount, String dw)
+			throws Exception {
+		try {
+			System.out.println("修改单位：" + dw);
+			if (number != null) {
+				LineNumber lineNumber = new LineNumber();
+				lineNumber.setValue(number);
+				usageLink.setLineNumber(lineNumber);
+			}
+			if (amount != null || StringUtils.isNotBlank(dw)) {
+				Quantity quantity = new Quantity();
+				if (amount != null) {
+					quantity.setAmount(amount);
+				}
+				if (StringUtils.isNotBlank(dw)) {
+					QuantityUnit quantityUnit = QuantityUnit.toQuantityUnit(dw);
+					quantity.setUnit(quantityUnit);
+				}
+
+				usageLink.setQuantity(quantity);
+			}
+
+			PersistenceServerHelper.update(usageLink);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
 	public static void UpdateSubstituteLink(WTPartSubstituteLink link, String number, Double amount, String dw)
 			throws Exception {
 		try {
@@ -363,38 +404,27 @@ public class CreatBomTree implements RemoteAccess, Serializable {
 			if (StringUtils.isNotBlank(number)) {
 				link.setReferenceDesignator(number);
 			}
-//			if (!PersistenceUtil.isCheckOut(parent)) {
-//				PersistenceUtil.checkoutObj(parent);
-//			}
 			PersistenceServerHelper.update(link);
 		} catch (Exception e) {
 			throw e;
 		}
 	}
 
-	public static List<Map<String, String>> excuteSql() {
-		// 查询数据库内容
-		String sql = "SELECT GC,WLH,BOMXM,BOMZJ,YL,DW,DTX,KNX from BOMDATAINFO";
-		ResultSet resultSet = CommonUtil.excuteSelect(sql);
-		List<Map<String, String>> resultList = new ArrayList<>();
+	public static void appendLog(String log) {
+		SimpleDateFormat si = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String path = "/data/log/warningPart.txt";
+		FileWriter writer = null;
 		try {
-			while (resultSet.next()) {
-				Map<String, String> result = new HashMap<String, String>();
-				result.put("GC", resultSet.getString("GC"));
-				result.put("WLH", resultSet.getString("WLH"));
-				result.put("BOMXM", resultSet.getString("BOMXM"));
-				result.put("BOMZJ", resultSet.getString("BOMZJ"));
-				result.put("YL", resultSet.getString("YL"));
-				result.put("DW", resultSet.getString("DW"));
-				result.put("DTX", resultSet.getString("DTX"));
-				result.put("KNX", resultSet.getString("KNX"));
-				resultList.add(result);
+			File file = new File(path);
+			if (!file.exists()) {
+				file.createNewFile();
 			}
-			resultSet.close();
-		} catch (Exception e) {
-			return null;
+			writer = new FileWriter(path, true);
+			writer.write(si.format(new Date()) + log + "\n");
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		return resultList;
 	}
 
 }

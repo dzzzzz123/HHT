@@ -75,4 +75,10 @@ public class SAPActionsRB_zh_CN extends WTListResourceBundle {
 	public static final String PRIVATE_CONSTANT_33 = "SAPWizard.autoImportProductCatalog.tooltip";
 	@RBEntry("object_exclude.gif")
 	public static final String PRIVATE_CONSTANT_34 = "SAPWizard.autoImportProductCatalog.icon";
+	@RBEntry("SAP与BOM集成结果信息表格")
+	public static final String PRIVATE_CONSTANT_35 = "SAPWizard.BOMResult.title";
+	@RBEntry("SAP与BOM集成结果信息表格")
+	public static final String PRIVATE_CONSTANT_36 = "SAPWizard.BOMResult.description";
+	@RBEntry("SAP与BOM集成结果信息表格")
+	public static final String PRIVATE_CONSTANT_37 = "SAPWizard.BOMResult.tooltip";
 }

@@ -1,5 +1,6 @@
 package ext.classification.service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,7 +12,10 @@ import ext.ait.util.CommonUtil;
 import ext.ait.util.PersistenceUtil;
 import ext.ait.util.PropertiesUtil;
 import wt.fc.WTObject;
+import wt.org.WTPrincipal;
 import wt.part.WTPart;
+import wt.session.SessionHelper;
+import wt.util.WTException;
 
 /**
  * 根据部件的分类属性的内部名称来获取新的物料描述并设置值
@@ -24,13 +28,28 @@ public class ClassificationDescription {
 	private static PropertiesUtil pUtil = PropertiesUtil.getInstance("descriptionConfig.properties");
 
 	public static String process(WTPart part) {
+		WTPrincipal currentUser = null;
 		String classInternalName = pUtil.getValueByKey(part, "iba.internal.HHT_Classification");
 		String pattern = pUtil.getValueByKey(classInternalName);
 		if (StringUtils.isBlank(pattern)) {
 			return "当前分类 " + classInternalName + " 在配置文件中不存在!\r\n";
 		}
 		String newDescription = Util.processPartten(pattern, part);
-		pUtil.setValueByKey(part, "iba.internal.HHT_LongtDescription", newDescription);
+		try {
+			currentUser = SessionHelper.manager.getPrincipal();
+			SessionHelper.manager.setAdministrator();
+			pUtil.setValueByKey(part, "iba.internal.HHT_LongtDescription", newDescription);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (currentUser != null) {
+				try {
+					SessionHelper.manager.setPrincipal(currentUser.getName());
+				} catch (WTException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		return "";
 	}
 
@@ -65,6 +84,39 @@ public class ClassificationDescription {
 				result += flag.length() > 0 ? flag : "";
 			}
 		}
+		// 去除出现的 无
+		char[] charArray = result.toCharArray();
+		Set<Integer> removeIndex = new HashSet<>();
+		int charArrayLen = charArray.length;
+		char wu = '无';
+		if (charArrayLen > 2) {
+			for (int i = 0; i < charArrayLen; i++) {
+				char currentChar = charArray[i];
+				boolean flag = wu == currentChar;
+				if (flag) {
+					if (i == 0) {
+						if (!checkHan(charArray[i + 1])) {
+							removeIndex.add(i);
+						}
+					} else if (i == charArrayLen - 1) {
+						if (!checkHan(charArray[i - 1])) {
+							removeIndex.add(i);
+						}
+					} else {
+						if (!checkHan(charArray[i - 1]) && !checkHan(charArray[i + 1])) {
+							removeIndex.add(i);
+						}
+					}
+				}
+			}
+		}
+		result = removeList(charArray, removeIndex);
+		// 去除掉多余的属性分隔符____
+		while (result.contains("__")) {
+			result = result.replace("__", "_");
+		}
+		result = StringUtils.removeStart(result, "_");
+		result = StringUtils.removeEnd(result, "_");
 		return result;
 	}
 
@@ -87,5 +139,20 @@ public class ClassificationDescription {
 			}
 		}
 		return "";
+	}
+
+	public static boolean checkHan(char c) {
+		return Character.toString(c).matches("[\\u4e00-\\u9fa5a-zA-Z]");
+	}
+
+	public static String removeList(char[] array1, Set<Integer> removeIndex) {
+		StringBuffer result = new StringBuffer();
+		for (int i = 0; i < array1.length; i++) {
+			// 判断当前索引是否在数字数组中
+			if (!removeIndex.contains(i)) {
+				result.append(array1[i]);
+			}
+		}
+		return result.toString();
 	}
 }

@@ -2,6 +2,8 @@ package ext.HHT.project;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.ptc.core.components.beans.ObjectBean;
 import com.ptc.core.components.forms.DefaultObjectFormProcessor;
 import com.ptc.core.components.forms.FormProcessingStatus;
@@ -26,7 +28,15 @@ public class GenerateNumberProcessor extends DefaultObjectFormProcessor {
 
 		try {
 			List<Project2> list = CommonUtil.getListFromPBO(ref, Project2.class);
-			list.forEach(GenerateNumber::process);
+			if (list.size() == 1) {
+				String msg = GenerateNumber.process(list.get(0));
+				if (StringUtils.isNotBlank(msg)) {
+					formresult = new FormResult(FormProcessingStatus.FAILURE);
+					formresult.addFeedbackMessage(new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(),
+							null, null, new String[] { msg }));
+					return formresult;
+				}
+			}
 		} catch (Exception e) {
 			formresult = new FormResult(FormProcessingStatus.FAILURE);
 			formresult.addFeedbackMessage(new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(), null,
@@ -39,6 +49,7 @@ public class GenerateNumberProcessor extends DefaultObjectFormProcessor {
 		formresult.addFeedbackMessage(new FeedbackMessage(FeedbackType.SUCCESS, SessionHelper.getLocale(), null, null,
 				new String[] { "生成项目编号成功!" }));
 		return formresult;
+
 	}
 
 }

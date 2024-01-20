@@ -93,8 +93,8 @@ public class Service {
 			String uuid = requestUUid();
 			String netPath = requestMultipart(file, uuid);
 			body.setAttachmentUuid(uuid);
-			String HHT_SupplierInternal = Config.getHHT_Supplier(document);
-			String HHT_SupplierDisplay = getSupplier(HHT_SupplierInternal);
+			String HHT_SupplierDisplay = Config.getHHT_Supplier(document);
+			String HHT_SupplierInternal = getSupplier(HHT_SupplierDisplay);
 			body.setSupplierCompanyCode(HHT_SupplierInternal);
 			body.setSupplierCompanyName(HHT_SupplierDisplay);
 			bodys.add(body);
@@ -229,18 +229,18 @@ public class Service {
 		return responseEntity.getBody().toString();
 	}
 
-	public static String getSupplier(String HHT_SupplierInternal) {
-		String HHT_SupplierDisplay = "";
-		String sql = "SELECT DISPLAYNAME FROM CUS_SUPPLIER WHERE INTERNALNAME = ?";
-		ResultSet resultSet = CommonUtil.excuteSelect(sql, HHT_SupplierInternal);
+	public static String getSupplier(String HHT_SupplierDisplay) {
+		String HHT_SupplierInternal = "";
+		String sql = "SELECT INTERNALNAME FROM CUS_SUPPLIER WHERE DISPLAYNAME = ?";
+		ResultSet resultSet = CommonUtil.excuteSelect(sql, HHT_SupplierDisplay);
 		try {
 			while (resultSet.next()) {
-				HHT_SupplierDisplay = resultSet.getString("DISPLAYNAME");
+				HHT_SupplierInternal = resultSet.getString("INTERNALNAME");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return HHT_SupplierDisplay;
+		return HHT_SupplierInternal;
 	}
 
 }

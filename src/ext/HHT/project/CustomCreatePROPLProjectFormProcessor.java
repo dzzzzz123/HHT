@@ -22,7 +22,7 @@ public class CustomCreatePROPLProjectFormProcessor extends CreatePROPLProjectFor
 				: null;
 		System.out.println("----------------新建项目时按照规则修改项目编号----------------");
 		if (project != null) {
-			String result = GenerateNumber.process(project);
+			String result = GenerateNumber.process2(project);
 			if (StringUtils.isNotBlank(result)) {
 				throw new WTException(result);
 			}

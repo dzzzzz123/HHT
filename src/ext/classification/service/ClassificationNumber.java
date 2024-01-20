@@ -13,7 +13,9 @@ import ext.ait.util.IBAUtil;
 import ext.ait.util.PartUtil;
 import ext.ait.util.PersistenceUtil;
 import ext.ait.util.PropertiesUtil;
+import wt.org.WTPrincipal;
 import wt.part.WTPart;
+import wt.session.SessionHelper;
 import wt.util.WTException;
 
 public class ClassificationNumber {
@@ -35,27 +37,44 @@ public class ClassificationNumber {
 		String buy = pUtil.getValueByKey("source.buy");
 		String oldNumber = part.getNumber();
 		String typeName = PersistenceUtil.getSubTypeInternal(part);
+		String newNumber = "";
+		WTPrincipal currentUser = null;
 
 		if (typeName.equals(endItemTypeName)) {
-			String newNumber = getNewNumberForEndItem(part, classInternalName);
+			newNumber = getNewNumberForEndItem(part, classInternalName);
 			// 对部件输出的新编码进行校验
 			if (newNumber.length() == 15) {
 				newNumber = part.getSource().toString().equals(buy) ? "6" + newNumber.substring(1) : newNumber;
-				try {
-					PartUtil.changePartNumber(part, newNumber);
-				} catch (Exception e) {
-					e.printStackTrace();
-					return oldNumber + " 所生成的新编码不符合规范,且新编号为 " + newNumber + "\r\n 请检查是否存在相同的编号";
-				}
 			} else {
 				return oldNumber + " 所生成的新编码不符合规范,且新编号为 " + newNumber + "\r\n";
 			}
 		} else {
 			// 校验物料编号是否是已生成的编号
-			if (oldNumber.startsWith(classInternalName) && oldNumber.endsWith(suffix)) {
+			int oldNumberLen = oldNumber.length();
+			if (oldNumber.startsWith(classInternalName) && StringUtils.isAlpha(oldNumber.substring(oldNumberLen - 1))
+					&& oldNumberLen == 10) {
 				return "物料编号已经是系统生成的编号\r\n";
 			} else {
-				PartUtil.changePartNumber(part, getNewNumberForPart(part, classInternalName));
+				newNumber = getNewNumberForPart(part, classInternalName);
+			}
+		}
+		// 更新部件编号代码
+		try {
+			currentUser = SessionHelper.manager.getPrincipal();
+			SessionHelper.manager.setAdministrator();
+			if (PartUtil.getWTPartByNumber(newNumber) != null) {
+				return oldNumber + " 所生成的新编码不符合规范,且新编号为 " + newNumber + "\r\n 请检查是否存在相同的编号";
+			}
+			PartUtil.changePartNumber(part, newNumber);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (currentUser != null) {
+				try {
+					SessionHelper.manager.setPrincipal(currentUser.getName());
+				} catch (WTException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		return "";
@@ -120,6 +139,18 @@ public class ClassificationNumber {
 					result += "";
 				}
 			}
+			// 去除出现的 无
+			while (result.contains("无")) {
+				result = result.replace("无", "");
+			}
+			result = StringUtils.removeStart(result, "无");
+			result = StringUtils.removeEnd(result, "无");
+			// 去除掉多余的属性分隔符____
+			while (result.contains("__")) {
+				result = result.replace("__", "_");
+			}
+			result = StringUtils.removeStart(result, "_");
+			result = StringUtils.removeEnd(result, "_");
 		} catch (WTException e) {
 			e.printStackTrace();
 		}

@@ -77,7 +77,7 @@ width:100%;
     btn.onclick =function(){
 		var oid ='<%= oid %>';
         var httpRequest = new XMLHttpRequest();//第一步：建立所需的对象
-        httpRequest.open('GET', 'http://hhplm.honghe-tech.com:8080/Windchill/servlet/Navigation/sap/Custing?oid='+oid, true);//第二步：打开连接  将请求参数写在url中  ps:"http://localhost:8080/rest/xxx"
+        httpRequest.open('GET', 'https://hhplm.honghe-tech.com/Windchill/servlet/Navigation/sap/Custing?oid='+oid, true);//第二步：打开连接  将请求参数写在url中  ps:"http://localhost:8080/rest/xxx"
         httpRequest.send();//第三步：发送请求  将请求参数写在URL中
         /**
          * 获取数据后的处理程序
@@ -146,7 +146,7 @@ width:100%;
 	
 	function httpPostLocaltion(key,params){
 	let param = JSON.stringify(params);
-	let url = "http://hhplm.honghe-tech.com:8080/Windchill/servlet/Navigation/sap/CustingPdfServlet";
+	let url = "https://hhplm.honghe-tech.com/Windchill/servlet/Navigation/sap/CustingPdfServlet";
 	// 把参数对象转换为json
 	let xhr = new XMLHttpRequest();
 	xhr.responseType = 'blob';
@@ -236,7 +236,7 @@ var treeData;
   function getCbjs(){
 	 var oid ='<%= oid %>';
         var httpRequest = new XMLHttpRequest();//第一步：建立所需的对象
-        httpRequest.open('GET', 'http://hhplm.honghe-tech.com:8080/Windchill/servlet/Navigation/sap/Custing?oid='+oid, true);//第二步：打开连接  将请求参数写在url中  ps:"http://localhost:8080/rest/xxx"
+        httpRequest.open('GET', 'https://hhplm.honghe-tech.com/Windchill/servlet/Navigation/sap/Custing?oid='+oid, true);//第二步：打开连接  将请求参数写在url中  ps:"http://localhost:8080/rest/xxx"
         httpRequest.send();//第三步：发送请求  将请求参数写在URL中
         /**
          * 获取数据后的处理程序

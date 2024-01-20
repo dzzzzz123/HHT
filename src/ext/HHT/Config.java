@@ -151,9 +151,23 @@ public class Config {
 		return properties.getValueByKey("packaging.library.name");
 	}
 
+	public static Set<String> getElectricalNodes() {
+		String nodes = properties.getValueByKey("electrical.need.nodes");
+		Set<String> set = new HashSet<>();
+		set.addAll(Arrays.asList(nodes.split("/")));
+		return set;
+	}
+
 	public static Set<String> getStructureNodes() {
 		String nodes = properties.getValueByKey("structure.need.nodes");
-		Set set = new HashSet<>();
+		Set<String> set = new HashSet<>();
+		set.addAll(Arrays.asList(nodes.split("/")));
+		return set;
+	}
+
+	public static Set<String> getPackagingNodes() {
+		String nodes = properties.getValueByKey("packaging.need.nodes");
+		Set<String> set = new HashSet<>();
 		set.addAll(Arrays.asList(nodes.split("/")));
 		return set;
 	}
@@ -164,6 +178,10 @@ public class Config {
 
 	public static void setHHT_ProductNumber(IBAHolder ibaHolder, String str) {
 		properties.setValueByKey(ibaHolder, "iba.internal.HHT_ProductNumber", str);
+	}
+
+	public static String getHHT_ProjectNum(IBAHolder ibaHolder) {
+		return properties.getValueByKey(ibaHolder, "iba.internal.HHT_ProjectNum");
 	}
 
 	public static void setHHT_ProjectNum(IBAHolder ibaHolder, String str) {
@@ -181,4 +199,44 @@ public class Config {
 	public static String getHHT_PojectYear(IBAHolder ibaHolder) {
 		return properties.getValueByKey(ibaHolder, "iba.internal.HHT_PojectYear");
 	}
+
+	public static String getLFName() {
+		return properties.getValueByKey("lifeCycle.templateName");
+	}
+
+	public static String getORGID() {
+		return properties.getValueByKey("ORG.IDA2A2");
+	}
+
+	public static String getPESType() {
+		return properties.getValueByKey("PurchasedEnd.SubType");
+	}
+
+	public static String getElcType() {
+		return properties.getValueByKey("Electrical.SubType");
+	}
+
+	public static Set<String> getReqType() {
+		String nodes = properties.getValueByKey("Requirement.SubType");
+		Set<String> set = new HashSet<>();
+		set.addAll(Arrays.asList(nodes.split("/")));
+		return set;
+	}
+
+	public static String getORGName() {
+		return properties.getValueByKey("ORG.name");
+	}
+
+	public static String getBOMCostGroup() {
+		return properties.getValueByKey("BOMCost.group");
+	}
+
+	public static String getClassificationGroup() {
+		return properties.getValueByKey("Classification.group");
+	}
+
+	public static String getSAPDataGroup() {
+		return properties.getValueByKey("SAPData.group");
+	}
+
 }

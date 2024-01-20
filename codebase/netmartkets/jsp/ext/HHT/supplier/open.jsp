@@ -61,8 +61,8 @@
   	<table border="1" align="center" width="600px">
   		<tr width="600px">
   			<td width="50px"></td>
-  			<td width="100px">供应商名称</td>
-  			<td width="250px">供应商编码</td>
+  			<td width="100px">供应商编码</td>
+  			<td width="250px">供应商名称</td>
   			<td width="150px">供应商创建时间</td>
   		</tr>
 	 

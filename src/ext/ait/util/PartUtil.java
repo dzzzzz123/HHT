@@ -121,6 +121,34 @@ public class PartUtil implements RemoteAccess {
 	}
 
 	/**
+	 * 根据编号查询List
+	 * 
+	 * @param String
+	 * @return WTPart
+	 */
+	@SuppressWarnings("deprecation")
+	public static List<WTPart> getWTPartListByNumber(String number) {
+		List<WTPart> result = new ArrayList<WTPart>();
+		QueryResult qr = null;
+		try {
+			QuerySpec qs = new QuerySpec(WTPart.class);
+			SearchCondition scnumber = new SearchCondition(WTPart.class, wt.part.WTPart.NUMBER, SearchCondition.EQUAL,
+					number.toUpperCase());
+			qs.appendSearchCondition(scnumber);
+			qs.appendAnd();
+			SearchCondition sclatest = VersionControlHelper.getSearchCondition(wt.part.WTPart.class, true);
+			qs.appendSearchCondition(sclatest);
+			qr = PersistenceHelper.manager.find(qs);
+			while (qr != null && qr.hasMoreElements()) {
+				result.add((WTPart) qr.nextElement());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	/**
 	 * 不递归获取部件所有的子部件
 	 * 
 	 * @param WTPart
@@ -202,7 +230,10 @@ public class PartUtil implements RemoteAccess {
 	 * @param String
 	 */
 	public static void changePartName(WTPart part, String newName) {
+		WTPrincipal currentUser = null;
 		try {
+			currentUser = SessionHelper.manager.getPrincipal();
+			SessionHelper.manager.setAdministrator();
 			part = (WTPart) PersistenceHelper.manager.refresh(part);
 			Identified identified = (Identified) part.getMaster();
 			WTPartMasterIdentity partIdentity = (WTPartMasterIdentity) identified.getIdentificationObject();
@@ -211,6 +242,14 @@ public class PartUtil implements RemoteAccess {
 			part = (WTPart) PersistenceHelper.manager.refresh(part);
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			if (currentUser != null) {
+				try {
+					SessionHelper.manager.setPrincipal(currentUser.getName());
+				} catch (WTException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 

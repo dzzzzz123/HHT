@@ -1,6 +1,7 @@
 package ext.sap.masterData;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +66,6 @@ public class PartSenderHelper {
 	 * @throws Exception
 	 */
 	public static Result getResFromSAP(WTPart part) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 		SendSAPPartEntity entity = SendSAPService.SendSAPPart(part);
 		String json = SendSAPService.entityToJson(entity);
@@ -83,8 +83,12 @@ public class PartSenderHelper {
 		} else {
 			resultData.setResult("SUCCESS");
 			resultData.setMsg(part.getNumber() + "物料创建或修改成功！");
+			Config.setHHT_SapMark(part, "X");
 		}
-		LocalDateTime currentTime = LocalDateTime.now();
+
+		ZoneId zoneId = ZoneId.of("Asia/Shanghai");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDateTime currentTime = LocalDateTime.now(zoneId);
 		String formattedTime = currentTime.format(formatter);
 		resultData.setTime(formattedTime);
 		return resultData;

@@ -5,7 +5,9 @@ import java.io.FileInputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -30,6 +32,7 @@ import wt.method.RemoteAccess;
 import wt.method.RemoteMethodServer;
 import wt.part.WTPart;
 import wt.pom.Transaction;
+import wt.pom.WTConnection;
 import wt.type.ClientTypedUtility;
 import wt.type.TypeDefinitionReference;
 import wt.util.WTException;
@@ -78,7 +81,8 @@ public class InputWTDOC implements RemoteAccess, Serializable {
 			try {
 				tx.start();
 				// 获取部件
-				WTPart part = PartUtil.getWTPartByNumber(partNumber);
+				// WTPart part = PartUtil.getWTPartByNumber(partNumber);
+				WTPart part = PartUtil.getWTPartByNumberAndView(partNumber, "Design");
 				ArrayList<WTDocument> docList = new ArrayList<>();
 
 				// 为每个 SQLData 创建并上传文档
@@ -86,7 +90,7 @@ public class InputWTDOC implements RemoteAccess, Serializable {
 					filePath = sqlData.getFilePath();
 					int lastSlashIndex = filePath.lastIndexOf('/');
 					filePath = lastSlashIndex != -1 && lastSlashIndex < filePath.length() - 1
-							? "/opt/acknowledgment/" + filePath.substring(lastSlashIndex + 1)
+							? "/plmdata/tmp/1111/" + filePath.substring(lastSlashIndex + 1)
 							: sqlData.getName();
 
 //					Pattern pattern = Pattern.compile(".*/([^/]+)$");
@@ -125,7 +129,7 @@ public class InputWTDOC implements RemoteAccess, Serializable {
 			doc.setNumber("OUT" + CommonUtil.addLead0(number, 8));
 			doc.setDocType(docType);
 			doc.setDomainRef(part.getDomainRef());
-			doc.setDepartment(DepartmentList.toDepartmentList("HHTSystemDesign"));
+			doc.setDepartment(DepartmentList.toDepartmentList("ENG"));
 			WTContainer container = part.getContainer();
 			doc.setContainer(container);
 			Folder folder = container.getIdentity().contains("PDMLinkProduct")
@@ -156,12 +160,16 @@ public class InputWTDOC implements RemoteAccess, Serializable {
 	}
 
 	public static HashMap<String, ArrayList<SQLData>> getData() {
+		WTConnection connection = null;
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
 		try {
 			String sql = "SELECT * FROM ACKNOWLEDGMENTINPUT";
 			String sql2 = "SELECT  HHT_ACKNOWLEDGMENT.NEXTVAL FROM DUAL";
 			HashMap<String, ArrayList<SQLData>> map = new HashMap<>();
-
-			ResultSet resultSet = CommonUtil.excuteSelect(sql);
+			connection = CommonUtil.getWTConnection();
+			statement = connection.prepareStatement(sql);
+			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				ArrayList<SQLData> list = new ArrayList<>();
 				SQLData data = new SQLData();
@@ -173,9 +181,20 @@ public class InputWTDOC implements RemoteAccess, Serializable {
 				data.setDepartment(resultSet.getString("department"));
 				data.setVersion(resultSet.getString("version"));
 				data.setFilePath(resultSet.getString("filePath"));
-				ResultSet resultSet2 = CommonUtil.excuteSelect(sql2);
-				while (resultSet2.next()) {
-					data.setDocNumber(resultSet2.getString("NEXTVAL"));
+				WTConnection connection2 = null;
+				PreparedStatement statement2 = null;
+				ResultSet resultSet2 = null;
+				try {
+					connection2 = CommonUtil.getWTConnection();
+					statement2 = connection2.prepareStatement(sql2);
+					resultSet2 = statement2.executeQuery();
+					while (resultSet2.next()) {
+						data.setDocNumber(resultSet2.getString("NEXTVAL"));
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					closeResources(statement2, resultSet2);
 				}
 				list.add(data);
 				map.compute(partNumber, (key, existingList) -> {
@@ -190,6 +209,21 @@ public class InputWTDOC implements RemoteAccess, Serializable {
 			return map;
 		} catch (Exception e) {
 			throw new RuntimeException("查询数据库出现问题！");
+		} finally {
+			closeResources(statement, resultSet);
+		}
+	}
+
+	public static void closeResources(PreparedStatement statement, ResultSet resultSet) {
+		try {
+			if (resultSet != null) {
+				resultSet.close();
+			}
+			if (statement != null) {
+				statement.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 

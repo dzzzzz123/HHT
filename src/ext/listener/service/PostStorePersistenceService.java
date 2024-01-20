@@ -87,4 +87,5 @@ public class PostStorePersistenceService extends StandardManager implements Post
 			e.printStackTrace();
 		}
 	}
+
 }

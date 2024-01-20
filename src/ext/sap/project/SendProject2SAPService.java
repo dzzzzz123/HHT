@@ -28,7 +28,9 @@ public class SendProject2SAPService {
 		ProjectEntity projectEntity = new ProjectEntity();
 		projectEntity.setProjectNumber(Config.getHHT_ProjectNum(project));
 		projectEntity.setProjectName(project.getName());
-		projectEntity.setProjectCategory(getCategory(project.getCategory().getDisplay()));
+		// projectEntity.setProjectCategory(getCategory(project.getCategory().getDisplay()));
+		// 获取枚举的内部值
+		projectEntity.setProjectCategory(project.getCategory().toString());
 		projectEntity.setProjectOwner(project.getOwner().getName());
 		projectEntity.setProjectCreateStamp(
 				new SimpleDateFormat("yyyyMMdd").format(new Date(project.getCreateTimestamp().getTime())));

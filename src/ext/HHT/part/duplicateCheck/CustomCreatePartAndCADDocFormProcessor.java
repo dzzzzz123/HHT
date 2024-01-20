@@ -14,7 +14,7 @@ import ext.HHT.part.duplicateCheck.service.BondedCheckService;
 import ext.HHT.part.duplicateCheck.service.DistrbutePartService;
 import ext.HHT.part.duplicateCheck.service.DuplicateCheckService;
 import ext.HHT.part.duplicateCheck.service.MaterialNumberService;
-import ext.classification.service.ClassificationNumber;
+import ext.classification.ClassificationHelper;
 import wt.part.WTPart;
 import wt.util.WTException;
 
@@ -55,11 +55,11 @@ public class CustomCreatePartAndCADDocFormProcessor extends CreatePartAndCADDocF
 		if (StringUtils.isNotBlank(result2)) {
 			throw new WTException(result2);
 		}
-		System.out.println("----------------创建物料生成物料编号----------------");
-		if (Config.getHHT_Classification(part).startsWith("5")) {
-			String result3 = ClassificationNumber.process(part);
-			if (StringUtils.isNotBlank(result3)) {
-				throw new WTException(result3);
+		System.out.println("----------------创建物料生成物料编号/名称/描述----------------");
+		if (part != null && Config.getHHT_Classification(part).startsWith("5")) {
+			List<String> result3 = ClassificationHelper.classify(part, "");
+			if (result3.size() > 0 && StringUtils.isNotBlank(result3.get(0))) {
+				throw new WTException(result3.get(0));
 			}
 		}
 		return super.postProcess(nmCommandBean, list);

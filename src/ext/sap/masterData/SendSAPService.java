@@ -41,16 +41,21 @@ public class SendSAPService {
 		String source = part.getSource().getDisplay(Locale.CHINA);
 
 		// 根据条件修改获取的属性以满足传入SAP的需求
-		boolean HHT_INValueBoolean = HHT_INValue.equals("是") ? true : false;
+		boolean HHT_INValueBoolean = HHT_INValue.equals("True") || HHT_INValue.equals("真") || HHT_INValue.equals("是")
+				? true
+				: false;
 		String PartType = mapClassificationToPartType(HHT_ClassificationCode, HHT_INValueBoolean);
 		String HHT_ClassificationName = ClassificationUtil.getClassificationdDisPlayName(HHT_ClassificationCode);
 		version = StringUtils.substring(version, 0, 1);
 		state = getSAPState(state);
-		HHT_Bonded = HHT_Bonded.equals("True") || HHT_Bonded.equals("是") || HHT_Bonded.equals("真") ? "Y" : "N";
+		HHT_Bonded = processHHT_Bonded(HHT_Bonded);
 		NonbondedNumber = StringUtils.isBlank(NonbondedNumber) ? "" : NonbondedNumber;
 		HHT_SerialNumber = HHT_SerialNumber.equals("True") || HHT_SerialNumber.equals("是")
 				|| HHT_SerialNumber.equals("真") ? "0001" : "";
 		HHT_Classification = processClassification(HHT_Classification, number);
+		String Year = ClassificationUtil.getDisplayByInternal(Config.getHHT_Year(part));
+		String LargeScreenSize = ClassificationUtil.getDisplayByInternal(Config.getLargeScreenSize(part));
+		String HHT_PDOwnership = ClassificationUtil.getDisplayByInternal(Config.getHHT_PDOwnership(part));
 
 		sapPartEntity.setPartType(PartType);
 		sapPartEntity.setHHT_Classification(HHT_Classification);
@@ -61,7 +66,7 @@ public class SendSAPService {
 		sapPartEntity.setHHT_Bonded(HHT_Bonded);
 		sapPartEntity.setNonbondedNumber(NonbondedNumber);
 		sapPartEntity.setState(state);
-		sapPartEntity.setHHT_Year(Config.getHHT_Year(part));
+		sapPartEntity.setHHT_Year(Year);
 		sapPartEntity.setHHT_GrossWeight(Config.getHHT_GrossWeight(part));
 		sapPartEntity.setHHT_NetWeight(Config.getHHT_NetWeight(part));
 		sapPartEntity.setHHT_WeightUnit(Config.getHHT_WeightUnit(part));
@@ -79,7 +84,7 @@ public class SendSAPService {
 		sapPartEntity.setHHT_ModelSpecification(Config.getHHT_ModelSpecification(part));
 		sapPartEntity.setHHT_CommodityName(Config.getHHT_CommodityName(part));
 		sapPartEntity.setHHT_Brand(Config.getHHT_Brand(part));
-		sapPartEntity.setLargeScreenSize(Config.getLargeScreenSize(part));
+		sapPartEntity.setLargeScreenSize(LargeScreenSize);
 		sapPartEntity.setHHT_FinishedSeries(Config.getHHT_FinishedSeries(part));
 		sapPartEntity.setHHT_Industry(Config.getHHT_Industry(part));
 		sapPartEntity.setHHT_ProductDevelopmentType(Config.getHHT_ProductDevelopmentType(part));
@@ -95,6 +100,9 @@ public class SendSAPService {
 		sapPartEntity.setClassPartDescription(partPath);
 		sapPartEntity.setHHT_SapMark(Config.getHHT_SapMark(part));
 		sapPartEntity.setSource(source);
+		sapPartEntity.setHHT_LongtDescription(Config.getHHT_LongtDescription(part));
+		sapPartEntity.setHHT_PDOwnership(HHT_PDOwnership);
+
 		return sapPartEntity;
 	}
 
@@ -113,7 +121,8 @@ public class SendSAPService {
 		case "PVT":
 			return "D1";
 		case "MP":
-			return "M1";
+			// return "M1";
+			return "P1";
 		case "Obsolescence":
 			return "Z1";
 		default:
@@ -171,6 +180,8 @@ public class SendSAPService {
 				return inValue ? "Z006" : "Z007";
 			case '3':
 				return inValue ? "Z008" : "Z009";
+			case '4':
+				return inValue ? "Z008" : "Z009";
 			default:
 				return "未知物料类型";
 			}
@@ -216,6 +227,20 @@ public class SendSAPService {
 	}
 
 	/**
+	 * 处理关于是否保税的内容
+	 * 
+	 * @param HHT_Bonded
+	 * @return
+	 */
+	private static String processHHT_Bonded(String HHT_Bonded) {
+		if (StringUtils.isBlank(HHT_Bonded)) {
+			return "";
+		} else {
+			return HHT_Bonded.equals("True") || HHT_Bonded.equals("是") || HHT_Bonded.equals("真") ? "Y" : "N";
+		}
+	}
+
+	/**
 	 * 将实体类转换为发送给SAP的json
 	 * 
 	 * @param entity 物料主数据实体类
@@ -230,6 +255,7 @@ public class SendSAPService {
 		isMatnrMap.put("MATKL", entity.getHHT_Classification());
 		isMatnrMap.put("MATNR", entity.getNumber());
 		isMatnrMap.put("MAKTX", entity.getName());
+		isMatnrMap.put("MAKTX1", entity.getHHT_LongtDescription());
 		isMatnrMap.put("AESZN", entity.getRevision());
 		isMatnrMap.put("MEINS", entity.getUnit());
 		isMatnrMap.put("BRGEW", entity.getHHT_GrossWeight());
@@ -269,6 +295,7 @@ public class SendSAPService {
 		isMatnrMap.put("WGBEZ60", entity.getClassPartDescription());
 		isMatnrMap.put("ZWLBS", entity.getHHT_SapMark());
 		isMatnrMap.put("ZCGLX", entity.getSource());
+		isMatnrMap.put("ZZCPGS", entity.getHHT_PDOwnership());
 
 		rootMap.put("IS_MATNR", isMatnrMap);
 		try {

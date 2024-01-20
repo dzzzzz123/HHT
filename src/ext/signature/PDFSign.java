@@ -24,6 +24,7 @@ import ext.ait.util.VersionUtil;
 import wt.content.ApplicationData;
 import wt.content.ContentHelper;
 import wt.content.ContentHolder;
+import wt.content.ContentItem;
 import wt.content.ContentRoleType;
 import wt.content.ContentServerHelper;
 import wt.doc.WTDocument;
@@ -149,13 +150,14 @@ public class PDFSign {
 					if ((role.equals(ContentRoleType.ADDITIONAL_FILES) || role.equals(ContentRoleType.SECONDARY))
 							&& FileUtil.getExtension(fileName).equalsIgnoreCase("pdf")) {
 						foundPDF = appData;
+						System.out.println("002-Representation foundPDF: " + foundPDF.toString());
 						break;
 					}
 					// 检查表示法中是否包含DXF
 					if ((role.equals(ContentRoleType.ADDITIONAL_FILES) || role.equals(ContentRoleType.SECONDARY))
 							&& FileUtil.getExtension(fileName).equalsIgnoreCase("dxf")) {
 						foundDXF = appData;
-						System.out.println("qqq-DXFname: " + fileName);
+						System.out.println("DXFname: " + fileName);
 
 					}
 
@@ -208,7 +210,9 @@ public class PDFSign {
 				System.out.println("004-签名结束后更新到表示法 : " + fileName);
 				FileInputStream fis = new FileInputStream(signatureFilePath);
 				// ContentServerHelper.service.deleteContent(ch, foundPDF);
-				foundPDF = ContentServerHelper.service.updateContent(ch, foundPDF, fis);
+				// foundPDF = ContentServerHelper.service.updateContent(ch, foundPDF, fis);
+				System.out.println("FileName:" + foundPDF.getFileName());
+				System.out.println("FileSizeKB:" + foundPDF.getFileSizeKB());
 				System.out
 						.println("002-Representation oid: " + foundPDF.getPersistInfo().getObjectIdentifier().getId());
 				// 重命名pdf文档
@@ -241,11 +245,30 @@ public class PDFSign {
 					foundDXF.setFileName(newFileDXFName);
 					PersistenceHelper.manager.save(foundDXF);
 				} else if (persistable instanceof WTDocument) {
+					// Update wvs pdf FileName jpj 2024
 					WTDocument wtDocument = (WTDocument) persistable;
-					String newFileName = wtDocument.getName() + "_" + wtDocument.getVersionIdentifier().getValue() + "_"
-							+ "已发布.pdf";
+					String newFileName = wtDocument.getNumber() + "_" + wtDocument.getName() + "_"
+							+ wtDocument.getVersionIdentifier().getValue() + "_"
+							+ wtDocument.getState().getState().getDisplay(Locale.CHINA) + "_" + "签章版.pdf";
+
 					foundPDF.setFileName(newFileName);
+					foundPDF.setRole(ContentRoleType.SECONDARY);
+					foundPDF.setFileSize(foundPDF.getFileSize());
+					System.out.println("foundPDF--FileName:" + foundPDF.getFileName());
+					System.out.println("foundPDF--FileSize:" + foundPDF.getFileSizeKB());
+
 					PersistenceHelper.manager.save(foundPDF);
+
+					QueryResult qr = ContentHelper.service.getContentsByRole(wtDocument, ContentRoleType.SECONDARY);
+					while (qr.hasMoreElements()) {
+						ContentItem ci = (ContentItem) qr.nextElement();
+						System.out.println("-----ci----" + ci);
+						ContentServerHelper.service.deleteContent(wtDocument, ci);
+					}
+
+					System.out.println("fis:" + fis.toString());
+					foundPDF = ContentServerHelper.service.updateContent(wtDocument, foundPDF, fis);
+
 				}
 				fis.close();
 				// 删除临时文件
@@ -278,4 +301,5 @@ public class PDFSign {
 
 		return persistable;
 	}
+
 }

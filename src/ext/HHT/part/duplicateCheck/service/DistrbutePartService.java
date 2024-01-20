@@ -27,11 +27,11 @@ public class DistrbutePartService {
 		if (StringUtils.isNotBlank(classification) && source.equals(buy) && classification.startsWith("5")) {
 			distrbuteFinished(part, classification);
 		} else if (StringUtils.isNotBlank(classification)) {
-			if (classification.startsWith("1")) {
+			if (classification.startsWith("1") && !Config.getElectricalNodes().contains(classification)) {
 				distrbuteParts(part, classification, "electrical");
 			} else if (classification.startsWith("2") && Config.getStructureNodes().contains(classification)) {
 				distrbuteParts(part, classification, "structure");
-			} else if (classification.startsWith("3")) {
+			} else if (classification.startsWith("3") && !Config.getPackagingNodes().contains(classification)) {
 				distrbuteParts(part, classification, "packaging");
 			}
 		}

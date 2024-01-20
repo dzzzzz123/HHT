@@ -248,7 +248,7 @@
    <Property name="publish.service.notifyOnException.enable"
               overridable="true"
               targetFile="codebase/WEB-INF/conf/wvs.properties"
-              value="DESIGN,EVT,DVT,PVT,MP,UNDERREVIEW,OBSOLESCENCE"/>
+              value="DESIGN,EVT,DVT,PVT,MP,UNDERREVIEW,OBSOLESCENCE,INWORK"/>
    <Property name="worker..ORCADDSNZ"
               overridable="true"
               targetFile="codebase/WEB-INF/conf/wvs.properties"
@@ -423,10 +423,6 @@
               overridable="true"
               targetFile="codebase/wt.properties"
               value="ldap://hhplm.honghe-tech.com:389"/>
-   <Property name="wt.webserver.port"
-              overridable="true"
-              targetFile="codebase/wt.properties"
-              value="8080"/>
    <Property name="wt.rmi.server.hostname"
               overridable="true"
               targetFile="codebase/wt.properties"
@@ -529,7 +525,7 @@
    <Property name="wt.services.service.5009"
               overridable="true"
               targetFile="codebase/wt.properties"
-              value="ext.oa.listener.ListenerService/ext.oa.listener.WorkItemListenerService" />
+              value="ext.oa.listener.ListenerService/ext.oa.listener.WorkItemListenerService"/>
    <Property name="publish.afterloadermethod"
               overridable="true"
               targetFile="codebase/WEB-INF/conf/wvs.properties"
@@ -539,4 +535,42 @@
     targetFile="codebase/wt.properties"
   value="ext.listener.Listener.PostStorePersistenceListener/ext.listener.service.PostStorePersistenceService"
   /> -->
+   <Property name="wt.webserver.port"
+              overridable="true"
+              targetFile="codebase/wt.properties"
+              value="443"/>
+   <Property name="wt.webserver.protocol"
+              overridable="true"
+              targetFile="codebase/wt.properties"
+              value="https"/>
+   <Property name="wt.services/svc/default/com.ptc.core.ui.validation.UIComponentValidator/CustomDocNavigationFilter/null/0"
+              overridable="true"
+              targetFile="codebase/service.properties"
+              value="ext.plm.doc.filter.CustomDocNavigationFilter/duplicate"/>
+   <Property name="wt.services.service.4160"
+              overridable="true"
+              targetFile="codebase/wt.properties"
+              value="ext.listener.Listener.ListenService/ext.listener.service.StandardListenService"/>
+   <!-- 角色用户菜单验证相关配置 -->
+   <Property name="wt.services/svc/default/com.ptc.core.ui.validation.SimpleValidationFilter/BOMCostFilter/null/0"
+              overridable="true"
+              targetFile="codebase/com/ptc/windchill/enterprise/enterprise.service.properties"
+              value="ext.HHT.filter.BOMCostFilter"/>
+   <Property name="wt.services/svc/default/com.ptc.core.ui.validation.SimpleValidationFilter/CISFilter/null/0"
+              overridable="true"
+              targetFile="codebase/com/ptc/windchill/enterprise/enterprise.service.properties"
+              value="ext.HHT.filter.CISFilter"/>
+   <Property name="wt.services/svc/default/com.ptc.core.ui.validation.SimpleValidationFilter/RequirementFilter/null/0"
+              overridable="true"
+              targetFile="codebase/com/ptc/windchill/enterprise/enterprise.service.properties"
+              value="ext.HHT.filter.RequirementFilter"/>
+   <Property name="wt.services/svc/default/com.ptc.core.ui.validation.SimpleValidationFilter/SAPFilter/null/0"
+              overridable="true"
+              targetFile="codebase/com/ptc/windchill/enterprise/enterprise.service.properties"
+              value="ext.HHT.filter.SAPFilter"/>
+   <Property name="wt.services/svc/default/com.ptc.core.ui.validation.SimpleValidationFilter/ClassificationFilter/null/0"
+              overridable="true"
+              targetFile="codebase/com/ptc/windchill/enterprise/enterprise.service.properties"
+              value="ext.HHT.filter.ClassificationFilter"/>
+   <UndefineProperty name="wt.services/svc/default/com.ptc.core.ui.validation.UIComponentValidator/reassignSearchUser/null/0"/>
 </Configuration>

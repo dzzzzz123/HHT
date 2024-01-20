@@ -45,4 +45,10 @@ public class HHTActionsRB_zh_CN extends WTListResourceBundle {
 	public static final String PRIVATE_CONSTANT_17 = "HHTWizard.generateProjectNumber.tooltip";
 	@RBEntry("new_option_set.gif")
 	public static final String PRIVATE_CONSTANT_18 = "HHTWizard.generateProjectNumber.icon";
+	@RBEntry("刷新状态")
+	public static final String PRIVATE_CONSTANT_19 = "HHTWizard.refresh.description";
+	@RBEntry("refresh.gif")
+	public static final String PRIVATE_CONSTANT_20 = "HHTWizard.refresh.icon";
+	@RBEntry("项目工时")
+	public static final String PRIVATE_CONSTANT_21 = "HHTWizard.ProjectWorkHours.description";
 }
