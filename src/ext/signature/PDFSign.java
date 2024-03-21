@@ -42,6 +42,7 @@ import wt.representation.Representation;
 import wt.util.FileUtil;
 import wt.util.WTException;
 import wt.util.WTProperties;
+import wt.util.WTPropertyVetoException;
 
 public class PDFSign {
 	private static WTPart getPartbyEPM(EPMDocument epm) {
@@ -135,7 +136,7 @@ public class PDFSign {
 				Boolean defaultRepresentation = rep.getDefaultRepresentation();
 				System.out.println("002-Representation : " + name);
 				System.out.println("002-Representation defaultRepresentation: " + defaultRepresentation);
-				// 必须从默认表示法中获取pdf
+				// 必须从默认表示法中获取PDF
 				if (!defaultRepresentation) {
 					continue;
 				}
@@ -146,7 +147,7 @@ public class PDFSign {
 					System.out.println("002-Representation FileName: " + fileName);
 					ContentRoleType role = appData.getRole();
 					System.out.println("002-Representation ContentRoleType: " + role.toString());
-					// 检查表示法中是否包含pdf
+					// 检查表示法中是否包含PDF
 					if ((role.equals(ContentRoleType.ADDITIONAL_FILES) || role.equals(ContentRoleType.SECONDARY))
 							&& FileUtil.getExtension(fileName).equalsIgnoreCase("pdf")) {
 						foundPDF = appData;
@@ -158,15 +159,14 @@ public class PDFSign {
 							&& FileUtil.getExtension(fileName).equalsIgnoreCase("dxf")) {
 						foundDXF = appData;
 						System.out.println("DXFname: " + fileName);
-
 					}
-
 				}
 				if (foundPDF != null) {
 					break;
 				}
 			}
 
+			// 如果表示法中包含PDF
 			if (foundPDF != null) {
 				System.out
 						.println("002-Representation oid: " + foundPDF.getPersistInfo().getObjectIdentifier().getId());
@@ -193,7 +193,8 @@ public class PDFSign {
 						}
 					}
 				}
-				System.out.println("002-check PDF : " + fileName);
+
+				// 获取表示法中的PDF，转换为输入流IS
 				is = ContentServerHelper.service.findContentStream(foundPDF);
 				String newPdfName = UUID.randomUUID().toString() + ".pdf";
 				String signatureFilePath = PDF_TEMP + File.separator + newPdfName;
@@ -206,39 +207,28 @@ public class PDFSign {
 					state = lcm.getState().toString();
 				}
 				SignaturePDF.WriteSignatureToPDF(signInfoMap, is, signatureFilePath, "", state, documentType);
-				// 更新表示法
-				System.out.println("004-签名结束后更新到表示法 : " + fileName);
+
+				// 读取本地签名成功的PDF
 				FileInputStream fis = new FileInputStream(signatureFilePath);
-				// ContentServerHelper.service.deleteContent(ch, foundPDF);
-				// foundPDF = ContentServerHelper.service.updateContent(ch, foundPDF, fis);
-				System.out.println("FileName:" + foundPDF.getFileName());
-				System.out.println("FileSizeKB:" + foundPDF.getFileSizeKB());
-				System.out
-						.println("002-Representation oid: " + foundPDF.getPersistInfo().getObjectIdentifier().getId());
-				// 重命名pdf文档
+				// 重命名表示法中的PDF和DXF文档
 				if (persistable instanceof EPMDocument) {
-//					获取EPMdoc的属性来构建pdf的名称
-//					EPMDocument lcm = (EPMDocument) persistable;
-//					String newFileName = lcm.getNumber() + "_" + lcm.getName() + "_"
-//							+ lcm.getVersionIdentifier().getValue() + "." + lcm.getIterationIdentifier().getValue()
-//							+ "_" + lcm.getLifeCycleState().getDisplay(Locale.CHINA) + ".pdf";
-//					foundPDF.setFileName(newFileName);
-//					PersistenceHelper.manager.save(foundPDF);
-//
-//					String newFileDXFName = lcm.getNumber() + "_" + lcm.getName() + "_"
-//							+ lcm.getVersionIdentifier().getValue() + "." + lcm.getIterationIdentifier().getValue()
-//							+ "_" + lcm.getLifeCycleState().getDisplay(Locale.CHINA) + ".dxf";
-//					foundDXF.setFileName(newFileDXFName);
-//					PersistenceHelper.manager.save(foundDXF);
-//					获取EPMdoc关联的部件的属性来构建pdf的名称
+					// 将表示法中的PDF替换为签名的PDF
+					foundPDF = ContentServerHelper.service.updateContent(ch, foundPDF, fis);
+
+					// 将表示法中的PDF复制到附件中，并设置其名词
+					// 更新表示法中的PDF名称
 					EPMDocument lcm = (EPMDocument) persistable;
 					WTPart part = getPartbyEPM(lcm);
 					String newFileName = part.getNumber() + "_" + part.getName() + "_"
 							+ part.getVersionIdentifier().getValue() + "." + part.getIterationIdentifier().getValue()
 							+ "_" + part.getLifeCycleState().getDisplay(Locale.CHINA) + ".pdf";
-					foundPDF.setFileName(newFileName);
-					PersistenceHelper.manager.save(foundPDF);
 
+					// 删除EPM附件中的PDF和DXF
+					deleteEPMSecondaryContent(lcm);
+					// 将表示法中的PDF和DXF复制到EPM附件中
+					ApplicationData applicationData = copyApplicationData(lcm, foundPDF, newFileName);
+
+					// 更新表示法中的DXF名称
 					String newFileDXFName = part.getNumber() + "_" + part.getName() + "_"
 							+ part.getVersionIdentifier().getValue() + "." + part.getIterationIdentifier().getValue()
 							+ "_" + part.getLifeCycleState().getDisplay(Locale.CHINA) + ".dxf";
@@ -260,15 +250,34 @@ public class PDFSign {
 					PersistenceHelper.manager.save(foundPDF);
 
 					QueryResult qr = ContentHelper.service.getContentsByRole(wtDocument, ContentRoleType.SECONDARY);
+
+					int b = 0;
+
 					while (qr.hasMoreElements()) {
 						ContentItem ci = (ContentItem) qr.nextElement();
 						System.out.println("-----ci----" + ci);
-						ContentServerHelper.service.deleteContent(wtDocument, ci);
+						ApplicationData applicationData = (ApplicationData) ci;
+						System.out.println("J01--" + applicationData.getFileName());
+						System.out.println("J02--" + ci.getFormatName());
+						String FileName = applicationData.getFileName();
+						String FormatName = applicationData.getFormat().getFormatName();
+						int a = FileName.lastIndexOf(".");
+						String FormatName2 = FileName.substring(a + 1);
+						System.out.println("J03--" + FormatName);
+						System.out.println("J04--" + FormatName2);
+						if (FormatName.equals("PDF")) {
+							++b;
+							if (FileName.contains("签章版")) {
+								ContentServerHelper.service.deleteContent(wtDocument, ci);
+								foundPDF = ContentServerHelper.service.updateContent(wtDocument, foundPDF, fis);
+							} else {
+								foundPDF = ContentServerHelper.service.updateContent(wtDocument, foundPDF, fis);
+							}
+						}
 					}
-
-					System.out.println("fis:" + fis.toString());
-					foundPDF = ContentServerHelper.service.updateContent(wtDocument, foundPDF, fis);
-
+					if (b == 0) {
+						foundPDF = ContentServerHelper.service.updateContent(wtDocument, foundPDF, fis);
+					}
 				}
 				fis.close();
 				// 删除临时文件
@@ -302,4 +311,26 @@ public class PDFSign {
 		return persistable;
 	}
 
+	// 删除EPM全部附件
+	private static void deleteEPMSecondaryContent(ContentHolder ch) throws WTException, PropertyVetoException {
+		QueryResult qr = ContentHelper.service.getContentsByRole(ch, ContentRoleType.SECONDARY);
+		while (qr.hasMoreElements()) {
+			ContentItem ci = (ContentItem) qr.nextElement();
+			ContentServerHelper.service.deleteContent((ContentHolder) ch, ci);
+		}
+	}
+
+	// 复制表示法中的PDF及DXF
+	private static ApplicationData copyApplicationData(ContentHolder ch, ApplicationData source, String sFileName)
+			throws WTException, WTPropertyVetoException {
+
+		ApplicationData appDataNew = ApplicationData.newApplicationData(ch);
+		appDataNew.setFileName(sFileName);
+		appDataNew.setFileSize(source.getFileSize());
+		appDataNew.setRole(ContentRoleType.SECONDARY);
+		appDataNew.setCategory("IMAGE");
+		appDataNew = (ApplicationData) PersistenceHelper.manager.save(appDataNew);
+
+		return appDataNew;
+	}
 }

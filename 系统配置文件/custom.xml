@@ -34,6 +34,8 @@ http://www.ptc.com/schema/mvc http://www.ptc.com/schema/mvc/mvc-10.0.xsd">
 	<!-- 项目工时基于项目的表格/改写项目-计划infopage -->
 	<bean class="ext.HHT.project.workHours.project.CustomTableBuilder"/>
 	<!-- <bean class="ext.HHT.project.workHours.project.PlanBuilder"/> -->
+	<!-- 项目工时基于用户组报表 -->
+	<bean id="UserWorkHoursServlet" class="ext.HHT.project.workHours.user.Servlet"/>
 	<!--停用账户-->
 	<bean id="SystemUserServlet" class="ext.sys.SystemUser.SystemUserServlet"/>
 </beans>

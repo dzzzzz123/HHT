@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import ext.ait.util.CommonUtil;
 import ext.ait.util.PartUtil;
+import ext.sap.Config;
 import ext.sap.BOM.mvc.Result;
 import wt.fc.WTObject;
 import wt.part.WTPart;
@@ -36,6 +38,21 @@ public class SendBOM2SAP {
 		// });
 		// 过滤部件，判断是否为BOM
 		listIncludeBOM.stream().filter(SendBOM2SAP::checkBOM).forEach(listFiltered::add);
+		// 将分类属性开头为7的先发送,开头为5的后发送
+		listFiltered.sort(new Comparator<WTPart>() {
+			@Override
+			public int compare(WTPart o1, WTPart o2) {
+				int class1 = Integer.valueOf(Config.getHHT_Classification(o1).substring(0, 1));
+				int class2 = Integer.valueOf(Config.getHHT_Classification(o2).substring(0, 1));
+				if (class1 == 7 && class2 != 7) {
+					return -1;
+				} else if (class1 != 7 && class2 == 7) {
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+		});
 		List<Result> data2Present = listFiltered.stream().map(SendBOM2SAP::getResFromSAP).collect(Collectors.toList());
 		return CommonUtil.getJsonFromObject(data2Present);
 	}

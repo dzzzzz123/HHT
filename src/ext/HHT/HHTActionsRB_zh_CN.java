@@ -49,6 +49,28 @@ public class HHTActionsRB_zh_CN extends WTListResourceBundle {
 	public static final String PRIVATE_CONSTANT_19 = "HHTWizard.refresh.description";
 	@RBEntry("refresh.gif")
 	public static final String PRIVATE_CONSTANT_20 = "HHTWizard.refresh.icon";
-	@RBEntry("项目工时")
+	@RBEntry("工时绩效")
 	public static final String PRIVATE_CONSTANT_21 = "HHTWizard.ProjectWorkHours.description";
+	@RBEntry("工时绩效")
+	public static final String PRIVATE_CONSTANT_22 = "HHTWizard.WorkHours.tooltip";
+	@RBEntry("工时绩效")
+	public static final String PRIVATE_CONSTANT_23 = "HHTWizard.WorkHours.description";
+	@RBEntry("项目年度预算")
+	public static final String PRIVATE_CONSTANT_24 = "HHTWizard.projectBudget.tooltip";
+	@RBEntry("项目年度预算")
+	public static final String PRIVATE_CONSTANT_25 = "HHTWizard.projectBudget.description";
+	@RBEntry("年度滚动预测")
+	public static final String PRIVATE_CONSTANT_26 = "HHTWizard.projectBudgetForeCast.tooltip";
+	@RBEntry("年度滚动预测")
+	public static final String PRIVATE_CONSTANT_27 = "HHTWizard.projectBudgetForeCast.description";
+	@RBEntry("项目投入计划")
+	public static final String PRIVATE_CONSTANT_28 = "HHTWizard.projectInvestPlan.description";
+	@RBEntry("项目费用明细")
+	public static final String PRIVATE_CONSTANT_29 = "HHTWizard.projectCostDetails.description";
+	@RBEntry("项目产出清单")
+	public static final String PRIVATE_CONSTANT_30 = "HHTWizard.projectOutputList.description";
+	@RBEntry("员工绩效")
+	public static final String PRIVATE_CONSTANT_31 = "object.performance.description";
+	@RBEntry("员工绩效")
+	public static final String PRIVATE_CONSTANT_32 = "object.performance.tooltip";
 }

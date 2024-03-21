@@ -1,5 +1,8 @@
 package ext.listener;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import ext.ait.util.PropertiesUtil;
 import wt.doc.WTDocument;
 import wt.part.WTPart;
@@ -19,8 +22,8 @@ public class Config {
 		return properties.getValueByKey(document, "iba.internal.HHT_PartNumber");
 	}
 
-	public static String getLFName() {
-		return properties.getValueByKey("lifeCycle.templateName");
+	public static String getBuy() {
+		return properties.getValueByKey("source.buy");
 	}
 
 	public static String getORGID() {
@@ -31,8 +34,26 @@ public class Config {
 		return properties.getValueByKey("PurchasedEnd.SubType");
 	}
 
-	public static String getBuy() {
-		return properties.getValueByKey("source.buy");
+	public static String getLFName() {
+		return properties.getValueByKey("lifeCycle.templateName");
+	}
+
+	public static String getHHT_SapMark(WTPart part) {
+		return properties.getValueByKey(part, "iba.internal.HHT_SapMark");
+	}
+
+	public static void setHHT_SapMark(WTPart part, String IBAValue) {
+		properties.setValueByKey(part, "iba.internal.HHT_SapMark", IBAValue);
+	}
+
+	public static Set<String> getDocType() {
+		Set<String> resultSet = new HashSet<>();
+		String TypeStr = properties.getValueByKey("DOC.Type");
+		String[] types = TypeStr.split("/");
+		for (String str : types) {
+			resultSet.add(str);
+		}
+		return resultSet;
 	}
 
 }

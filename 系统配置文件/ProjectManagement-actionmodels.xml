@@ -1,0 +1,596 @@
+<?xml version="1.0"?>
+<!DOCTYPE actionmodels SYSTEM 'actionmodels.dtd'>
+	<!-- define the actions for Project Management Module -->
+<actionmodels>
+	<!-- define the action models for Project Management -->
+
+	<!-- define the action models for Plan page -->
+
+	<!-- com.ptc.projectmanagement.plan-->
+    <model name="plan view toolbar actions">
+        <action name="newGantt" type="gantt" shortcut="true" />
+        <action name="capacityReport" type="capacity" />
+        <action name="create_activity" type="planActivity" shortcut="true" />
+        <action name="new_subPlanBelow" type="plannableProxy" />
+        <action name="create_multiple_activities" type="plan" />
+        <action name="separator" type="separator" />
+        <action name="list_copy" type="object" shortcut="true" />
+        <action name="list_cut" type="plan" shortcut="true" />
+        <action name="ppPaste" type="plan" shortcut="true" />
+        <action name="ppPasteBelow" type="plan" />
+        <action name="ppPasteChild" type="plan" />
+        <action name="separator" type="separator" />
+        <action name="pplist_delete" type="plan" />
+        <action name="separator" type="separator" />
+        <action name="edit_multiple_activities" type="planActivity" />
+        <action name="edit_multi_assignments" type="resourceAssignment" />
+        <action name="separator" type="separator" />
+        <action name="indent" type="plan" />
+        <action name="outdent" type="plan" />
+        <action name="explode" type="folder" shortcut="true" />
+        <action name="implode" type="folder" shortcut="true" />
+        <action name="separator" type="separator" />
+        <action name="edit_plan_in_msp" type="plan" />
+        <action name="export_plan" type="plan" />
+        <action name="import_msp_plan" type="plan" />
+        <action name="separator" type="separator" />
+        <action name="separator" type="separator" />
+        <action name="create_baseline" type="plan" />
+        <action name="separator" type="separator" />
+        <action name="start_plan" type="plan" />
+        <action name="suspend_plan" type="plan" />
+        <action name="resume_plan" type="plan" />
+        <action name="complete_plan" type="plan" />
+        <action name="separator" type="separator" />
+        <action name="export_plan_template" type="plan" />
+        <action name="save_plan_as_template" type="plan" />
+        <action name="separator" type="separator" />
+        <submodel name="nm_exportlisttofile_submenu" />
+    </model>
+
+	<model name="plansTableActions">
+		 <action name="create_plan" type="plan" shortcut="true" />
+         <action name="multiPlanGantt" type="gantt" shortcut="true"/>
+         <submodel name="nm_exportlisttofile_submenu" />
+    </model>
+
+
+	<model name="requirement plan view toolbar actions">
+		<action name="list_cut" type="plan" shortcut="true" />
+		<action name="ppPaste" type="plan" shortcut="true" />
+		<action name="create_activity" type="planActivity" shortcut="true" />
+		<action name="pplist_delete" type="plan" />
+		<action name="explode" type="folder" />
+		<action name="implode" type="folder" />
+	</model>
+
+	<model name="plan menubar actions" menufor="com.ptc.projectmanagement.plan.Plan">
+		<action name="view" type="object" />
+		<action name="newGantt" type="gantt"/>
+		<action name="capacityReport" type="capacity"/>
+		<action name="edit_plan" type="plan"/>
+		<action name="export_plan" type="plan"/>
+		<action name="import_msp_plan" type="plan"/>
+		<action name="reschedule_plan" type="plan"/>
+        <action name="start_plan" type="plan" />
+        <action name="suspend_plan" type="plan" />
+        <action name="resume_plan" type="plan" />
+        <action name="complete_plan" type="plan" />
+		<action name="create_baseline" type="plan"/>
+		<action name="export_plan_template" type="plan" />
+		<action name="save_plan_as_template" type="plan" />
+	</model>
+
+	<model name="plan info page actions">
+		<action name="newGantt" type="gantt"/>
+		<action name="capacityReport" type="capacity"/>
+		<action name="edit_plan" type="plan"/>
+		<action name="export_plan" type="plan"/>
+		<action name="import_msp_plan" type="plan"/>
+		<action name="reschedule_plan" type="plan"/>
+        <action name="start_plan" type="plan" />
+        <action name="suspend_plan" type="plan" />
+        <action name="resume_plan" type="plan" />
+        <action name="complete_plan" type="plan" />
+		<action name="create_baseline" type="plan"/>
+		<action name="export_plan_template" type="plan" />
+		<action name="save_plan_as_template" type="plan" />
+	</model>
+
+	<model name="planinfopageTabSet">
+		<submodel name="planInfo_detailstab" />
+		<submodel name="planInfo_scheduletab" />
+		<!--  <submodel name="planInfo_resourcestab" />  -->
+		<submodel name="planInfo_baselinestab" />
+        <action name="ProjectWorkHours" type="HHTWizard" />
+	</model>
+
+	<model name="planInfo_baselinestab" resourceBundle="com.ptc.projectmanagement.projectManagementActionsRB" defaultActionType="object">
+		<action name="listBaselines" type="plan" />
+	</model>
+
+	<model name="planInfo_scheduletab" resourceBundle="com.ptc.projectmanagement.projectManagementActionsRB" defaultActionType="object">
+		<action name="listSchedule" type="plan" />
+	</model>
+
+	<model name="planInfo_resourcestab" resourceBundle="com.ptc.projectmanagement.projectManagementActionsRB" defaultActionType="object">
+		<action name="listResources" type="plan" />
+	</model>
+
+	<model name="planInfo_detailstab" resourceBundle="com.ptc.projectmanagement.plan.planResource">
+		<action name="primaryAttributes" type="object" />
+		<action name="attributes" type="object" />
+	</model>
+
+    <model name="planActivity toolbar actions" menufor="com.ptc.projectmanagement.plan.PlanActivity">
+        <action name="view" type="object" />
+        <action name="edit_activity" type="planActivity" />
+        <action name="ppdelete" type="plan" />
+        <action name="track_activity_work" type="planActivity" />
+        <action name="create_deliverable" type="planActivity" />
+        <action name="add_deliverables" type="planActivity" />
+        <action name="assign_resource" type="planActivity" />
+        <action name="activity_create_subscription" type="subscription" />
+        <action name="finish_activity" type="planActivity" />
+        <action name="start_activity" type="planActivity" />
+        <action name="suspend_activity" type="planActivity" />
+        <action name="resume_activity" type="planActivity" />
+        <action name="create_activity_above" type="planActivity" />
+        <action name="create_activity_below" type="planActivity" />
+        <action name="create_child_activity" type="planActivity" />
+		<action name="create_subPlan" type="plannableProxy" />
+        <action name="create_subPlanBelow" type="plannableProxy" />
+        <action name="create_subPlanAsChild" type="plannableProxy" />
+        <action name="newGantt" type="gantt" />
+    </model>
+ 
+	<model name="plannableProxyInfopageTabSet">
+		<submodel name="plannableProxy_detailstab" />
+		<submodel name="plannableProxy_baselinestab" />
+	</model>
+
+	<model name="plannableProxy_detailstab" resourceBundle="com.ptc.projectmanagement.plan.planResource">
+		<action name="primaryAttributes" type="object" />
+		<action name="attributes" type="object" />
+	</model>    
+	
+	<model name="plannableProxy_baselinestab" resourceBundle="com.ptc.projectmanagement.plan.planResource" defaultActionType="object">
+        <action name="listBaselinedPlannableProxys" type="plannableProxy" />
+    </model>
+    
+	<model name="plannableProxy rmb actions"
+        menufor="com.ptc.projectmanagement.plannable.proxy.PlannableProxy">
+        <action name="view" type="object" />
+        <action name="edit_subPlan" type="plannableProxy" />
+        <action name="ppdelete" type="plan" />
+        <action name="activity_create_subscription" type="subscription" />
+        <action name="create_activity_above" type="planActivity" />
+        <action name="create_activity_below" type="planActivity" />
+        <action name="create_subPlan" type="plannableProxy" />
+        <action name="create_subPlanBelow" type="plannableProxy" />
+        <action name="newGantt" type="gantt" />
+    </model>
+
+	<model name="planDeliverable toolbar actions" menufor="com.ptc.projectmanagement.deliverable.PlanDeliverable">
+		<action name="view" type="object" />
+		<action name="edit_deliverable" type="planActivity" />
+		<action name="delete_deliverable" type="planActivity" />
+		<action name="createSubscription" type="subscription" />
+	</model>
+
+	<model name="activitySubject toolbar actions" menufor="wt.projmgmt.deliverable.SubjectOfDeliverable">
+		<action name="list_remove_subjects" type="planActivity"/>
+		<action name="list_copy" type="object" shortcut="true"/>
+		<action name="multiObjectCheckIn" type="wip" shortcut="true"/>
+		<action name="multiObjectCheckOut" type="wip" shortcut="true"/>
+		<action name="multiObjectUndoCheckout" type="wip" shortcut="true"/>
+		<action name="separator" type="separator"/>
+		<action name="WFADDTOWORKSPACE" type="folder" shortcut="true"/>
+		<submodel name="exportlisttofile_submenu" type="object"/>
+	</model>
+
+	<model name="thirdlevel deliverable toolbar actions">
+		<action name="create_deliverable" type="planActivity" shortcut="true"/>
+	</model>
+
+	<model name="associated Deliverable toolbar actions">
+		<action name="create_deliverable" type="planActivity" shortcut="true" />
+		<action name="list_delete_deliverables" type="planActivity" shortcut="true" />
+	</model>
+
+	<model name="add and remove activity toolbar actions">
+		<action name="add_activity_to_deliverable" type="planActivity" shortcut="true" />
+		<action name="remove_activity_from_deliverable" type="planActivity" shortcut="true" />
+	</model>
+
+	<model name="add and remove deliverable toolbar actions">
+		<action name="add_deliverable_to_milestone" type="planActivity" shortcut="true" />
+		<action name="remove_deliverable_from_milestone" type="planActivity" shortcut="true" />
+	</model>
+
+	<model name="third_level_nav_plan" defaultActionName="attributes" defaultActionType="object">
+		<submodel name="generalPlannables" />
+		<submodel name="relatedItems" />
+		<submodel name="collaboration" />
+		<submodel name="historyPlan" />
+		<action name="listSchedule" type="plan" />
+		<!-- <action name="listResources" type="plan" /> -->
+	</model>
+
+	<model name="historyPlan" resourceBundle="com.ptc.projectmanagement.history.projectmanagementHistoryResource" defaultActionType="object">
+		<action name="historyRecords" type="planActivity" />
+		<action name="listBaselines" type="plan" />
+
+
+	</model>
+
+	<model name="third_level_nav_act" defaultActionName="attributes" defaultActionType="object">
+		<submodel name="generalPlannables" />              <!-- General -->
+		<submodel name="relatedItems" />
+		<submodel name="collaboration" />
+		<submodel name="historyActivity" />
+	</model>
+    
+	<model name="historyActivity" resourceBundle="com.ptc.projectmanagement.history.projectmanagementHistoryResource" defaultActionType="object">
+		<action name="historyRecords" type="planActivity" />
+		<action name="listBaselinedActivities" type="planActivity" />
+
+	</model>
+
+	<model name="historyAssignment" resourceBundle="com.ptc.projectmanagement.history.projectmanagementHistoryResource" defaultActionType="object">
+		<action name="listBaselinedAssignments" type="resourceAssignment" />
+	</model>
+
+       <model name="relatedItemsForActionItem" resourceBundle="com.ptc.projectmanagement.assignment.resource.resourceResource">
+             <action name="relatedActionItems" type="actionitem"/>
+       </model>
+	<model name="third_level_nav_deliverable" defaultActionName="attributes"
+		defaultActionType="object">
+		<submodel name="generalPlannables" />              <!-- General -->
+		<submodel name="relatedItems" />
+		<submodel name="collaboration" />
+		<submodel name="historyDeliverable" />
+	</model>
+
+	<model name="historyDeliverable" resourceBundle="com.ptc.projectmanagement.history.projectmanagementHistoryResource" defaultActionType="object">
+		<action name="listBaselinedDeliverables" type="planDeliverable" />
+	</model>
+	<!--third level navigation model for ResourceAssignment -->
+	<model name="third_level_nav_resource_assignment" defaultActionName="attributes" defaultActionType="object">
+		<submodel name="generalPlannables" />              <!-- General -->
+                <submodel name="relatedItemsForActionItem" />
+		<submodel name="historyAssignment" />
+		<action name="listSharedResources" type="resourceAssignment" />
+		<action name="listBulkResources" type="resourceAssignment" />
+        <action name="listSoDAssignmentInfo" type="resourceAssignment" />  
+	</model>
+	<!--third level navigation model for PlanResource -->
+	<model name="third_level_nav_resource" defaultActionName="attributes" defaultActionType="object">
+		<submodel name="generalPlannables" />
+		<submodel name="historyResource" />
+	</model>
+
+	<!-- InfoPageTabSet for PlanResource -->
+	<model name="planResourceInfoPageTabSet">
+		<submodel name="planResourceInfo_detailstab" />
+		<submodel name="planResourceInfo_baselinestab" />
+	</model>
+
+	<!-- PlanResource Details tab Model -->
+	<model name="planResourceInfo_detailstab" resourceBundle="com.ptc.projectmanagement.assignment.resource.resourceResource">
+		<action name="primaryAttributes" type="object" />
+		<submodel name="historyResource" />
+	</model>
+
+	<model name="historyResource" resourceBundle="com.ptc.projectmanagement.history.projectmanagementHistoryResource" defaultActionType="object">
+		<action name="listBaselinedResources" type="planResource" />
+	</model>
+
+	<model name="planResourceInfo_baselinestab" resourceBundle="com.ptc.projectmanagement.projectManagementActionsRB" defaultActionType="object">
+		<action name="listBaselinedResources" type="planResource" />
+	</model>
+
+	<!-- com.ptc.projectmanagement.assignment.resource.PlanResource -->
+	<model name="resource view toolbar actions">
+		<action name="list_copy" type="object" shortcut="true" />
+		<action name="list_delete_resources" type="resource" shortcut="true" />
+		<action name="create_resource" type="resource" shortcut="true" />
+		<action name="synchronize_resources" type="resource"/>
+		<action name="separator" type="separator" />
+		<submodel name="nm_exportlisttofile_submenu" />
+	</model>
+
+	<!-- InfoPageTabSet for ResourceAssignment -->
+	<model name="planResourceAssignmentInfoPageTabSet">
+		<submodel name="planResourceAssignmentInfo_detailstab" />
+        <submodel name="planResourceAssignmentInfo_deliverablestab" />
+		<submodel name="planResourceAssignmentInfo_baselinestab" />
+		<submodel name="planResourceAssignmentInfo_resourcestab" />
+	</model>
+	<!-- ResourceAssignment Details tab Model -->
+	<model name="planResourceAssignmentInfo_detailstab" resourceBundle="com.ptc.projectmanagement.assignment.resource.resourceResource">
+		<action name="primaryAttributes" type="object" />
+	</model>
+    
+    <model name="planResourceAssignmentInfo_deliverablestab" resourceBundle="com.ptc.projectmanagement.projectManagementActionsRB" defaultActionType="object">
+        <action name="listSoDAssignmentInfo" type="resourceAssignment" />       
+    </model>
+
+	<model name="planResourceAssignmentInfo_baselinestab" resourceBundle="com.ptc.projectmanagement.projectManagementActionsRB" defaultActionType="object">
+		<action name="listBaselinedAssignments" type="resourceAssignment" />
+	</model>
+
+	<model name="planResourceAssignmentInfo_resourcestab" resourceBundle="com.ptc.projectmanagement.projectManagementActionsRB" defaultActionType="object">
+		<action name="listSharedResources" type="resourceAssignment" />
+		<action name="listBulkResources" type="resourceAssignment" />
+	</model>
+
+	<model name="project resource toolbar actions" menufor="com.ptc.projectmanagement.assignment.resource.PlanResource">
+		<action name="view" type="object" />
+		<action name="edit_resource" type="resource" />
+		<action name="delete_resource" type="resource" />
+		<action name="reassign_all_assignments" type="resource" />
+	</model>
+
+	<!-- For ResourceAssignment Object-->
+	<model name="project resourceAssignment toolbar actions" menufor="com.ptc.projectmanagement.assignment.ResourceAssignment">
+		<action name="view" type="object" />
+		<action name="edit_resourceAssignment" type="resourceAssignment" />
+		<action name="track_work" type="resourceAssignment" />
+		<action name="finish_assignment" type="resourceAssignment" />
+		<action name="finish_assignment_detail" type="assignmentDetail" />
+		<action name="reAssign" type="resourceAssignment" />
+		<action name="acceptAssignment" type="resourceAssignment" />
+	</model>
+
+	<!-- model for plan assignment list -->
+	<model name="new_plan_assignments_actions_toolbar">
+		<action name="create_deliverable" type="planActivity" />
+		<!--
+			Following actions are copied from project_assignments_actions_toolbar
+		-->
+		<action name="list_copy" type="object" />
+		<action name="epptask_list_delete" type="plan" shortcut="true"/>
+		<action name="edit_multi_assignments" type="resourceAssignment" />
+		<action name="labeled_edit_multiple_activities" type="planActivity" />
+		<action name="multireassign" type="work" shortcut="true"/>
+		<action name="multiaccept" type="work" shortcut="true"/>
+		<action name="multiunaccept" type="work" />
+		<action name="editInExcel" type="actionitem" shortcut="true"/>
+		<action name="exportToExcelXML" type="actionitem" />
+		<action name="separator" type="separator" />
+		<action name="create" type="actionitem" />
+		<action name="importFromExcelXML" type="actionitem" />
+		<action name="downloadExcelTemplate" type="actionitem" />
+		<action name="searchWorkItems" type="work" shortcut="true"/>
+		<action name="separator" type="separator" />
+		<submodel name="nm_exportlisttofile_submenu" />
+	</model>
+
+	<!-- model for home overview assignment list -->
+	<model name="new_plan_home_assignments_actions_toolbar">
+		<!--
+			Following actions are copied from home_assignments_actions_toolbar
+		-->
+		<action name="multiaccept" type="work" shortcut="true"/>
+		<action name="multireassign" type="work"  shortcut="true"/>
+		<action name="multiunaccept" type="work" shortcut="true"/>
+		<action name="multiupdate" type="projmgmt" />
+		<action name="edit_multi_assignments" type="resourceAssignment" />
+		<action name="editInExcel" type="actionitem" shortcut="true"/>
+		<action name="exportToExcelXML" type="actionitem" />
+		<action name="importFromExcelXML" type="actionitem" />
+		<action name="separator" type="separator" />
+		<action name="searchWorkItems" type="work" shortcut="true"/>
+
+
+	</model>
+
+	<model name="assignment view toolbar actions">
+		<action name="edit_multi_assignments" type="resourceAssignment" />
+		<action name="assign_resource" type="planActivity" />
+	</model>
+
+	<model name="timeline view toolbar actions">
+		<action name="add_activity_to_timeline" type="plan" shortcut="true" />
+		<action name="remove_from_timeline" type="plan" shortcut="true"/>
+	</model>
+
+	<model name="resource selection toolbar actions">
+		<action name="remove" type="object" shortcut="true"/>   <!-- Remove Selected Objects -->
+		<action name="add_resource" type="resource" shortcut="true"/>
+		<action name="resource_paste" type="resource"/>
+	</model>
+
+	<!--  Tab customization for PlanActivity Info page -->
+
+	<model name="activityinfopageTabSet">
+		<submodel name="activityInfo_detailstab" />
+		<submodel name="activityInfo_deliverablestab" />
+		<submodel name="activityInfo_baselinestab" />
+		<submodel name="activityInfo_relatedObjectsTab" />
+	</model>
+
+	<model name="activityInfo_detailstab" resourceBundle="com.ptc.projectmanagement.plan.planResource">
+		<action name="primaryAttributes" type="object" />
+		<action name="attributes" type="object" />
+	</model>
+
+	<model name="activityInfo_relatedObjectsTab" resourceBundle="com.ptc.projectmanagement.plan.planResource">
+		<action name="resources" type="plan" />
+		<action name="predecessors" type="plan" />
+		<!--
+			As per discussion removed the Packages table from Related Objects
+			<action name="relatedPackages" type="wp"/> <actioni
+			name="plan_activity_deliverables" type="planActivity"/>
+		-->
+	</model>
+
+	<model name="activityInfo_baselinestab" resourceBundle="com.ptc.projectmanagement.projectManagementActionsRB" defaultActionType="object">
+		<action name="listBaselinedActivities" type="planActivity" />
+	</model>
+
+	<model name="activityInfo_deliverablestab" resourceBundle="com.ptc.projectmanagement.projectManagementActionsRB" defaultActionType="object">
+		<action name="plan_activity_deliverables" type="planActivity" />
+		<action name="plan_activity_subjects" type="planActivity" />
+	</model>
+
+	<!-- Delievrable Info Page -->
+	<model name="deliverableInfoPageTabSet">
+		<submodel name="deliverableInfo_defaultDetails" />
+		<submodel name="deliverableInfo_relatedObjects" />
+		<submodel name="deliverableInfo_baselinestab" />
+	</model>
+	<model name="deliverableInfo_defaultDetails"
+		resourceBundle="com.ptc.projectmanagement.deliverable.deliverableResource">
+		<action name="primaryAttributes" type="object" />
+		<action name="attributes" type="object" />
+	</model>
+	<model name="deliverableInfo_relatedObjects"
+		resourceBundle="com.ptc.projectmanagement.deliverable.deliverableResource">
+		<action name="plan_deliverable_activities" type="planActivity" />
+		<action name="objectSubscriptions" type="subscription" />
+	</model>
+
+	<model name="deliverableInfo_baselinestab" resourceBundle="com.ptc.projectmanagement.projectManagementActionsRB" defaultActionType="object">
+		<action name="listBaselinedDeliverables" type="planDeliverable" />
+	</model>
+
+	<model name="PlanWizardButtonsNoApplyValidateFinish">
+		<action name="prevButton" type="object" shortcut="true" />
+		<action name="nextButton" type="object" shortcut="true" />
+		<action name="okButton" type="planActivity" shortcut="true" />
+		<action name="cancelButton" type="object" shortcut="true" />
+	</model>
+
+	<model name="PlanWizardButtonsValidateFinish">
+		<action name="prevButton" type="object" shortcut="true" />
+		<action name="nextButton" type="object" shortcut="true" />
+		<action name="okButton" type="planActivity" shortcut="true" />
+		<action name="applyButton" type="planActivity" shortcut="true" />
+		<action name="cancelButton" type="object" shortcut="true" />
+	</model>
+
+	<model name="pjlReportButtons" resourceBundle="com.ptc.windchill.projectlink.reports.pjlReportsRB">
+        <description>Projectlink Report's input page wizard buttons, submit brings up report execution</description>
+        <action name="reportOKButton" type="pjlReports"/>
+        <action name="cancelButton" type="object"/>
+    </model>
+
+	<model name="associate_activity_toolbar_actions">
+		<action name="associate_activities_picker" type="planActivity" shortcut="true" />
+		<action name="remove" type="object" shortcut="true" />
+	</model>
+
+	<model name="toolbar_Create_Product_Plan">
+		<action name="createProductPlan" type="product"/>
+	</model>
+
+	<model name="baselinedPlan toolbar actions">
+		<action name="create_baseline" type="plan" />
+		<action name="list_delete_baseline" type="baselinedPlan" shortcut="true"/>
+		<action name="set_active" type="baselinedPlan"/>
+		<action name="set_latest_as_active" type="baselinedPlan"/>
+		<action name="wtObjCompareMultiple" type="ocmp"/>
+	</model>
+
+	<model name="baselinedPlan_object_actions" menufor="com.ptc.projectmanagement.plan.baseline.BaselinedPlan">
+		<action name="delete_baseline" type="baselinedPlan"/>
+		<action name="set_active" type="baselinedPlan"/>
+		<action name="unset_active" type="baselinedPlan"/>
+	</model>
+
+    <model name="baselinedPlanActivity_toolbar_actions">
+		<action name="wtObjCompareMultiple" type="ocmp"/>
+	</model>
+
+	<model name="baselinedDeliverable_toolbar_actions">
+		<action name="wtObjCompareMultiple" type="ocmp"/>
+	</model>
+
+	<model name="baselinedPlanResource_toolbar_actions">
+		<action name="wtObjCompareMultiple" type="ocmp"/>
+	</model>
+
+	<model name="baselinedResourceAssignment_toolbar_actions">
+		<action name="wtObjCompareMultiple" type="ocmp"/>
+	</model>
+
+    <model name="baselinedPlanBaseline_toolbar_actions">
+        <action name="wtObjCompareMultiple" type="ocmp"/>
+    </model>
+    
+	<model name="resourceAssignmentDetails_toolbar_actions">
+		<action name="edit_multiple_assignment_details" type="resourceAssignment"/>
+	</model>
+
+	<model name="assignment details menu bar actions" menufor="com.ptc.projectmanagement.assignment.SharedAssignmentDetails">
+		<action name="finish_assignment_detail" type="assignmentDetail"/>
+	</model>
+
+	<model name="project list">
+		<action name="createProplProject" type="project" shortcut="true"/>
+		<action name="addToFavorites" type="object" shortcut="true"/>
+		<action name="multiProjectGantt" type="gantt" shortcut="true"/>
+	</model>
+
+    <model name="product list">
+		<action name="createProductWizard" type="product" shortcut="true"/>
+		<action name="addToFavorites" type="object" shortcut="true"/>
+		<action name="multiProjectGantt" type="gantt" shortcut="true"/>
+	</model>
+
+	<model name="deliverableactivity subjects table toolbar actions">
+		<action name="remove" type="object" shortcut="true"/>
+		<action name="addDeliverableActivitySubjects" type="planActivity" shortcut="true"/>
+		<action name="paste_activitySubjects" type="planActivity" shortcut="true"/>
+	</model>
+
+	<!--  Start: Action Model for PlanActivities table displayed on SubjectOfDeliverable's Info Page. -->
+    
+       <model name="scheduledDeliverables row actions">
+        <action name="view" type="object" />
+        <action name="edit_activity" type="planActivity" />
+        <action name="track_activity_work" type="planActivity" />
+        <action name="activity_create_subscription" type="subscription" />
+        <action name="finish_activity" type="planActivity" />
+        <action name="start_activity" type="planActivity" />
+        <action name="suspend_activity" type="planActivity" />
+        <action name="resume_activity" type="planActivity" />
+        <action name="remove_scheduledDeliverable" type="planActivity"/>
+        <action name="ppdelete" type="plan"/>
+    </model>
+    
+    <model name="associated scheduledDeliverables table toolbar actions">
+		<action name="track_new_work" type="resourceAssignment" />
+        <action name="list_remove_scheduledDeliverables" type="planActivity" shortcut="true"/>
+        <action name="new_plan_activity" type="planActivity" /><!-- New Plan Activity against subject -->
+        <action name="separator" type="separator"/>
+        <submodel name="nm_exportlisttofile_submenu"/>
+    </model>
+	<!--  End: Action Model for PlanActivities table displayed on SubjectOfDeliverable's Info Page. -->
+    
+    <model name="third_level_nav_subplan" defaultActionName="attributes" defaultActionType="object">
+        <submodel name="generalPlannables" />              <!-- General -->
+        <submodel name="relatedItemsForActionItem" />
+        <submodel name="collaboration" />
+        <submodel name="historyPlannableProxy" />
+    </model>
+    
+    <model name="historyPlannableProxy" resourceBundle="com.ptc.projectmanagement.history.projectmanagementHistoryResource" defaultActionType="object">
+        <action name="historyRecords" type="plannableProxy" />
+        <action name="listBaselinedPlannableProxys" type="plannableProxy" />
+    </model>
+    
+    <model name="generalPlannables" resourceBundle="com.ptc.projectmanagement.plan.planResource" defaultActionType="object">
+        <action name="primaryAttributes" type="object"/>                          <!-- Attributes -->
+        <action name="attributes" type="object"/>                                 <!-- More Attributes -->
+        <action name="separator" type="separator"/>
+        <action name="reference" type="notebook"/>                                <!-- Notebook -->
+    </model>
+    
+    <model name="baselinedPlannableProxy_toolbar_actions">
+        <action name="wtObjCompareMultiple" type="ocmp"/>
+    </model>
+    
+</actionmodels>

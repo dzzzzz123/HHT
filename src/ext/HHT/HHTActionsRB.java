@@ -51,5 +51,26 @@ public class HHTActionsRB extends WTListResourceBundle {
 	public static final String PRIVATE_CONSTANT_20 = "HHTWizard.refresh.icon";
 	@RBEntry("HHT Project WorkHours infoPage")
 	public static final String PRIVATE_CONSTANT_21 = "HHTWizard.ProjectWorkHours.description";
-
+	@RBEntry("HHT WorkHours infoPage infoPage")
+	public static final String PRIVATE_CONSTANT_22 = "HHTWizard.WorkHours.tooltip";
+	@RBEntry("HHT WorkHours infoPage infoPage")
+	public static final String PRIVATE_CONSTANT_23 = "HHTWizard.WorkHours.description";
+	@RBEntry("HHT Project Budget infoPage")
+	public static final String PRIVATE_CONSTANT_24 = "HHTWizard.projectBudget.tooltip";
+	@RBEntry("HHT Project Budget infoPage")
+	public static final String PRIVATE_CONSTANT_25 = "HHTWizard.projectBudget.description";
+	@RBEntry("HHT Project Budget ForeCast infoPage")
+	public static final String PRIVATE_CONSTANT_26 = "HHTWizard.projectBudgetForeCast.tooltip";
+	@RBEntry("HHT Project Budget ForeCast infoPage")
+	public static final String PRIVATE_CONSTANT_27 = "HHTWizard.projectBudgetForeCast.description";
+	@RBEntry("HHT Project WorkHours infoPage")
+	public static final String PRIVATE_CONSTANT_28 = "HHTWizard.projectInvestPlan.description";
+	@RBEntry("HHT Project WorkHours infoPage")
+	public static final String PRIVATE_CONSTANT_29 = "HHTWizard.projectCostDetails.description";
+	@RBEntry("HHT Project WorkHours infoPage")
+	public static final String PRIVATE_CONSTANT_30 = "HHTWizard.projectOutputList.description";
+	@RBEntry("Staff Performance")
+	public static final String PRIVATE_CONSTANT_31 = "object.performance.description";
+	@RBEntry("Staff Performance")
+	public static final String PRIVATE_CONSTANT_32 = "object.performance.tooltip";
 }

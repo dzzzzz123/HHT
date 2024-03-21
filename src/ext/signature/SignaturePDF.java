@@ -172,6 +172,7 @@ public class SignaturePDF {
 			}
 			PdfReader reader = new PdfReader(is);
 			System.out.println("003-signature : loading pdf");
+			System.out.println("003-pdfPath:" + pdfPath);
 			int totalPage = reader.getNumberOfPages();
 			ArrayList<String> drawFormat = SignatureHelper.mapSheet(reader, totalPage);
 			String fromStr = "[";
@@ -189,19 +190,8 @@ public class SignaturePDF {
 				pdfSignPage = strFromProperties.split(",");
 			}
 			PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(pdfPath));
-//      int deletePageNumber = totalPage;
-//      PdfTextExtractor extractor = new PdfTextExtractor(reader);
 
 			for (int j = 1; j < totalPage + 1; j++) {
-				/*
-				 * if (StringUtils.isNotBlank(deleteKeyword)) {
-				 * System.out.println("003-signature : Search delete keyword [" + deleteKeyword
-				 * + "] in page [" + j + "]"); String textFromPage =
-				 * extractor.getTextFromPage(j); if (StringUtils.contains(textFromPage,
-				 * deleteKeyword)) { deletePageNumber = j;
-				 * System.out.println("003-signature : delete page [" + deletePageNumber +
-				 * "] found."); } }
-				 */
 
 				if (!StringUtils.isNotBlank(state))
 					continue;
@@ -231,14 +221,6 @@ public class SignaturePDF {
 				cb.endText();
 			}
 
-			/*
-			 * StringBuffer pageList = new StringBuffer(""); if (deletePageNumber == 1)
-			 * pageList = pageList.append("1"); else { for (int index = 1; index <=
-			 * totalPage; index++) { if (index == deletePageNumber) { continue; }
-			 * pageList.append(index); pageList.append(","); } } String pageString =
-			 * pageList.toString(); if (StringUtils.endsWith(pageString, ",")) { pageString
-			 * = StringUtils.removeEnd(pageString, ","); } reader.selectPages(pageString);
-			 */
 			stamp.close();
 			reader.close();
 		} catch (Exception e) {
@@ -262,7 +244,6 @@ public class SignaturePDF {
 						continue;
 					}
 					signUserKey = objectType + "." + tufu + "." + nodeName + ".COORDINATE";
-
 					signDateKey = objectType + "." + tufu + "." + nodeName + ".COORDINATE.Date";
 					String[] signInfo = (String[]) vec.elementAt(0);
 					contentWriteToPDF(vec, signInfo, objectType, signUserKey, cb, st, signDateKey);
@@ -309,7 +290,7 @@ public class SignaturePDF {
 			BaseFont bf = BaseFont.createFont(tempPath + PropertiesHelper.getStrFromProperties("PDF_FONT_PATH") + ",1",
 					"Identity-H", true);
 			userLoginName = signInfo[2];
-			System.out.println("qqqqqqqqqqqqq" + userLoginName);
+			System.out.println("用户登陆账号:" + userLoginName);
 			String imagePath = SignatureHelper.jgpExists(userLoginName);
 			float fontSize = Float.parseFloat(PropertiesHelper.getStrFromProperties(objectType + ".默认签名字体大小"));
 			// 签图片

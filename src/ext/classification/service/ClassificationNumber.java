@@ -1,5 +1,6 @@
 package ext.classification.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Hashtable;
@@ -106,6 +107,7 @@ public class ClassificationNumber {
 			// 例如，返回一个默认值
 			return classInternalName + "0001" + suffix;
 		}
+		numbers = cleanPartNumbers(numbers);
 		// 使用内部类比较器来比较字符串
 		Comparator<String> comparator = (s1, s2) -> {
 			int num1 = Integer.parseInt(s1.replaceAll("\\D", ""));
@@ -155,5 +157,21 @@ public class ClassificationNumber {
 			e.printStackTrace();
 		}
 		return result;
+	}
+
+	/**
+	 * 对获取到指定分类的数据进行数据清理的方法
+	 * 
+	 * @param numbers
+	 * @return
+	 */
+	private static List<String> cleanPartNumbers(List<String> numbers) {
+		List<String> cleanedNumbers = new ArrayList<>();
+		for (String number : numbers) {
+			if (number.length() == 10 && StringUtils.isNumeric(number.substring(0, 9))) {
+				cleanedNumbers.add(number);
+			}
+		}
+		return cleanedNumbers;
 	}
 }

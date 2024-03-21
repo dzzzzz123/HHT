@@ -1,5 +1,6 @@
 package ext.sap.masterData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -22,15 +23,12 @@ public class SendPartSAPProcessor extends DefaultObjectFormProcessor {
 	public FormResult doOperation(NmCommandBean arg0, List<ObjectBean> arg1) throws WTException {
 		WTObject ref = (WTObject) arg0.getPrimaryOid().getRef();
 		FormResult formresult = null;
+		List<String> msg = new ArrayList<>();
+		String[] result = new String[] {};
 
 		try {
-			List<String> msg = PartSenderHelper.sendParts2SAP(ref);
-			if (msg.size() == 1 && StringUtils.isNotBlank(msg.get(0))) {
-				formresult = new FormResult(FormProcessingStatus.FAILURE);
-				formresult.addFeedbackMessage(new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(), null,
-						null, new String[] { msg.get(0) }));
-				return formresult;
-			}
+			msg = PartSenderHelper.sendParts2SAP(ref);
+			result = msg.toArray(new String[msg.size()]);
 		} catch (Exception e) {
 			formresult = new FormResult(FormProcessingStatus.FAILURE);
 			formresult.addFeedbackMessage(new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(), null,
@@ -39,10 +37,18 @@ public class SendPartSAPProcessor extends DefaultObjectFormProcessor {
 			return formresult;
 		}
 
-		formresult = new FormResult(FormProcessingStatus.SUCCESS);
-		formresult.addFeedbackMessage(new FeedbackMessage(FeedbackType.SUCCESS, SessionHelper.getLocale(), null, null,
-				new String[] { "物料发送到SAP成功!" }));
-		return formresult;
+		if (result.length > 0 && StringUtils.isNotBlank(result[0])) {
+			formresult = new FormResult(FormProcessingStatus.FAILURE);
+			formresult.addFeedbackMessage(
+					new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(), null, null, result));
+			return formresult;
+		} else {
+			formresult = new FormResult(FormProcessingStatus.SUCCESS);
+			formresult.addFeedbackMessage(new FeedbackMessage(FeedbackType.SUCCESS, SessionHelper.getLocale(), null,
+					null, new String[] { "物料发送到SAP成功!" }));
+			return formresult;
+		}
+
 	}
 
 }

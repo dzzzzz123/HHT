@@ -189,7 +189,7 @@
         <action name="updateProgram" type="project"/>
         <action name="updateProgramPROPL" type="project"/>
         
-        <!-- <action name="generateProjectNumber" type="HHTWizard" /> -->
+        <action name="generateProjectNumber" type="HHTWizard" />
         <action name="sendProject2SAP" type="SAPWizard"/>
 
         <action name="separator" type="separator"/>
@@ -335,7 +335,7 @@
         <action name="view" type="object" />
         <action name="edit_activity" type="planActivity" />
         <action name="ppdelete" type="plan" />
-        <!-- <action name="track_activity_work" type="planActivity" /> -->
+        <action name="track_activity_work" type="planActivity" />
         <action name="create_deliverable" type="planActivity" />
         <action name="add_deliverables" type="planActivity" />
         <action name="assign_resource" type="planActivity" />
@@ -452,5 +452,65 @@
       <action name="refresh" type="HHTWizard" shortcut="true" />
       <action name="WFADDTOWORKSPACE" type="folder" />
     </model>
+
+    <model name="main navigation" id="browseActions" resourceBundle="com.ptc.core.ui.navigationRB">
+        <description>
+            Main navigation (tabs)
+        </description>
+        <action name="recentContexts" type="navigation"/>
+        <action name="product" type="navigation"/>
+        <action name="library" type="navigation"/>
+        <action name="project" type="navigation"/>
+        <action name="program" type="navigation"/>
+        <action name="change" type="navigation"/>
+        <action name="supplier" type="navigation"/>
+        <action name="qms" type="navigation"/>
+        <action name="org" type="navigation"/>
+        <action name="site" type="navigation"/>
+        <action name="clfAdmin" type="navigation"/>
+        <action name="search" type="navigation"/>
+        <!-- entry for customization tab -->
+        <action name="customization" type="navigation"/>
+        <action name="CUS_HHT" type="navigation"/>
+    </model>
+
+    <model name="CUS_HHT navigation" defaultActionName="WorkHours" defaultActionType="HHTWizard">
+        <submodel name="performance"/>
+    </model>
+
+    <model name="performance" resourceBundle="ext.HHT.HHTActionsRB">
+        <action name="WorkHours" type="HHTWizard" />
+    </model>
+	
+	<model name="changeTask row actions" menufor="wt.change2.WTChangeActivity2">
+      <description>Change task row actions</description>
+      <submodel name="Change object row actions open"/>
+      <action name="separator"                      type="separator"/>
+      <action name="view"                           type="object"/>
+      <action name="separator"                      type="separator"/>
+	  <action name="createECAReport"                type="eca"/><!-- eca report -->
+      <submodel name="thingworxActionsMenu"/>
+      <action name="separator"                      type="separator"/>
+      <action name="undoReservation"                type="reservation"/>
+      <action name="edit"                           type="changeTask"/>
+      <action name="editTemplate"                   type="changeTask"/>
+      <action name="separator"                      type="separator"/>
+      <action name="relatedWorkitems"               type="change"/>
+      <action name="separator"                      type="separator"/>
+      <action name="renameObjectWizard"             type="object"/>
+      <action name="CONTAINERMOVE"                  type="pdmObject"/>
+      <action name="setState"                       type="lifecycle"/>
+      <action name="reassignLC"                     type="lifecycle"/> <!-- Reassign Life Cycle -->
+      <action name="resetTeam"                      type="team"/>
+      <action name="separator"                      type="separator"/>
+      <submodel name="change tasks add row actions"/>
+      <action name="separator"                      type="separator"/>
+      <action name="removeShare"                    type="object"/>
+      <action name="separator"                      type="separator"/>
+      <action name="ManageSecurity"                 type="accessPermission"/>
+      <action name="securityLabelsSingleObjJCA"     type="securityLabels"/>
+      <action name="EDITSECURITYLABELSNONCOLLECTED" type="object"/>
+      <action name="createSubscription"             type="subscription"/>
+    </model>   
 
 </actionmodels>

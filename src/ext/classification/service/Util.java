@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import ext.ait.util.ClassificationUtil;
 import ext.ait.util.CommonUtil;
 import ext.ait.util.IBAUtil;
 import wt.part.WTPart;
@@ -55,15 +54,26 @@ public class Util {
 			IBAUtil ibaUtil = new IBAUtil(part);
 			Hashtable hashtable = ibaUtil.getAllIBAValues();
 			Set set = hashtable.keySet();
+			System.out.println("set: " + set.toString());
 			for (String word : parttens) {
+				System.out.println("word: " + word);
 				if (word.startsWith("[")) {
 					newStr += word.substring(1);
 				} else if (set.contains(word)) {
 					String temp = ibaUtil.getIBAValue(word);
 					if (check(temp)) {
-						temp = ClassificationUtil.getDisplayByInternal(temp);
+//						temp = ClassificationUtil.getDisplayByInternal(temp);
+						System.out.println("temp: " + temp + "  word: " + word);
+						// String temps = ClassificationUtil.getDisplayByInternal2(part, word);
+						String temps = DisplayByInternal.getDisplayByInternal(part, word);
+						System.out.println("temps: " + temps);
+						if (temps != null && temps.length() > 0) {
+							temp = temps;
+						}
+						System.out.println("temp: " + temp);
 					}
 					newStr += temp;
+					System.out.println("newStr: " + newStr);
 				} else {
 					newStr += "";
 				}
@@ -100,7 +110,9 @@ public class Util {
 				newStr = newStr.replace("__", "_");
 			}
 			newStr = StringUtils.removeStart(newStr, "_");
+			System.out.println("newStr====: " + newStr);
 			newStr = StringUtils.removeEnd(newStr, "_");
+			System.out.println("newStr----: " + newStr);
 		} catch (WTException e) {
 			e.printStackTrace();
 		}

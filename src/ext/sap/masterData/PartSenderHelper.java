@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +44,12 @@ public class PartSenderHelper {
 		List<String> msg = new ArrayList<>();
 		for (WTPart part : list) {
 			if (PersistenceUtil.isCheckOut(part)) {
-				msg.add("该部件是检出状态!请先检入该部件后操作!");
+				msg.add(part.getNumber() + " 该部件是检出状态!请先检入该部件后操作!");
+				return msg;
+			}
+			if (!checkState(part)) {
+				msg.add(part.getNumber() + " 该部件的状态没有与其匹配的SAP状态!");
+				return msg;
 			}
 			SendSAPPartEntity entity = SendSAPService.SendSAPPart(part);
 			String json = SendSAPService.entityToJson(entity);
@@ -92,6 +98,21 @@ public class PartSenderHelper {
 		String formattedTime = currentTime.format(formatter);
 		resultData.setTime(formattedTime);
 		return resultData;
+	}
+
+	/**
+	 * 校验部件状态是否满足发送给SAP的需求
+	 * 
+	 * @param part
+	 * @return
+	 */
+	private static boolean checkState(WTPart part) {
+		HashMap<String, String> map = Config.getSAPState();
+		if (map.containsKey(part.getState().getState().getDisplay())) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**

@@ -248,7 +248,7 @@
    <Property name="publish.service.notifyOnException.enable"
               overridable="true"
               targetFile="codebase/WEB-INF/conf/wvs.properties"
-              value="DESIGN,EVT,DVT,PVT,MP,UNDERREVIEW,OBSOLESCENCE,INWORK"/>
+              value="DESIGN,EVT,DVT,PVT,MP,UNDERREVIEW,OBSOLESCENCE"/>
    <Property name="worker..ORCADDSNZ"
               overridable="true"
               targetFile="codebase/WEB-INF/conf/wvs.properties"
@@ -349,6 +349,10 @@
               overridable="true"
               targetFile="codebase/WEB-INF/conf/wvs.properties"
               value="false"/>
+   <Property name="publish.service.filterdocumentpublishmethod"
+              overridable="true"
+              targetFile="codebase/WEB-INF/conf/wvs.properties"
+              value="com.ptc.wvs.util.DocumentPublishFilters/filterWTDocumentPublish"/>
    <!-- #配置新的队列 -->
    <Property name="publish.publishqueue.setnames"
               overridable="true"
@@ -530,11 +534,10 @@
               overridable="true"
               targetFile="codebase/WEB-INF/conf/wvs.properties"
               value="ext.signature.AfterEDRloader/resignPDF"/>
-   <!-- <Property name="wt.services.service.5019"
-    overridable="true"
-    targetFile="codebase/wt.properties"
-  value="ext.listener.Listener.PostStorePersistenceListener/ext.listener.service.PostStorePersistenceService"
-  /> -->
+   <Property name="wt.auth.trustedHosts"
+              overridable="true"
+              targetFile="codebase/wt.properties"
+              value="10.100.3.82,10.100.3.80"/>
    <Property name="wt.webserver.port"
               overridable="true"
               targetFile="codebase/wt.properties"
@@ -547,10 +550,11 @@
               overridable="true"
               targetFile="codebase/service.properties"
               value="ext.plm.doc.filter.CustomDocNavigationFilter/duplicate"/>
-   <Property name="wt.services.service.4160"
+   <!-- 监听部件持久化后的节点 -->
+   <!-- <Property name="wt.services.service.4160"
               overridable="true"
               targetFile="codebase/wt.properties"
-              value="ext.listener.Listener.ListenService/ext.listener.service.StandardListenService"/>
+              value="ext.listener.Listener.ListenService/ext.listener.service.StandardListenService"/> -->
    <!-- 角色用户菜单验证相关配置 -->
    <Property name="wt.services/svc/default/com.ptc.core.ui.validation.SimpleValidationFilter/BOMCostFilter/null/0"
               overridable="true"
@@ -573,4 +577,12 @@
               targetFile="codebase/com/ptc/windchill/enterprise/enterprise.service.properties"
               value="ext.HHT.filter.ClassificationFilter"/>
    <UndefineProperty name="wt.services/svc/default/com.ptc.core.ui.validation.UIComponentValidator/reassignSearchUser/null/0"/>
+   <Property name="com.ptc.netmarkets.userSearch.maxCount"
+              overridable="true"
+              targetFile="codebasewt.properties"
+              value="100"/>
+   <Property name="wt.services.service.4160"
+              overridable="true"
+              targetFile="codebase/wt.properties"
+              value="ext.listener.Listener.ListenService/ext.listener.Listener.ListenManager"/>
 </Configuration>

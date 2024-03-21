@@ -28,9 +28,7 @@ public class SendProject2SAPService {
 		ProjectEntity projectEntity = new ProjectEntity();
 		projectEntity.setProjectNumber(Config.getHHT_ProjectNum(project));
 		projectEntity.setProjectName(project.getName());
-		// projectEntity.setProjectCategory(getCategory(project.getCategory().getDisplay()));
-		// 获取枚举的内部值
-		projectEntity.setProjectCategory(project.getCategory().toString());
+		projectEntity.setProjectCategory(project.getCategory().toString().substring(4));
 		projectEntity.setProjectOwner(project.getOwner().getName());
 		projectEntity.setProjectCreateStamp(
 				new SimpleDateFormat("yyyyMMdd").format(new Date(project.getCreateTimestamp().getTime())));
@@ -77,21 +75,6 @@ public class SendProject2SAPService {
 			e.printStackTrace();
 		}
 		return "";
-	}
-
-	public static String getCategory(String category) {
-		switch (category) {
-		case "A类":
-			return "10";
-		case "B类":
-			return "20";
-		case "C类":
-			return "30";
-		case "D类":
-			return "40";
-		default:
-			return "10";
-		}
 	}
 
 	/**

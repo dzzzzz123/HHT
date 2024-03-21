@@ -21,6 +21,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import ext.HHT.Config;
 import ext.HHT.SRM.acknowledgment.Acknowledgment.Body;
 import ext.HHT.SRM.acknowledgment.Acknowledgment.Header;
@@ -45,7 +48,8 @@ public class Service {
 	public static List<String> process(WTObject pbo) {
 		List<WTPart> list = CommonUtil.getListFromPBO(pbo, WTPart.class);
 		List<String> msg = new ArrayList<>();
-		Service.requestAcknowledgment(list);
+		String resultJson = Service.requestAcknowledgment(list);
+		msg.add(getResultFromJson(resultJson));
 		return msg;
 	}
 
@@ -241,6 +245,31 @@ public class Service {
 			e.printStackTrace();
 		}
 		return HHT_SupplierInternal;
+	}
+
+	/**
+	 * 从SRM返回的信息中获取需要的信息
+	 * 
+	 * @param json
+	 * @return
+	 */
+	public static String getResultFromJson(String json) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			JsonNode rootNode = objectMapper.readTree(json);
+			if (rootNode != null && rootNode.has("responseStatus")) {
+				String typeValue = rootNode.get("responseStatus").asText();
+				String msgValue = rootNode.get("responseMessage").asText();
+				if ("ERROR".equals(typeValue)) {
+					return "发送失败！" + msgValue;
+				}
+			} else {
+				return "发送失败！";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

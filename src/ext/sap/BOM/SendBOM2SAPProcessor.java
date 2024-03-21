@@ -1,5 +1,6 @@
 package ext.sap.BOM;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -27,31 +28,30 @@ public class SendBOM2SAPProcessor extends DefaultObjectFormProcessor {
 	public FormResult doOperation(NmCommandBean arg0, List<ObjectBean> arg1) throws WTException {
 		WTObject ref = (WTObject) arg0.getPrimaryOid().getRef();
 		FormResult formResult = null;
+		List<String> msg = new ArrayList<>();
+		String[] result = new String[] {};
 
 		try {
-			List<String> msg = SendBOM2SAP.sendListBOM2SAP(ref);
-			if (StringUtils.isNotBlank(msg.get(0))) {
-				StringBuffer errorMsg = new StringBuffer();
-				for (String err : msg) {
-					errorMsg.append(err).append(System.lineSeparator());
-				}
-				formResult = new FormResult(FormProcessingStatus.FAILURE);
-				formResult.addFeedbackMessage(new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(), null,
-						null, new String[] { errorMsg.toString() }));
-				return formResult;
-			}
+			msg = SendBOM2SAP.sendListBOM2SAP(ref);
+			result = msg.toArray(new String[msg.size()]);
 		} catch (Exception e) {
 			formResult = new FormResult(FormProcessingStatus.FAILURE);
 			formResult.addFeedbackMessage(new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(), null,
-					null, new String[] { "发送BOM失败！", e.getMessage() }));
+					null, new String[] { "发送失败！", e.getMessage() }));
 			e.printStackTrace();
 			return formResult;
 		}
 
-		formResult = new FormResult(FormProcessingStatus.SUCCESS);
-		formResult.addFeedbackMessage(new FeedbackMessage(FeedbackType.SUCCESS, SessionHelper.getLocale(), null, null,
-				new String[] { "发送BOM成功！" }));
-		return formResult;
+		if (result.length > 0 && StringUtils.isNotBlank(result[0])) {
+			formResult = new FormResult(FormProcessingStatus.FAILURE);
+			formResult.addFeedbackMessage(
+					new FeedbackMessage(FeedbackType.FAILURE, SessionHelper.getLocale(), null, null, result));
+			return formResult;
+		} else {
+			formResult = new FormResult(FormProcessingStatus.SUCCESS);
+			formResult.addFeedbackMessage(new FeedbackMessage(FeedbackType.SUCCESS, SessionHelper.getLocale(), null,
+					null, new String[] { "物料发送到SAP成功!" }));
+			return formResult;
+		}
 	}
-
 }

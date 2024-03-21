@@ -37,7 +37,8 @@ public class SendSAPService {
 		String name = part.getName();
 		String version = VersionUtil.getVersion(part);
 		String unit = Config.getValue(part.getDefaultUnit().toString());
-		String state = part.getState().getState().getDisplay();
+		// 获取SAP生命周期状态的显示名称并映射对应的SAP状态
+		String state = Config.getSAPState().get(part.getState().getState().getDisplay());
 		String source = part.getSource().getDisplay(Locale.CHINA);
 
 		// 根据条件修改获取的属性以满足传入SAP的需求
@@ -47,8 +48,7 @@ public class SendSAPService {
 		String PartType = mapClassificationToPartType(HHT_ClassificationCode, HHT_INValueBoolean);
 		String HHT_ClassificationName = ClassificationUtil.getClassificationdDisPlayName(HHT_ClassificationCode);
 		version = StringUtils.substring(version, 0, 1);
-		state = getSAPState(state);
-		HHT_Bonded = processHHT_Bonded(HHT_Bonded);
+		HHT_Bonded = HHT_Bonded.equals("True") | HHT_Bonded.equals("真") || HHT_Bonded.equals("是") ? "Y" : "N";
 		NonbondedNumber = StringUtils.isBlank(NonbondedNumber) ? "" : NonbondedNumber;
 		HHT_SerialNumber = HHT_SerialNumber.equals("True") || HHT_SerialNumber.equals("是")
 				|| HHT_SerialNumber.equals("真") ? "0001" : "";
@@ -104,30 +104,6 @@ public class SendSAPService {
 		sapPartEntity.setHHT_PDOwnership(HHT_PDOwnership);
 
 		return sapPartEntity;
-	}
-
-	/**
-	 * 获取SAP生命周期状态的显示名称
-	 * 
-	 * @param state PLM生命周期状态
-	 * @return String SAP生命周期状态
-	 */
-	private static String getSAPState(String state) {
-		switch (state) {
-		case "EVT":
-			return "EV";
-		case "DVT":
-			return "DV";
-		case "PVT":
-			return "D1";
-		case "MP":
-			// return "M1";
-			return "P1";
-		case "Obsolescence":
-			return "Z1";
-		default:
-			return "D1";
-		}
 	}
 
 	/**

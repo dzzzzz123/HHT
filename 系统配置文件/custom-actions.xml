@@ -89,6 +89,9 @@
 		<action name="ProjectWorkHours">
 			<component name="project.workHours.table" windowType="page"/>
 		</action>
+		<action name="WorkHours" ajax="row">
+			<command url="netmarkets/jsp/ext/HHT/project/infoPage.jsp" windowType="page"/>
+		</action>
 	</objecttype>
 
 	<objecttype name="ProjectRequirement" resourceBundle="ext.requirement.requirementActionRB">
@@ -137,6 +140,19 @@
 		</action>
 		<action name="edit_doc_supplier_step" ajax="component">
 			<command url="/netmarkets/jsp/cust/supplier/editSupplierStep.jsp" windowType="popup" />
+		</action>
+	</objecttype>
+
+	<objecttype name="navigation" class="" resourceBundle="com.ptc.core.ui.navigationRB">
+		<action name="CUS_HHT"  uicomponent="TAB_ADMIN">
+		</action>
+	</objecttype>
+	
+	<!-- eca report -->
+	<objecttype name="eca" class="java.lang.Object" resourceBundle="ext.plm.change.resource.ecActionRB">
+		<action name="createECAReport" resourceBundle="ext.plm.change.resource.ecActionRB">
+			<command class="ext.plm.change.CustECAProcessor" method="execute" onClick="JCAConfirm(event,'ext.plm.change.resource.ecActionRB.CONFIRM_CREATEECRREPORT')"/>
+			<includeFilter name="CustomDocNavigationFilter"/>
 		</action>
 	</objecttype>
 

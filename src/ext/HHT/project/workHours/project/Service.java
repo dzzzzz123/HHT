@@ -12,12 +12,23 @@ import com.ptc.projectmanagement.plannable.PlannableHelper;
 import ext.HHT.project.TrackHours.TrackHoursService;
 import wt.fc.collections.WTCollection;
 import wt.org.WTUser;
+import wt.util.WTException;
 
 public class Service {
 
 	public static List<Result> getResults(Plan plan) {
 		List<Result> results = new ArrayList<>();
-		List<PlanActivity> planActivitys = getPlanActivity(plan);
+		List<PlanActivity> planActivitys = new ArrayList<>();
+		try {
+			WTCollection children = PlannableHelper.service.getImmediateChildren(plan);
+			for (Iterator iterator = children.persistableIterator(); iterator.hasNext();) {
+				PlanActivity child = (PlanActivity) iterator.next();
+				planActivitys.add(child);
+				planActivitys.addAll(getPlanActivitys(child));
+			}
+		} catch (WTException e) {
+			e.printStackTrace();
+		}
 		ArrayList<ResourceAssignment> resourceAssignments = new ArrayList<>();
 		for (PlanActivity planActivity : planActivitys) {
 			resourceAssignments.addAll(TrackHoursService.getResourceAssignments(planActivity));
@@ -32,22 +43,19 @@ public class Service {
 		return results;
 	}
 
-	public static List<PlanActivity> getPlanActivity(Plan plan) {
-		List<PlanActivity> planActivity = new ArrayList<>();
+	public static List<PlanActivity> getPlanActivitys(PlanActivity planActivity) {
+		List<PlanActivity> result = new ArrayList<>();
 		try {
-			WTCollection children = PlannableHelper.service.getImmediateChildren(plan);
+			WTCollection children = PlannableHelper.service.getImmediateChildren(planActivity);
 			for (Iterator iterator = children.persistableIterator(); iterator.hasNext();) {
 				PlanActivity child = (PlanActivity) iterator.next();
-				WTCollection children2 = PlannableHelper.service.getImmediateChildren(child);
-				for (Iterator iterator2 = children2.persistableIterator(); iterator2.hasNext();) {
-					PlanActivity child2 = (PlanActivity) iterator2.next();
-					planActivity.add(child2);
-				}
+				result.add(child);
+				result.addAll(getPlanActivitys(child));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return planActivity;
+		return result;
 	}
 
 	public static Result getResult(ResourceAssignment resourceAssignment) {

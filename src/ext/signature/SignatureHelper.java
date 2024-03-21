@@ -160,9 +160,10 @@ public class SignatureHelper implements RemoteAccess {
 					userName = ((WTUser) wtprincipal).getFullName();
 					// name = ((WTUser) wtprincipal).getName();
 					name = ((WTUser) wtprincipal).getName();
-					System.out.println("qqqqqqqqqqqqq" + name);
+					System.out.println("qqqqqqqqqqqqqname:" + name);
 				} else if ((wtprincipal instanceof WTGroup)) {
 					userName = ContainerTeamHelper.getDisplayName((WTGroup) wtprincipal, null);
+					System.out.println("qqqqqqqqqqqqquserName:" + userName);
 				}
 				Timestamp timestamp = wfvotingeventaudit.getTimestamp();
 				String date = DATEFORMATE.format(timestamp);
@@ -278,6 +279,7 @@ public class SignatureHelper implements RemoteAccess {
 
 	public static void writeIndividuationImage(String imagePath, PdfContentByte cb, String keyPrefix, String docType) {
 		String xy = PropertiesHelper.getStrFromProperties(keyPrefix + ".X+Y");
+		System.out.println("W000-签名图片key:" + keyPrefix);
 		if (xy == null) {
 			System.out.println(
 					"003-signature : no [" + keyPrefix + "] config in signature.properties, no signature content.");

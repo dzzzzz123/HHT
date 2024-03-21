@@ -40,7 +40,8 @@ public class SendBOM2SAPService {
 		List<BOMBodyEntity> body = getBodyEntitiesByBOM(part);
 		bom.setNumber(part.getNumber());
 		bom.setName(part.getName());
-		bom.setHHT_BasicQuantity(Config.getHHT_BasicQuantity(part));
+//		bom.setHHT_BasicQuantity(Config.getHHT_BasicQuantity(part));
+		bom.setHHT_BasicQuantity("1");
 		bom.setUnit(Config.getValue(part.getDefaultUnit().toString()));
 		bom.setVersion(StringUtils.substring(VersionUtil.getVersion(part), 0, 1));
 		bom.setFactory(part.getViewName());
