@@ -1,23 +1,10 @@
 package ext.ait.util;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
+import java.io.*;
+import java.util.*;
 import wt.iba.value.IBAHolder;
-import wt.method.RemoteAccess;
 
-public class PropertiesUtil implements RemoteAccess {
+public class PropertiesUtil  {
 
 	// 单例模式实例对象
 	private static PropertiesUtil instance;
@@ -27,6 +14,9 @@ public class PropertiesUtil implements RemoteAccess {
 	private Class<?> callingClass;
 	// properties文件名称
 	private String configFileName;
+	// 读取文件文件流
+	FileInputStream inputStream = null;
+
 
 	private PropertiesUtil(Class<?> callingClass, String configFileName) {
 		this.callingClass = callingClass; // 存储调用类
@@ -68,12 +58,21 @@ public class PropertiesUtil implements RemoteAccess {
 		try {
 			String propertiefile = callingClass.getResource(configFileName).getFile();
 			properties = new Properties();
-			properties.load(new InputStreamReader(new FileInputStream(propertiefile), "UTF-8"));
+			inputStream = new FileInputStream(propertiefile);
+        	properties.load(new InputStreamReader(inputStream, "UTF-8"));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		} finally {
+        if (inputStream != null) {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 	}
 
 	/**
