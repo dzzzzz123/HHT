@@ -2,6 +2,23 @@
 <!DOCTYPE actionmodels SYSTEM "customActionmodels.dtd">
 <actionmodels>
 
+    <!-- 项目部件相关建模内容 -->
+	<model name="projectBudgets list">
+		<action name="create" type="ProjectBudget" shortcut="true"/>
+		<action name="edit" type="ProjectBudget" shortcut="true"/>
+		<action name="delete" type="object" shortcut="true"/>
+	</model>
+
+	<model name="ProjectBudgetDetails">
+		<action name="primaryAttributes" type="object"/>
+		<action name="attachments" type="object"/>
+	</model>
+
+	<model name="projectBudget actions" menufor="ext.alpha.budget.ProjectBudget">
+		<action name="edit" type="ProjectBudget"/>
+		<action name="delete" type="object"/>
+	</model>
+
     <!-- Part information page Actions list -->
     <model name="more parts actions" menufor="wt.part.WTPart">
         <action name="view" type="object"/>                             <!-- View Information -->

@@ -38,4 +38,9 @@ http://www.ptc.com/schema/mvc http://www.ptc.com/schema/mvc/mvc-10.0.xsd">
 	<bean id="UserWorkHoursServlet" class="ext.HHT.project.workHours.user.Servlet"/>
 	<!--停用账户-->
 	<bean id="SystemUserServlet" class="ext.sys.SystemUser.SystemUserServlet"/>
+	<!-- 成本分析相关建模配置 -->
+	<bean class="ext.alpha.budget.mvc.builders.ProjectBudgetTableBuilder"/>
+	<bean id="alpha.budget.projectBudget.SetAttributesPanel" class="ext.alpha.budget.mvc.builders.ProjectBudgetSetAttributesPanelBuilder"/>
+	<bean class="ext.alpha.budget.mvc.builders.ProjectBudgetInfoAttributesBuilder"/>
+	<bean class="ext.alpha.budget.mvc.builders.ProjectBudgetInfoBuilder"/>
 </beans>

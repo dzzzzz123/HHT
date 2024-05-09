@@ -156,4 +156,17 @@
 		</action>
 	</objecttype>
 
+	<!-- 项目预算相关建模操作 -->
+	<objecttype name="ProjectBudget" class="ext.alpha.ProjectBudget" resourceBundle="ext.alpha.budget.jca.alphaActionResource">
+		<action name="create">
+			<command class="com.ptc.core.components.forms.CreateObjectFormProcessor" url="netmarkets/jsp/ext/alpha/budget/create.jsp" windowType="popup"/>
+		</action>
+		<action name="ProjectBudgetDefineItemAttributesWizStep" afterVK="setAttributesWizStep" preloadWizardPage="true" required="true">
+			<command url="netmarkets/jsp/ext/alpha/budget/defineItemAttributesWizStep.jsp" windowType="wizard_step"/>
+		</action>
+		<action name="edit">
+			<command class="com.ptc.core.components.forms.DefaultEditFormProcessor" url="netmarkets/jsp/ext/alpha/budget/edit.jsp" windowType="popup"/>
+		</action>
+	</objecttype>
+
 </listofactions>
